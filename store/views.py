@@ -6,20 +6,29 @@ from django.dispatch import receiver
 from django.utils.text import slugify
 from django.utils.translation import gettext as _
 from django.contrib.auth.decorators import login_required
+from django.db.models.functions import Coalesce
+from django.db.models import Count, FloatField, Avg
 
 def store(request):
-    items = Item.objects.filter(is_available=True, is_approved=True)
-    tags = ItemTag.objects.all().order_by('name')  # Добавим сортировку
+    items = Item.objects.filter(is_available=True, is_approved=True).annotate(
+        order_count=Count('orderitem'),
+        favorite_count=Count('favorite'),
+        avg_rating=Coalesce(Avg('reviews__rating'), 0.0, output_field=FloatField())
+    ).order_by('-order_count', '-favorite_count', '-avg_rating')
+
+    tags = ItemTag.objects.all().order_by('name')
     posters = Poster.objects.all()
     favorites = Favorite.objects.filter(user=request.user).values_list('item_id', flat=True) if request.user.is_authenticated else []
+    
     context = {
-        'page_obj': paginator(request, items, 9),
-        'page_obj_2': tags,  # Обновим контекст для тегов
-        'range': [*range(1, 7)],  # For random css styles
+        'items': items,
+        'page_obj_2': tags,
+        'range': [*range(1, 7)],
         'posters': posters,
         'favorites': favorites,
     }
     return render(request, 'store/main_page.html', context)
+
 
 
 @receiver(pre_save, sender=Item)

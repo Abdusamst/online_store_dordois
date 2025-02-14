@@ -67,7 +67,7 @@
     <div class="inner">
         <h2>Список всех продуктов</h2>
         <div class="product-list">
-            {% for item in page_obj %}
+            {% for item in items %}
                 <div class="product-item" id="item-{{ item.id }}">
                     <p><span class="image right">
                         {% if item.image %}
