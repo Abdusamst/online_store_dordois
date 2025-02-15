@@ -3,6 +3,13 @@ from .models import Seller
 from django import forms
 from .models import Item
 from .models import Item, ItemTag
+from django import forms
+from .models import Advertisement
+
+class AdvertisementForm(forms.ModelForm):
+    class Meta:
+        model = Advertisement
+        fields = ['image', 'link', 'position']
 
 class ItemForm(forms.ModelForm):
     tags = forms.ModelMultipleChoiceField(

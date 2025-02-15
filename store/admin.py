@@ -1,6 +1,14 @@
 from django.contrib import admin
 from .models import Item, ItemTag, Poster, Seller, Review
 
+from django.contrib import admin
+from .models import Advertisement
+
+@admin.register(Advertisement)
+class AdvertisementAdmin(admin.ModelAdmin):
+    list_display = ('id', 'image', 'link', 'position')  # Показываем ID, картинку, ссылку и позицию
+    list_filter = ('position',)  # Фильтр по позиции (верхняя/нижняя)
+    search_fields = ('link',)  # Поиск по ссылке
 
 
 @admin.register(Seller)  # Если @admin.register отсутствует, добавь его

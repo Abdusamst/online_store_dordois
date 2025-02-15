@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import Item, ItemTag, Poster, Favorite
+from .models import Item, ItemTag, Poster, Favorite, Advertisement
 from .paginator import paginator
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
@@ -15,20 +15,36 @@ def store(request):
         favorite_count=Count('favorite'),
         avg_rating=Coalesce(Avg('reviews__rating'), 0.0, output_field=FloatField())
     ).order_by('-order_count', '-favorite_count', '-avg_rating')
-
+    top_ads = Advertisement.objects.filter(position='top')  # Должны быть 4
+    bottom_ads = Advertisement.objects.filter(position='bottom')  # Должны быть 4
     tags = ItemTag.objects.all().order_by('name')
     posters = Poster.objects.all()
     favorites = Favorite.objects.filter(user=request.user).values_list('item_id', flat=True) if request.user.is_authenticated else []
-    
     context = {
         'items': items,
         'page_obj_2': tags,
         'range': [*range(1, 7)],
         'posters': posters,
         'favorites': favorites,
+        'top_ads': top_ads,   # Верхняя реклама
+        'bottom_ads': bottom_ads,  # Нижняя реклама
     }
     return render(request, 'store/main_page.html', context)
 
+from django.shortcuts import render, redirect
+from .models import Advertisement
+from .forms import AdvertisementForm
+
+def add_advertisement(request):
+    if request.method == 'POST':
+        form = AdvertisementForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('store:home')  # После добавления вернемся на главную страницу
+    else:
+        form = AdvertisementForm()
+    
+    return render(request, 'store/add_advertisement.html', {'form': form})
 
 
 @receiver(pre_save, sender=Item)

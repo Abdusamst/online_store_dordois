@@ -62,6 +62,21 @@ class TaggedItem(GenericTaggedItemBase):
     )
     
 
+from django.db import models
+
+class Advertisement(models.Model):
+    POSITION_CHOICES = [
+        ('top', 'Верхняя реклама'),
+        ('bottom', 'Нижняя реклама'),
+    ]
+
+    image = models.ImageField(upload_to='ads/')
+    link = models.URLField()
+    position = models.CharField(max_length=10, choices=POSITION_CHOICES)
+
+    def __str__(self):
+        return f"{self.position} - {self.link}"
+
 
 class Poster(models.Model):
     image = models.ImageField(

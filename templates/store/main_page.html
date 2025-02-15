@@ -10,6 +10,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'assets/main_page.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 </head>
 <body>
     <div class="main_page1">
@@ -60,12 +62,61 @@
             </div>
             
         </div>  
+        <div class="ad-section">
+            <div class="ad-header">Реклама</div>
+            
+            <!-- Верхний рекламный блок -->
+            <div class="top-ads">
+                {% if top_ads %}
+                    <div id="topAdsCarousel" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-inner">
+                            {% for ad in top_ads %}
+                                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                                    <a href="{{ ad.link }}" target="_blank" class="ad-card">
+                                        <img src="{{ ad.image.url }}" alt="Реклама">
+                                    </a>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="ad-placeholder-container">
+                        <a href="https://wa.me/ВашНомер" target="_blank" class="ad-placeholder">Здесь может быть ваша реклама</a>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <!-- Нижний рекламный блок -->
+            <div class="bottom-ads">
+                {% if bottom_ads %}
+                    <div id="bottomAdsCarousel" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-inner">
+                            {% for ad in bottom_ads %}
+                                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                                    <a href="{{ ad.link }}" target="_blank" class="ad-card">
+                                        <img src="{{ ad.image.url }}" alt="Реклама">
+                                    </a>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="ad-placeholder-container">
+                        <a href="https://wa.me/ВашНомер" target="_blank" class="ad-placeholder">Здесь может быть ваша реклама</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        
+        
+
     </div>
 
 <!-- Продукты -->
 <section id="products">
     <div class="inner">
-        <h2>Список всех продуктов</h2>
+        <h2 class="line-text"><hr>поупулярные продукты<h2>
         <div class="product-list">
             {% for item in items %}
                 <div class="product-item" id="item-{{ item.id }}">
@@ -178,6 +229,48 @@ document.addEventListener('DOMContentLoaded', function() {
     setInterval(nextSlide, 2000);
 });
 
+function initAdCarousels() {
+    const topCarousel = document.getElementById('topAdsCarousel');
+    const bottomCarousel = document.getElementById('bottomAdsCarousel');
+
+    function setupCarousel(carousel) {
+        if (!carousel) return;
+
+        const inner = carousel.querySelector('.carousel-inner');
+        const items = carousel.querySelectorAll('.carousel-item');
+        if (items.length <= 1) return;
+
+        let currentIndex = 0;
+        const totalItems = items.length;
+
+        function slideToNext() {
+            currentIndex = (currentIndex + 1) % totalItems;
+            inner.style.transform = `translateX(-${currentIndex * 100}%)`;
+
+            // Если достигли последнего слайда, готовимся к переходу в начало
+            if (currentIndex === totalItems - 1) {
+                setTimeout(() => {
+                    inner.style.transition = 'none';
+                    currentIndex = 0;
+                    inner.style.transform = 'translateX(0)';
+                    setTimeout(() => {
+                        inner.style.transition = 'transform 0.5s ease-in-out';
+                    }, 50);
+                }, 500);
+            }
+        }
+
+        // Запускаем автоматическую прокрутку
+        setInterval(slideToNext, 5000);
+    }
+
+    // Инициализируем обе карусели
+    setupCarousel(topCarousel);
+    setupCarousel(bottomCarousel);
+}
+
+// Запускаем после загрузки страницы
+document.addEventListener('DOMContentLoaded', initAdCarousels);
 </script>
     {% endblock %}
     
