@@ -107,9 +107,33 @@
                 {% endif %}
             </div>
         </div>
-
+        <div class="left-section">
+            <!-- Секция с маркетплейсами -->
+            <div class="marketplace-section">
+                <div class="section-header">Ваш товар увидят</div>
+                <div class="marketplace-logos">
+                    <img src="{% static 'images/ozon.png' %}" alt="OZON" class="marketplace-logo">
+                    <img src="{% static 'images/wildberries.png' %}" alt="Wildberries" class="marketplace-logo">
+                    <img src="{% static 'images/logo_door.png' %}" alt="DOOR" class="marketplace-logo">
+                </div>
+            </div>
         
-        
+            <!-- Секция с доставкой -->
+            <div class="delivery-section">
+                <div class="delivery-item">
+                    <img src="{% static 'images/krgyz.png' %}" alt="Кыргызстан" class="country-flag">
+                    <span>ДОСТАВКА ПО КЫРГЫЗСТАНУ</span>
+                </div>
+                <div class="delivery-item">
+                    <img src="{% static 'images/russian.png' %}" alt="Россия" class="country-flag">
+                    <span>ДОСТАВКА В РОССИЮ</span>
+                </div>
+                <div class="delivery-item">
+                    <img src="{% static 'images/kazakhstan.png' %}" alt="Казахстан" class="country-flag">
+                    <span>ДОСТАВКА В КАЗАХСТАН</span>
+                </div>
+            </div>
+        </div>
 
     </div>
 

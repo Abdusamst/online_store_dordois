@@ -267,12 +267,74 @@ i.fa-heart {
  /* реклама */
 
 
+ .left-section {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 200px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* Стили для секции маркетплейсов */
+.marketplace-section {
+    padding: 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+.section-header {
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.marketplace-logos {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+}
+
+.marketplace-logo {
+    max-width: 150px;
+    height: auto;
+}
+
+/* Стили для секции доставки */
+.delivery-section {
+    padding: 15px;
+}
+
+.delivery-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+    padding: 5px;
+}
+
+.country-flag {
+    width: 40px;
+    height: auto;
+    object-fit: contain;
+}
+
+.delivery-item span {
+    font-size: 12px;
+    font-weight: bold;
+}
+
+
+
 
 
  .ad-section {
-    position: fixed;
+    position: absolute;
     right: 20px;
-    top: 50%;
+    top: 55%;
     transform: translateY(-50%);
     width: 200px;
     background: #fff;
@@ -326,7 +388,7 @@ i.fa-heart {
 .ad-card img {
     width: 100%;
     height: 100%;
-    object-fit:cover ;
+    object-fit: cover;
 }
 
 .ad-placeholder-container {
@@ -345,7 +407,6 @@ i.fa-heart {
     text-decoration: none;
     font-size: 14px;
 }
-
 
 
 
