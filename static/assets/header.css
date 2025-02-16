@@ -699,13 +699,15 @@ body {
         /* Поисковая строка - уменьшаем */
         .search-bar {
             padding: 6px 10px;
-            width: 80%;
+            width: 100%;
             padding: 0 5px;
+            max-width: 200px;
         }
     
         .search-bar form {
-            max-width: 100%;
+            width: 100%;
             border-width: 2px;
+            height: 37px;
         }
     
         .search-bar input[type="text"] {
@@ -714,7 +716,7 @@ body {
         }
     
         .search-bar button {
-            padding: 10px 15px;
+            padding: 20px 25px;
         }
     
         /* Внутренний контейнер */
@@ -727,6 +729,7 @@ body {
         .catalog-button {
             font-size: 14px;
             border-width: 2px;
+            margin-left: 150px;
         }
     
         .catalog-button i.fa-solid.fa-bars {
@@ -748,9 +751,10 @@ body {
     
         /* Действия и языковой селектор */
         .actions {
-            margin-right: 5px;
+            margin-right: 205px;
             display: flex;
             gap: 5px;
+
         }
 
     
@@ -778,7 +782,7 @@ body {
             display: flex;
             justify-content: space-between;
             width: 95%;
-        }
+        } 
   }
   
   /* Desktop (992-1199px) */
