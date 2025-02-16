@@ -110,27 +110,32 @@
         <div class="left-section">
             <!-- Секция с маркетплейсами -->
             <div class="marketplace-section">
-                <div class="section-header">Ваш товар увидят</div>
+                <div class="section-header">
+                    <span class="bold-text">Ваш товар увидят</span>
+                    <span class="grey-text">на площадке</span>
+                </div>
                 <div class="marketplace-logos">
                     <img src="{% static 'images/ozon.png' %}" alt="OZON" class="marketplace-logo">
                     <img src="{% static 'images/wildberries.png' %}" alt="Wildberries" class="marketplace-logo">
                     <img src="{% static 'images/logo_door.png' %}" alt="DOOR" class="marketplace-logo">
                 </div>
             </div>
+            
         
             <!-- Секция с доставкой -->
             <div class="delivery-section">
                 <div class="delivery-item">
+                    <span>ДОСТАВКА<br>ПО<br>КЫРГЫЗСТАНУ</span>
                     <img src="{% static 'images/krgyz.png' %}" alt="Кыргызстан" class="country-flag">
-                    <span>ДОСТАВКА ПО КЫРГЫЗСТАНУ</span>
                 </div>
                 <div class="delivery-item">
+                    <span>ДОСТАВКА<br>В<br>РОССИЮ</span>
                     <img src="{% static 'images/russian.png' %}" alt="Россия" class="country-flag">
-                    <span>ДОСТАВКА В РОССИЮ</span>
                 </div>
                 <div class="delivery-item">
+                    <span>ДОСТАВКА<br>В<br>КАЗАХСТАН</span>
                     <img src="{% static 'images/kazakhstan.png' %}" alt="Казахстан" class="country-flag">
-                    <span>ДОСТАВКА В КАЗАХСТАН</span>
+
                 </div>
             </div>
         </div>
@@ -266,20 +271,38 @@ function initAdCarousels() {
 
         let currentIndex = 0;
         const totalItems = items.length;
+        let isTransitioning = false;
+
+        // Клонируем первый слайд и добавляем его в конец
+        const firstSlideClone = items[0].cloneNode(true);
+        inner.appendChild(firstSlideClone);
 
         function slideToNext() {
-            currentIndex = (currentIndex + 1) % totalItems;
+            if (isTransitioning) return;
+            isTransitioning = true;
+
+            currentIndex++;
+            inner.style.transition = 'transform 0.5s ease-in-out';
             inner.style.transform = `translateX(-${currentIndex * 100}%)`;
 
-            // Если достигли последнего слайда, готовимся к переходу в начало
-            if (currentIndex === totalItems - 1) {
+            // Если достигли клона первого слайда
+            if (currentIndex === totalItems) {
                 setTimeout(() => {
+                    // Убираем анимацию
                     inner.style.transition = 'none';
+                    // Перемещаемся к настоящему первому слайду
                     currentIndex = 0;
                     inner.style.transform = 'translateX(0)';
+                    
+                    // Возвращаем анимацию после небольшой задержки
                     setTimeout(() => {
                         inner.style.transition = 'transform 0.5s ease-in-out';
+                        isTransitioning = false;
                     }, 50);
+                }, 500);
+            } else {
+                setTimeout(() => {
+                    isTransitioning = false;
                 }, 500);
             }
         }

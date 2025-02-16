@@ -36,7 +36,6 @@ body {
     display: flex;
     list-style-type: none;
     padding: 0;
-    gap: 15px;
 }
 
 
@@ -72,7 +71,7 @@ body {
 .header-logo {
     background-color: rgb(32,87,167);
     display: flex;
-    height: 190px;
+    height: 90px;
     justify-content: space-between; /* Распределяет элементы по краям */
     align-items: center; /* Выравнивает элементы по вертикали */
     width: 100%; /* Чтобы заняло всю ширину */
@@ -94,6 +93,7 @@ body {
     border: 4px solid rgb(0, 84, 133);
     border-radius: 10px;
     overflow: hidden;
+    height: 50px;
 }
 
 .search-bar input[type="text"] {
@@ -815,13 +815,14 @@ body {
         /* Поисковая строка - уменьшаем */
         .search-bar {
             padding: 6px 10px;
-            width: 80%;
+            width: 100%;
             padding: 0 5px;
         }
     
         .search-bar form {
             max-width: 100%;
             border-width: 2px;
+            height: 40px;
         }
     
         .search-bar input[type="text"] {
@@ -830,7 +831,7 @@ body {
         }
     
         .search-bar button {
-            padding: 10px 15px;
+            padding: 20px 25px;
         }
     
         /* Внутренний контейнер */
@@ -843,6 +844,7 @@ body {
         .catalog-button {
             font-size: 14px;
             border-width: 2px;
+            margin-left: 210px;
         }
     
         .catalog-button i.fa-solid.fa-bars {
@@ -864,9 +866,10 @@ body {
     
         /* Действия и языковой селектор */
         .actions {
-            margin-right: 5px;
+            margin-right: 155px;
             display: flex;
             gap: 5px;
+
         }
 
     
@@ -894,7 +897,7 @@ body {
             display: flex;
             justify-content: space-between;
             width: 95%;
-        }
+        }   
   }
   
   /* Large Desktop (1200-1399px) */
@@ -931,13 +934,14 @@ body {
         /* Поисковая строка - уменьшаем */
         .search-bar {
             padding: 6px 10px;
-            width: 80%;
+            width: 100%;
             padding: 0 5px;
         }
     
         .search-bar form {
             max-width: 100%;
             border-width: 2px;
+            height: 40px;
         }
     
         .search-bar input[type="text"] {
@@ -946,7 +950,7 @@ body {
         }
     
         .search-bar button {
-            padding: 10px 15px;
+            padding: 20px 25px;
         }
     
         /* Внутренний контейнер */
@@ -959,6 +963,7 @@ body {
         .catalog-button {
             font-size: 14px;
             border-width: 2px;
+            margin-left: 210px;
         }
     
         .catalog-button i.fa-solid.fa-bars {
@@ -980,9 +985,10 @@ body {
     
         /* Действия и языковой селектор */
         .actions {
-            margin-right: 5px;
+            margin-right: 160px;
             display: flex;
             gap: 5px;
+
         }
 
     
@@ -1019,12 +1025,10 @@ body {
     .search-bar {
         width: 700px;
     }
-    .search-bar form {
-        width: 700px;
-    }
+
 
     .inner1 {
-        margin-left: 100px;
+        margin-left: 220px;
         gap: 50px;
     }
 
@@ -1050,9 +1054,6 @@ body {
         font-size: 18px;
     }
 
-    .search-bar button {
-        padding: 22px 60px;
-    }
 
     /* Larger icons and text */
     .icons-header a img {
@@ -1065,12 +1066,11 @@ body {
 
     /* Adjusted catalog button */
     .catalog-button {
-        padding: 15px 30px;
         font-size: 24px;
     }
 
     .actions {
-        margin-right: 150px;
+        margin-right: 200px;
     }
 
     .language-selector {
