@@ -4,7 +4,7 @@ from django import forms
 from .models import Item
 from .models import Item, ItemTag
 from django import forms
-from .models import Advertisement
+from .models import Advertisement, ItemAttribute, AttributeValue
 
 class AdvertisementForm(forms.ModelForm):
     class Meta:
@@ -14,7 +14,7 @@ class AdvertisementForm(forms.ModelForm):
 class ItemForm(forms.ModelForm):
     tags = forms.ModelMultipleChoiceField(
         queryset=ItemTag.objects.all(),
-        widget=forms.CheckboxSelectMultiple,  # Можно заменить на forms.SelectMultiple для списка
+        widget=forms.CheckboxSelectMultiple,
         required=True,
         label="Категории"
     )
@@ -22,6 +22,52 @@ class ItemForm(forms.ModelForm):
     class Meta:
         model = Item
         fields = ['title', 'description', 'price', 'old_price', 'image', 'is_available', 'tags']
+
+    def __init__(self, *args, **kwargs):
+        super(ItemForm, self).__init__(*args, **kwargs)
+        self.attribute_fields_added = False  # Флаг для предотвращения повторного добавления полей
+
+    def add_attribute_fields(self, tags):
+        if self.attribute_fields_added:
+            return
+        attributes = ItemAttribute.objects.filter(tags__in=tags).distinct()
+
+        for attribute in attributes:
+            field_name = f'attribute_{attribute.id}'
+
+            # Определяем тип поля в зависимости от типа атрибута
+            if attribute.type == 'dropdown':
+                choices = AttributeValue.objects.filter(attribute=attribute).values_list('id', 'value')
+                self.fields[field_name] = forms.ChoiceField(
+                    label=attribute.name,
+                    choices=choices,
+                    required=attribute.required
+                )
+            elif attribute.type == 'radio':
+                choices = AttributeValue.objects.filter(attribute=attribute).values_list('id', 'value')
+                self.fields[field_name] = forms.ChoiceField(
+                    label=attribute.name,
+                    choices=choices,
+                    widget=forms.RadioSelect,
+                    required=attribute.required
+                )
+            elif attribute.type == 'color':
+                self.fields[field_name] = forms.CharField(
+                    label=attribute.name,
+                    widget=forms.TextInput(attrs={'type': 'color'}),
+                    required=attribute.required
+                )
+            else:
+                self.fields[field_name] = forms.CharField(
+                    label=attribute.name,
+                    required=attribute.required
+                )
+
+            # Сохраняем ссылку на атрибут в поле для последующего сохранения значения
+            self.fields[field_name].attribute = attribute
+
+        self.attribute_fields_added = True
+
 
 
 class SellerRegistrationForm(forms.ModelForm):

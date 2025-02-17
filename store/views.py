@@ -313,26 +313,70 @@ def become_seller(request):
 
 
 
-
+from django.template.loader import render_to_string
+from .models import Item, ItemTag, ItemAttributeValue, AttributeValue
 
 @login_required
 def add_item(request):
     if request.method == 'POST':
         form = ItemForm(request.POST, request.FILES)
+        tag_ids = request.POST.getlist('tags')
+        tags = ItemTag.objects.filter(id__in=tag_ids)
+        form.add_attribute_fields(tags)
+
         if form.is_valid():
             item = form.save(commit=False)
-            item.seller = request.user  
+            item.seller = request.user
             item.save()
             form.save_m2m()
 
-            print("Редирект выполняется!")  # Проверка
-            return redirect('store:thank_you')
-        
-        print("Ошибки формы:", form.errors)  # Показываем ошибки в консоли
+            # Сохранение значений атрибутов
+            for field_name, field_value in form.cleaned_data.items():
+                if field_name.startswith('attribute_'):
+                    attribute = form.fields[field_name].attribute
+                    value = field_value
 
-    form = ItemForm()
-    tags = ItemTag.objects.all()
+                    if attribute.type in ['dropdown', 'radio']:
+                        attribute_value = AttributeValue.objects.get(id=value)
+                        # Сохраняем связь между товаром и значением атрибута
+                        ItemAttributeValue.objects.create(
+                            item=item,
+                            attribute=attribute,
+                            value=attribute_value.value
+                        )
+                    else:
+                        # Для текстовых или цветовых данных
+                        ItemAttributeValue.objects.create(
+                            item=item,
+                            attribute=attribute,
+                            value=value
+                        )
+
+            return redirect('store:thank_you')
+
+    else:
+        form = ItemForm()
+        tags = ItemTag.objects.all()
+
+    # AJAX для загрузки атрибутов при выборе категорий
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest' and request.method == 'GET':
+        tag_ids = request.GET.getlist('tags')
+        tags = ItemTag.objects.filter(id__in=tag_ids)
+
+        form = ItemForm()
+        form.add_attribute_fields(tags)
+
+        # Возвращаем HTML для атрибутов
+        attribute_fields_html = render_to_string(
+            'store/attribute_fields.html',
+            {'form': form},
+            request=request
+        )
+        return JsonResponse({'html': attribute_fields_html})
+
     return render(request, 'store/add_item.html', {'form': form, 'tags': tags})
+
+
 
 
 def thank_you(request):
@@ -396,3 +440,289 @@ def delete_item(request, item_id):
 
 
 
+def add_category_attributes(apps, schema_editor):
+    ItemTag = apps.get_model('store', 'ItemTag')
+    ItemAttribute = apps.get_model('store', 'ItemAttribute')
+    AttributeValue = apps.get_model('store', 'AttributeValue')
+    
+    # 1. Бытовая техника
+    appliances_tag = ItemTag.objects.get(name='Бытовая техника')
+    
+    # Атрибут "Бренд" для бытовой техники
+    brand_attr, _ = ItemAttribute.objects.get_or_create(
+        name='Бренд',
+        type='dropdown',
+        required=True
+    )
+    brand_attr.tags.add(appliances_tag)
+    
+    # Значения для брендов бытовой техники
+    for brand in ['LG', 'Samsung', 'Bosch', 'Philips', 'Tefal', 'Electrolux', 'Siemens']:
+        AttributeValue.objects.get_or_create(attribute=brand_attr, value=brand)
+    
+    # Атрибут "Тип техники" для бытовой техники
+    appliance_type_attr, _ = ItemAttribute.objects.get_or_create(
+        name='Тип техники',
+        type='dropdown',
+        required=True
+    )
+    appliance_type_attr.tags.add(appliances_tag)
+    
+    # Значения для типов техники
+    for appliance_type in ['Холодильник', 'Стиральная машина', 'Микроволновка', 'Пылесос', 'Утюг', 'Чайник', 'Кофеварка']:
+        AttributeValue.objects.get_or_create(attribute=appliance_type_attr, value=appliance_type)
+    
+    # Атрибут "Гарантия" для бытовой техники
+    warranty_attr, _ = ItemAttribute.objects.get_or_create(
+        name='Гарантия',
+        type='dropdown',
+        required=False
+    )
+    warranty_attr.tags.add(appliances_tag)
+    
+    # Значения для гарантии
+    for warranty in ['6 месяцев', '12 месяцев', '24 месяца', '36 месяцев']:
+        AttributeValue.objects.get_or_create(attribute=warranty_attr, value=warranty)
+    
+    # 2. Косметика
+    cosmetics_tag = ItemTag.objects.get(name='Косметика')
+    
+    # Атрибут "Бренд" для косметики
+    cosmetics_brand_attr, _ = ItemAttribute.objects.get_or_create(
+        name='Бренд',
+        type='dropdown',
+        required=True
+    )
+    cosmetics_brand_attr.tags.add(cosmetics_tag)
+    
+    # Значения для брендов косметики
+    for brand in ['L\'Oreal', 'Maybelline', 'MAC', 'Clinique', 'Estée Lauder', 'NYX', 'Nivea']:
+        AttributeValue.objects.get_or_create(attribute=cosmetics_brand_attr, value=brand)
+    
+    # Атрибут "Тип продукта" для косметики
+    cosmetics_type_attr, _ = ItemAttribute.objects.get_or_create(
+        name='Тип продукта',
+        type='dropdown',
+        required=True
+    )
+    cosmetics_type_attr.tags.add(cosmetics_tag)
+    
+    # Значения для типов косметики
+    for cosmetic_type in ['Тушь для ресниц', 'Помада', 'Тональный крем', 'Тени для век', 'Румяна', 'Пудра', 'Лак для ногтей']:
+        AttributeValue.objects.get_or_create(attribute=cosmetics_type_attr, value=cosmetic_type)
+    
+    # Атрибут "Цвет" для косметики
+    color_attr, _ = ItemAttribute.objects.get_or_create(
+        name='Цвет',
+        type='color',
+        required=False
+    )
+    color_attr.tags.add(cosmetics_tag)
+    
+    # 3. Детские товары
+    baby_tag = ItemTag.objects.get(name='Детские товары')
+    
+    # Атрибут "Возрастная группа" для детских товаров
+    age_group_attr, _ = ItemAttribute.objects.get_or_create(
+        name='Возрастная группа',
+        type='dropdown',
+        required=True
+    )
+    age_group_attr.tags.add(baby_tag)
+    
+    # Значения для возрастных групп
+    for age_group in ['0-1 год', '1-3 года', '3-5 лет', '5-7 лет', '7-10 лет', '10-14 лет']:
+        AttributeValue.objects.get_or_create(attribute=age_group_attr, value=age_group)
+    
+    # Атрибут "Тип товара" для детских товаров
+    baby_product_type_attr, _ = ItemAttribute.objects.get_or_create(
+        name='Тип товара',
+        type='dropdown',
+        required=True
+    )
+    baby_product_type_attr.tags.add(baby_tag)
+    
+    # Значения для типов детских товаров
+    for product_type in ['Игрушки', 'Одежда', 'Коляски', 'Питание', 'Гигиена', 'Мебель', 'Развивающие игры']:
+        AttributeValue.objects.get_or_create(attribute=baby_product_type_attr, value=product_type)
+    
+    # Атрибут "Материал" для детских товаров
+    baby_material_attr, _ = ItemAttribute.objects.get_or_create(
+        name='Материал',
+        type='dropdown',
+        required=False
+    )
+    baby_material_attr.tags.add(baby_tag)
+    
+    # Значения для материалов детских товаров
+    for material in ['Пластик', 'Дерево', 'Хлопок', 'Плюш', 'Силикон', 'Металл']:
+        AttributeValue.objects.get_or_create(attribute=baby_material_attr, value=material)
+    
+    # 4. Спорт товары
+    sport_tag = ItemTag.objects.get(name='Спорт товары')
+    
+    # Атрибут "Вид спорта" для спортивных товаров
+    sport_type_attr, _ = ItemAttribute.objects.get_or_create(
+        name='Вид спорта',
+        type='dropdown',
+        required=True
+    )
+    sport_type_attr.tags.add(sport_tag)
+    
+    # Значения для видов спорта
+    for sport_type in ['Футбол', 'Баскетбол', 'Теннис', 'Плавание', 'Фитнес', 'Йога', 'Бег', 'Велоспорт']:
+        AttributeValue.objects.get_or_create(attribute=sport_type_attr, value=sport_type)
+    
+    # Атрибут "Размер" для спортивных товаров
+    sport_size_attr, _ = ItemAttribute.objects.get_or_create(
+        name='Размер',
+        type='dropdown',
+        required=False
+    )
+    sport_size_attr.tags.add(sport_tag)
+    
+    # Значения для размеров спортивных товаров
+    for size in ['XS', 'S', 'M', 'L', 'XL', 'XXL']:
+        AttributeValue.objects.get_or_create(attribute=sport_size_attr, value=size)
+    
+    # Атрибут "Бренд" для спортивных товаров
+    sport_brand_attr, _ = ItemAttribute.objects.get_or_create(
+        name='Бренд',
+        type='dropdown',
+        required=False
+    )
+    sport_brand_attr.tags.add(sport_tag)
+    
+    # Значения для брендов спортивных товаров
+    for brand in ['Nike', 'Adidas', 'Puma', 'Reebok', 'Under Armour', 'Wilson', 'Speedo']:
+        AttributeValue.objects.get_or_create(attribute=sport_brand_attr, value=brand)
+    
+    # 5. Одежда и обувь
+    clothing_tag = ItemTag.objects.get(name='Одежда и обувь')
+    
+    # Атрибут "Размер одежды" для одежды
+    clothing_size_attr, _ = ItemAttribute.objects.get_or_create(
+        name='Размер одежды',
+        type='dropdown',
+        required=True
+    )
+    clothing_size_attr.tags.add(clothing_tag)
+    
+    # Значения для размеров одежды
+    for size in ['XS', 'S', 'M', 'L', 'XL', 'XXL']:
+        AttributeValue.objects.get_or_create(attribute=clothing_size_attr, value=size)
+    
+    # Атрибут "Размер обуви" для обуви
+    shoe_size_attr, _ = ItemAttribute.objects.get_or_create(
+        name='Размер обуви',
+        type='dropdown',
+        required=True
+    )
+    shoe_size_attr.tags.add(clothing_tag)
+    
+    # Значения для размеров обуви
+    for size in range(35, 46):
+        AttributeValue.objects.get_or_create(attribute=shoe_size_attr, value=str(size))
+    
+    # Атрибут "Материал" для одежды и обуви
+    clothing_material_attr, _ = ItemAttribute.objects.get_or_create(
+        name='Материал',
+        type='dropdown',
+        required=False
+    )
+    clothing_material_attr.tags.add(clothing_tag)
+    
+    # Значения для материалов одежды и обуви
+    for material in ['Хлопок', 'Лен', 'Шерсть', 'Полиэстер', 'Кожа', 'Шелк', 'Деним']:
+        AttributeValue.objects.get_or_create(attribute=clothing_material_attr, value=material)
+    
+    # Атрибут "Цвет" для одежды и обуви
+    clothing_color_attr, _ = ItemAttribute.objects.get_or_create(
+        name='Цвет',
+        type='radio',
+        required=True
+    )
+    clothing_color_attr.tags.add(clothing_tag)
+    
+    # Значения для цветов одежды и обуви
+    for color in ['Черный', 'Белый', 'Красный', 'Синий', 'Зеленый', 'Желтый', 'Серый', 'Бежевый']:
+        AttributeValue.objects.get_or_create(attribute=clothing_color_attr, value=color)
+    
+    # 6. Концтовары
+    office_tag = ItemTag.objects.get(name='Концтовары')
+    
+    # Атрибут "Тип товара" для концтоваров
+    office_type_attr, _ = ItemAttribute.objects.get_or_create(
+        name='Тип товара',
+        type='dropdown',
+        required=True
+    )
+    office_type_attr.tags.add(office_tag)
+    
+    # Значения для типов концтоваров
+    for office_type in ['Ручки', 'Карандаши', 'Блокноты', 'Бумага', 'Папки', 'Степлеры', 'Калькуляторы']:
+        AttributeValue.objects.get_or_create(attribute=office_type_attr, value=office_type)
+    
+    # Атрибут "Цвет" для концтоваров
+    office_color_attr, _ = ItemAttribute.objects.get_or_create(
+        name='Цвет',
+        type='dropdown',
+        required=False
+    )
+    office_color_attr.tags.add(office_tag)
+    
+    # Значения для цветов концтоваров
+    for color in ['Черный', 'Синий', 'Красный', 'Зеленый', 'Желтый', 'Белый', 'Ассорти']:
+        AttributeValue.objects.get_or_create(attribute=office_color_attr, value=color)
+    
+    # Атрибут "Бренд" для концтоваров
+    office_brand_attr, _ = ItemAttribute.objects.get_or_create(
+        name='Бренд',
+        type='dropdown',
+        required=False
+    )
+    office_brand_attr.tags.add(office_tag)
+    
+    # Значения для брендов концтоваров
+    for brand in ['Parker', 'Pilot', 'Erich Krause', 'BIC', 'Moleskine', 'Stabilo', 'Schneider']:
+        AttributeValue.objects.get_or_create(attribute=office_brand_attr, value=brand)
+    
+    # 7. Скидки и бонусы - доп. атрибутов не требуется, так как это скорее маркетинговая категория
+    # 8. Подарки
+    gift_tag = ItemTag.objects.get(name='Подарки')
+    
+    # Атрибут "Повод" для подарков
+    occasion_attr, _ = ItemAttribute.objects.get_or_create(
+        name='Повод',
+        type='dropdown',
+        required=True
+    )
+    occasion_attr.tags.add(gift_tag)
+    
+    # Значения для поводов подарков
+    for occasion in ['День рождения', 'Новый год', '8 марта', '23 февраля', 'Свадьба', 'Юбилей', 'Профессиональный праздник']:
+        AttributeValue.objects.get_or_create(attribute=occasion_attr, value=occasion)
+    
+    # Атрибут "Для кого" для подарков
+    recipient_attr, _ = ItemAttribute.objects.get_or_create(
+        name='Для кого',
+        type='dropdown',
+        required=True
+    )
+    recipient_attr.tags.add(gift_tag)
+    
+    # Значения для получателей подарков
+    for recipient in ['Для мужчин', 'Для женщин', 'Для детей', 'Для пар', 'Для коллег', 'Для руководителя']:
+        AttributeValue.objects.get_or_create(attribute=recipient_attr, value=recipient)
+    
+    # Атрибут "Ценовая категория" для подарков
+    price_category_attr, _ = ItemAttribute.objects.get_or_create(
+        name='Ценовая категория',
+        type='radio',
+        required=False
+    )
+    price_category_attr.tags.add(gift_tag)
+    
+    # Значения для ценовых категорий подарков
+    for price_category in ['Эконом (до 1000 руб)', 'Стандарт (1000-3000 руб)', 'Премиум (3000-10000 руб)', 'VIP (более 10000 руб)']:
+        AttributeValue.objects.get_or_create(attribute=price_category_attr, value=price_category)

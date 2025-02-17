@@ -6,6 +6,43 @@ from django.utils.text import slugify
 from django.conf import settings
 from django.db.models import Avg
 
+from django.db import models
+from django.db import models
+
+class AttributeValue(models.Model):
+    attribute = models.ForeignKey('ItemAttribute', related_name='values', on_delete=models.CASCADE, verbose_name='Атрибут')
+    value = models.CharField(max_length=255, verbose_name='Значение')
+
+    class Meta:
+        verbose_name = 'Значение атрибута'
+        verbose_name_plural = 'Значения атрибутов'
+
+    def __str__(self):
+        return f"{self.attribute.name}: {self.value}"
+
+class ItemAttribute(models.Model):
+    ATTRIBUTE_TYPE_CHOICES = [
+        ('dropdown', 'Dropdown'),
+        ('radio', 'Radio'),
+        ('color', 'Color'),
+        ('text', 'Text'),
+        # Добавь другие типы, если необходимо
+    ]
+
+    name = models.CharField(max_length=255, verbose_name='Название атрибута')
+    type = models.CharField(max_length=50, choices=ATTRIBUTE_TYPE_CHOICES, verbose_name='Тип атрибута')
+    required = models.BooleanField(default=False, verbose_name='Обязательный атрибут')
+    tags = models.ManyToManyField('ItemTag', related_name='attributes', verbose_name='Категории (теги)', blank=True)
+
+    class Meta:
+        verbose_name = 'Атрибут товара'
+        verbose_name_plural = 'Атрибуты товаров'
+
+    def __str__(self):
+        return self.name
+
+
+
 class ItemTag(TagBase):
     image = models.ImageField(
         upload_to='categories/',
@@ -148,6 +185,19 @@ class Item(models.Model):
         verbose_name = 'Товар'
         verbose_name_plural = 'Товары'
 
+class ItemAttributeValue(models.Model):
+    item = models.ForeignKey(Item, related_name='attribute_values', on_delete=models.CASCADE)
+    attribute = models.ForeignKey(ItemAttribute, on_delete=models.CASCADE)
+    value = models.CharField(max_length=255)
+
+    class Meta:
+        verbose_name = 'Значение атрибута товара'
+        verbose_name_plural = 'Значения атрибутов товаров'
+
+    def __str__(self):
+        return f"{self.item.title} - {self.attribute.name}: {self.value}"
+
+
 
 from django.contrib.auth.models import User
 
@@ -182,3 +232,4 @@ class Seller(models.Model):
     class Meta:
         verbose_name = 'Продавец'
         verbose_name_plural = 'Продавцы'
+

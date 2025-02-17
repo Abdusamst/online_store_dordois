@@ -4,7 +4,7 @@
     <link rel="stylesheet" href="{% static 'assets/add_item.css' %}">
 {% endblock %}
 {% block content %}
-<form method="post" enctype="multipart/form-data" class="add-item-form">
+<form method="post" enctype="multipart/form-data" class="add-item-form" id="addItemForm">
     {% csrf_token %}
     <p><label for="id_title">Название:</label> {{ form.title }}</p>
     <p><label for="id_description">Описание:</label> {{ form.description }}</p>
@@ -30,7 +30,12 @@
                 <option value="{{ tag.id }}">{{ tag.name }}</option>
             {% endfor %}
         </select>
-    </p>        
+    </p>
+
+    <!-- Контейнер для динамических атрибутов -->
+    <div id="attribute_fields">
+        <!-- Здесь будут отображаться атрибуты -->
+    </div>        
 
     <button type="submit" class="button">Добавить</button>
 </form>
@@ -58,6 +63,40 @@ document.addEventListener('DOMContentLoaded', function() {
             placeholder.style.display = 'flex';
         }
     });
+
+    // Добавляем обработчик для динамической загрузки атрибутов
+    const tagsSelect = document.getElementById('id_tags');
+    const attributeFieldsDiv = document.getElementById('attribute_fields');
+
+    function loadAttributes() {
+        const selectedOptions = Array.from(tagsSelect.selectedOptions);
+        const selectedTagIds = selectedOptions.map(option => option.value);
+        
+        if (selectedTagIds.length === 0) {
+            attributeFieldsDiv.innerHTML = '';
+            return;
+        }
+
+        const params = selectedTagIds.map(id => `tags=${id}`).join('&');
+
+        fetch('{% url "store:add_item" %}?' + params, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            attributeFieldsDiv.innerHTML = data.html;
+        })
+        .catch(error => {
+            console.error('Ошибка загрузки атрибутов:', error);
+        });
+    }
+
+    tagsSelect.addEventListener('change', loadAttributes);
+
+    // Загружаем атрибуты при загрузке страницы, если уже выбраны категории
+    loadAttributes();
 });
 </script>
 {% endblock %}
