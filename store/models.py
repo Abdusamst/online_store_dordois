@@ -61,6 +61,7 @@ class TaggedItem(GenericTaggedItemBase):
         verbose_name='Категория',
     )
     
+    
 
 from django.db import models
 

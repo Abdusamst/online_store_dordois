@@ -40,7 +40,7 @@ class Order(models.Model):
         default='created',
         verbose_name='Статус',
     )
-
+        
     class Meta:
         verbose_name = 'Заказ'
         verbose_name_plural = 'Заказы'

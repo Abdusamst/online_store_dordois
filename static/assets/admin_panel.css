@@ -26,3 +26,34 @@
 .button:hover {
     background-color: #0056b3;
 }
+
+.button_add_add {
+    display: inline-block;
+    padding: 10px 20px;
+    margin: 10px;
+    background-color: rgb(21, 255, 0);
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+@media (min-width: 2880px) {
+    .button_add_add {
+        font-size: 2em;
+        padding: 30px 60px;
+    }
+
+    .button_admin_panel {
+        font-size: 2em;
+        padding: 30px 60px;
+        background-color: red;
+    }
+    .button {
+        font-size: 2em;
+        padding: 30px 60px;
+    }
+
+    .moderator-panel h2 {
+        font-size: 3em;
+    }
+}
