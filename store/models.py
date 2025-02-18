@@ -41,7 +41,12 @@ class ItemAttribute(models.Model):
     def __str__(self):
         return self.name
 
+class Attributes(models.Model):
+    item = models.OneToOneField('store.Item', on_delete=models.CASCADE, related_name='attributes', verbose_name='Товар')
+    name = models.CharField(max_length=255, verbose_name='Имя атрибута')
 
+    def __str__(self):
+        return self.name    
 
 class ItemTag(TagBase):
     image = models.ImageField(

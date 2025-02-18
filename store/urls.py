@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import moderator_panel
 from .views import item_details, store, tag_details, tag_list, add_to_favorites, remove_from_favorites, favorite_list, toggle_favorite, search, become_seller, add_item, add_review, all_reviews, thank_you, add_advertisement
-
+from .views import attributes
 from . import views
 app_name = 'store'
 
@@ -9,6 +9,7 @@ urlpatterns = [
     path('', store, name='home'),
     path('moderator/', moderator_panel, name='moderator_panel'),
     path('thank-you/', thank_you, name='thank_you'),
+    path('attributes/', attributes, name='item_details'),
     path('categories/', tag_list, name='tag_list'),
     path('category-details/<slug:slug>/', tag_details, name='tag_details'),
     path('search/', search, name='search'),  # Маршрут для поиска

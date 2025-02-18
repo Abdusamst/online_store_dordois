@@ -25,22 +25,61 @@
     <p><label for="id_is_available">Доступно:</label> {{ form.is_available }}</p>
     
     <p><label for="id_tags">Выберите категорию:</label>
-        <select name="tags" id="id_tags" multiple>
+        <select name="tags" id="id_tags" multiple onchange="changeSelectValue()">
             {% for tag in tags %}
                 <option value="{{ tag.id }}">{{ tag.name }}</option>
             {% endfor %}
         </select>
-    </p>
+    </p>        
 
-    <!-- Контейнер для динамических атрибутов -->
-    <div id="attribute_fields">
-        <!-- Здесь будут отображаться атрибуты -->
-    </div>        
+    <div>
+        <form action="" method="post" class="optionsContainer">
+            {% csrf_token %}
 
-    <button type="submit" class="button">Добавить</button>
+        </form>
+        <!-- Здесь будет динамически изменяться список опций в зависимости от выбранной категории -->
+    </div>
+        
+    <button type="submit" class="button" onclick="getCheckedValues()">Добавить</button>
 </form>
 
 <script>
+function changeSelectValue() {
+    const selectElement = document.getElementById("id_tags");
+    const optionsContainer = document.getElementById('optionsContainer');
+    const selectedValue = selectElement.value;
+    const checkboxList=[]
+    let optionList = [];
+
+    if (selectedValue === "1") {
+        optionList = ['LG', 'Samsung', 'Bosch', 'Philips', 'Tefal', 'Electrolux', 'Siemens'];
+    } else if (selectedValue === "2") {
+        optionList = ['Тональные кремы', 'Румяна', 'Тени для век', 'Помады', 'Палетки для макияжа', 'Пробники косметики', 'Парфюмерия', 'Уход за кожей', 'Уход за волосами', 'Декоративная косметика', 'Маникюр и педикюр', 'Средства для бритья', 'Антивозрастная косметика', 'Солнцезащитные средства', 'Гигиеническая косметика'];
+    } else if (selectedValue === "3") {
+        optionList = ['Одежда для новорожденных', 'Товары для кормления', 'Игрушки', 'Товары для сна', 'Коляски и автокресла', 'Детские книги', 'Пеленки и подгузники', 'Прогулочные коляски', 'Питание для детей', 'Гигиенические товары для детей', 'Товары для путешествий', 'Мебель для детской комнаты', 'Детская обувь', 'Косметика для детей', 'Спортивные товары для детей'];
+    } else if (selectedValue === "4") {
+        optionList = ['Одежда для спорта', 'Обувь для спорта', 'Тренажеры', 'Экипировка для фитнеса', 'Гири и штанги', 'Товары для бега', 'Велосипеды', 'Роликовые коньки', 'Снаряжение для туризма', 'Йога и пилатес', 'Спортивные аксессуары', 'Спортивное питание', 'Плавание', 'Теннис', 'Футбол', 'Баскетбол', 'Гольф'];
+    } else if (selectedValue === "5") {
+        optionList = ['Ручки и карандаши', 'Бумага и блокноты', 'Клеящие средства', 'Картриджи и тонеры', 'Организация рабочего пространства', 'Папки и файлы', 'Ластики и точилки', 'Ножницы', 'Степлеры и скобы', 'Корректирующие средства', 'Маркер и фломастеры', 'Стикеры и заметки', 'Канцелярские принадлежности для творчества', 'Письменные принадлежности', 'Папки-скоросшиватели'];
+    } else if (selectedValue === "6") {
+        optionList = ['Скидки на товары', 'Акции и распродажи', 'Бонусные программы', 'Купоны и промокоды', 'Подарочные карты', 'Скидки на первый заказ', 'Кэшбэк', 'Льготные предложения для постоянных клиентов', 'Сезонные скидки', 'Скидки на доставку', 'Скидки для студентов', 'Акции для подписчиков', 'Подарки при покупке', 'Специальные предложения для оптовых покупателей'];
+    } else if (selectedValue === "7") {
+        optionList = ['Подарки для мужчин', 'Подарки для женщин', 'Подарки для детей', 'Подарки для коллег', 'Подарки на день рождения', 'Подарки на свадьбу', 'Подарки на Новый год', 'Подарки на 8 марта', 'Подарки на 23 февраля', 'Подарки для влюбленных', 'Подарки для учителей', 'Подарки для друзей', 'Романтические подарки', 'Эко-подарки', 'Подарки ручной работы'];
+    }
+
+    // Обновление списка опций
+    optionsContainer.innerHTML = optionList.map(option => `<label><input type="checkbox" name="options" value="${option}"> ${option}</label>`).join('<br>');
+    localStorage.clear();
+    localStorage.setItem('selectedValue', selectedValue);
+}
+function getCheckedValues(){
+    const checkboxs=document.querySelectorAll('input["name"]:checked')
+    const values=Array.from(checkboxs).map(checkbox=>checkbox.value);
+    checkboxList.push(values);
+    console.log(checkboxList);
+    
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     const imageInput = document.querySelector('input[type="file"]');
     const imagePreview = document.getElementById('imagePreview');
@@ -50,53 +89,17 @@ document.addEventListener('DOMContentLoaded', function() {
         const file = this.files[0];
         if (file) {
             const reader = new FileReader();
-            
             reader.onload = function(e) {
                 imagePreview.src = e.target.result;
                 imagePreview.classList.add('active');
                 placeholder.style.display = 'none';
-            }
-            
+            };
             reader.readAsDataURL(file);
         } else {
             imagePreview.classList.remove('active');
             placeholder.style.display = 'flex';
         }
     });
-
-    // Добавляем обработчик для динамической загрузки атрибутов
-    const tagsSelect = document.getElementById('id_tags');
-    const attributeFieldsDiv = document.getElementById('attribute_fields');
-
-    function loadAttributes() {
-        const selectedOptions = Array.from(tagsSelect.selectedOptions);
-        const selectedTagIds = selectedOptions.map(option => option.value);
-        
-        if (selectedTagIds.length === 0) {
-            attributeFieldsDiv.innerHTML = '';
-            return;
-        }
-
-        const params = selectedTagIds.map(id => `tags=${id}`).join('&');
-
-        fetch('{% url "store:add_item" %}?' + params, {
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest'
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            attributeFieldsDiv.innerHTML = data.html;
-        })
-        .catch(error => {
-            console.error('Ошибка загрузки атрибутов:', error);
-        });
-    }
-
-    tagsSelect.addEventListener('change', loadAttributes);
-
-    // Загружаем атрибуты при загрузке страницы, если уже выбраны категории
-    loadAttributes();
 });
 </script>
 {% endblock %}

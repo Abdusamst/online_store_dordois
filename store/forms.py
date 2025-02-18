@@ -30,6 +30,7 @@ class ItemForm(forms.ModelForm):
     def add_attribute_fields(self, tags):
         if self.attribute_fields_added:
             return
+        print(tags)
         attributes = ItemAttribute.objects.filter(tags__in=tags).distinct()
 
         for attribute in attributes:
