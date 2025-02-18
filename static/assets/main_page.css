@@ -284,7 +284,7 @@ i.fa-heart {
 .marketplace-section {
     font-family: Arial, Helvetica, sans-serif;
     padding: 15px;
-    border-bottom: 1px solid #ddd;
+    border: 3px solid black;
 }
 
 .section-header {
@@ -1886,18 +1886,78 @@ i.fa-heart {
 }
 /* 2K (2560x1440) */
 @media (min-width: 2560px) { 
+    .ad-section {
+        top: 430px;
+    }
+    .left-section {
+        top: 520px;
+        width: 300px;
+    }
+    .bold-text {
+        font-size: 27px;
+    }
+    .grey-text {
+        font-size: 22px;    
+    }
+    .country-flag {
+        width: 200px;
+    }
+    .delivery-item span  {
+        font-size: 23px;
+    }
+    .marketplace-logo {
+        max-width: 200px;
+    }
+
+
+
+    .ad-header {
+        font-size: 44px;
+    }
+
+  .ad-section {
+        top: 600px;
+        width: 350px; /* Увеличенная ширина */
+        right: calc((100% - 2560px) / 2 + 20px); /* Центрирование относительно контейнера */
+    }
+
+    /* Увеличиваем размеры рекламных блоков */
+    .top-ads,
+    .bottom-ads {
+        width: 350px;
+        height: 400px;
+    }
+
+    /* Увеличиваем размер шрифта для заголовка рекламы */
+    .ad-header {
+        padding: 15px;
+    }
+
+    /* Увеличиваем размер шрифта для плейсхолдера рекламы */
+    .ad-placeholder {
+        font-size: 20px;
+    }
+
+
+    .country-flag {
+        width: 150px;
+    }
+    .delivery-item span  {
+        font-size: 18px;
+    } 
+
     .product-item {
         flex: 1 1 calc(12.5% - 10px);
         max-width: calc(12.5% - 10px);
     }
     .carousel-content {
-        width: 2000px;
+        width: 1200px;
         height: 600px;
     }
     .Jhin {
-        width: 600px;
+        width: 500px;
         height: 850px;
-        margin-left: 1620px;
+        margin-left: 1400px;
         margin-top: -510px;
     }
     .tags_mainpage b {
@@ -1905,7 +1965,7 @@ i.fa-heart {
     }
     .beseller {
         margin-top: -570px;
-        margin-left: 1600px;
+        margin-left: 1300px;
     }
     .image-caption {
         font-size: 33px;
@@ -1915,8 +1975,9 @@ i.fa-heart {
         height: 200px;
     }
     .carousel-slide {
-        width: 1400px;
-        height: 480px;
+        width: 1200px;
+        height: 520px;
+        margin-left: 100px;
     }
     .image-section {
         width: 100%;
@@ -1933,13 +1994,13 @@ i.fa-heart {
         font-size: 36px;
     }
     .tags_mainpage .image {
-        width: 200px;
-        height: 200px;
+        width: 150px;
+        height: 150px;
     }
 
     .tags_mainpage img {
-        width: 200px;
-        height: 200px;
+        width: 150px;
+        height: 150px;
     }
     .tags_mainpage b {
         font-size: 28px;
@@ -1961,7 +2022,7 @@ i.fa-heart {
         max-width: calc(25% - 40px);
         padding: 35px;                  /* Увеличиваем внутренние отступы */
         border-radius: 15px;            /* Увеличиваем скругление углов */
-        margin-bottom: 40px;            /* Добавляем отступ снизу */
+        margin-bottom: 40px;   
     }
 
     .product-item img {
@@ -1999,7 +2060,7 @@ i.fa-heart {
     .product-list {
         gap: 40px;                      /* Увеличиваем расстояние между карточками */
         padding: 20px;
-        margin-left: 200px;
+        margin-left: 0px;
         }
 
     #products h2 {
@@ -2021,14 +2082,12 @@ i.fa-heart {
         gap: 10px; /* Отступы между элементами */
     }
     
-    .product-item {
-        flex: 1 1 calc(12.5% - 10px);
-        max-width: calc(12.5% - 10px);
-    }
+
     
 }
 
 @media (min-width: 2880px) {
+
     .left-section {
         width: 320px;
         top: 570px;
@@ -2057,7 +2116,7 @@ i.fa-heart {
 
   .ad-section {
         top: 600px;
-        width: 350px; /* Увеличенная ширина */
+        width: 450px; /* Увеличенная ширина */
         right: calc((100% - 2880px) / 2 + 20px); /* Центрирование относительно контейнера */
     }
 

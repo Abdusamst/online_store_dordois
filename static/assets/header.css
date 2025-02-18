@@ -1293,12 +1293,12 @@ body {
         display: flex;
         justify-content: center;  /* Центрирование всех элементов */
         align-items: center;
-        margin-left: 290px;
+        margin-left: 170px;
     }
 
     /* Увеличенная поисковая строка */
     .search-bar {
-        width: 1100px;  /* Увеличенная ширина */
+        width: 700px;  /* Увеличенная ширина */
     }
 
     .header-logo a span {
@@ -1306,8 +1306,8 @@ body {
     }
 
     .search-bar form {
-        width: 1800px;
-        height: 90px;  /* Увеличенная высота */
+        width: 1400px;
+        height: 83px;  /* Увеличенная высота */
         border-width: 5px;  /* Более толстая рамка */
     }
 
@@ -1329,6 +1329,7 @@ body {
         padding: 20px 40px;
         font-size: 36px;
         border-width: 5px;
+        margin-left: -100px;
     }
 
     .catalog-button i.fa-solid.fa-bars {
@@ -1389,6 +1390,7 @@ body {
 
 }
 @media (min-width: 2880px)  {
+
     .inner1 {
         margin: 0 auto;  /* Центрирование */
         max-width: 2000px;  /* Максимальная ширина контента */

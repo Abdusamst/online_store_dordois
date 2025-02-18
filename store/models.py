@@ -150,6 +150,13 @@ class Item(models.Model):
         blank=True,
         null=True,
     )
+    wholesale_price = models.DecimalField(
+        max_digits=8,
+        decimal_places=2,
+        verbose_name='Оптовая цена',
+        blank=True,
+        null=True,
+    )
     image = models.ImageField(
         verbose_name='Изображение',
         upload_to='items/',
