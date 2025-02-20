@@ -1,17 +1,14 @@
 from django.contrib.auth.models import User
 from django.db import models
 from django.conf import settings
-
-
-from store.models import Item
-
+from store.models import Item, ItemAttributeValue
 
 class Cart(models.Model):
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name='cart',
-        verbose_name='Kорзина',
+        verbose_name='Корзина',
     )
     created_at = models.DateTimeField(
         auto_now_add=True, verbose_name='Дата создания',)
@@ -46,6 +43,11 @@ class CartItem(models.Model):
     )
     quantity = models.PositiveIntegerField(
         default=1, verbose_name='Количество',)
+    attribute_values = models.ManyToManyField(
+        ItemAttributeValue,
+        blank=True,  # Allows for items with no attributes
+        related_name='cart_items'
+    )
 
     class Meta:
         verbose_name = 'Товар в корзине'
@@ -53,8 +55,13 @@ class CartItem(models.Model):
 
     @property
     def total_price(self):
-        total_price = self.quantity * self.item.price
-        return total_price
+        base_price = self.item.price
+        if self.quantity >= 10 and self.item.wholesale_price:
+            base_price = self.item.wholesale_price
+
+        # Adjust price based on attributes
+        price_modifier = sum(attr.attribute_value.price_modifier or 0 for attr in self.attribute_values.all())
+        return (base_price + price_modifier) * self.quantity
 
     def __str__(self):
         return f"{self.quantity} x {self.item.title}"

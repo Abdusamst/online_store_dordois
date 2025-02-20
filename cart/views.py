@@ -7,6 +7,7 @@ from store.models import Item
 from .models import Cart, CartItem
 from store.utils import generate_whatsapp_message
 from store.models import ItemTag
+from django.contrib import messages
 
 @login_required
 def cart(request):
@@ -17,7 +18,7 @@ def cart(request):
     if not cart:
         cart = Cart.objects.create(user=request.user)
 
-    cart_items = CartItem.objects.filter(cart=cart)
+    cart_items = CartItem.objects.filter(cart=cart).prefetch_related('attribute_values')
 
     if request.method == 'POST':
         whatsapp_url = generate_whatsapp_message(cart_items)
@@ -29,7 +30,6 @@ def cart(request):
         tag.description = _(tag.description)
 
     context = {
-        # 'tags': tags,
         'page_obj_2': tags,
         'cart_items': cart_items,
         'cart': cart,
@@ -38,26 +38,65 @@ def cart(request):
     return render(request, 'cart/cart.html', context)
 
 
+from store.models import AttributeValue
 
+
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib import messages
+from store.models import Item, AttributeValue, ItemAttributeValue
+from .models import Cart, CartItem
 
 @login_required
 def add_to_cart(request, item_slug):
-    """
-    Представление для добавления товара в корзину
-    либо увеличения его количества на 1.
-    """
     item = get_object_or_404(Item, slug=item_slug)
     cart, _ = Cart.objects.get_or_create(user=request.user)
+    quantity = int(request.GET.get('quantity', 1))
 
-    cart_item, created = CartItem.objects.get_or_create(
-        cart=cart,
-        item=item
-    )
-    if not created:
-        cart_item.quantity += 1
+    if quantity > item.quantity:
+        messages.error(request, f'Невозможно добавить больше {item.quantity} {item.title} в корзину.')
+        return redirect('store:item_details', item_slug=item.slug)
+
+    # Собираем выбранные атрибуты из POST-запроса
+    selected_attributes = {}
+    for key, value in request.POST.items():
+        if key.startswith('attribute_'):
+            attribute_id = key.split('_')[1]
+            attribute_value_id = int(value)
+            selected_attributes[attribute_id] = attribute_value_id
+
+    # Ищем существующий CartItem с таким же набором атрибутов
+    cart_items = CartItem.objects.filter(cart=cart, item=item)
+    matching_cart_item = None
+    for cart_item in cart_items:
+        # Получаем атрибуты текущего CartItem
+        cart_item_attrs = {str(attr.attribute_value.attribute.id): attr.attribute_value.id 
+                          for attr in cart_item.attribute_values.all()}
+        # Сравниваем с выбранными атрибутами
+        if cart_item_attrs == selected_attributes:
+            matching_cart_item = cart_item
+            break
+
+    if matching_cart_item:
+        # Если нашли совпадение, увеличиваем количество
+        matching_cart_item.quantity += quantity
+        if matching_cart_item.quantity > item.quantity:
+            matching_cart_item.quantity = item.quantity
+        matching_cart_item.save()
+    else:
+        # Если нет совпадения, создаём новый CartItem
+        cart_item = CartItem.objects.create(cart=cart, item=item, quantity=quantity)
+        for attribute_id, attribute_value_id in selected_attributes.items():
+            attribute_value = AttributeValue.objects.get(id=attribute_value_id)
+            item_attr_value, _ = ItemAttributeValue.objects.get_or_create(
+                item=item,
+                attribute_value=attribute_value,
+                defaults={'quantity': item.quantity}  # Общее количество товара
+            )
+            cart_item.attribute_values.add(item_attr_value)
         cart_item.save()
-    return redirect('cart:cart')
 
+    return redirect('cart:cart')
 
 @login_required
 def delete_cart_item(request, item_slug):
@@ -76,6 +115,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from .models import Cart, CartItem
+from store.models import ItemAttributeValue
 
 @login_required
 def update_cart_item(request):
@@ -84,19 +124,28 @@ def update_cart_item(request):
         new_quantity = int(request.POST.get('new_quantity'))
         cart_id = int(request.POST.get('cart_id'))
 
-        cart = Cart.objects.get(pk=cart_id)
+        cart = get_object_or_404(Cart, pk=cart_id)
         cart_item = get_object_or_404(CartItem, id=cart_item_id)
+        
+        if 'attributes' in request.POST:
+            # Clear existing attributes
+            cart_item.attribute_values.clear()
+            # Add new attributes
+            for attr_id in request.POST.getlist('attributes'):
+                attribute_value = get_object_or_404(ItemAttributeValue, id=attr_id)
+                cart_item.attribute_values.add(attribute_value)
+
         cart_item.quantity = new_quantity
         cart_item.save()
 
-        # Обновляем общую сумму корзины
+        new_total_price = cart_item.total_price
         cart_total_price = sum(item.total_price for item in cart.items.all())
 
         return JsonResponse({
             'success': True,
             'cart_item_id': cart_item.id,
             'cart_item_quantity': cart_item.quantity,
-            'cart_item_total_price': cart_item.total_price,
+            'cart_item_total_price': new_total_price,
             'cart_total_price': cart_total_price
         })
     return JsonResponse({'success': False, 'error': 'Invalid request method'}, status=400)

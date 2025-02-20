@@ -21,6 +21,7 @@
             <tr>
               <th>Название</th>
               <th>Количество</th>
+              <th>Атрибуты</th>
               <th>Цена</th>
             </tr>
           </thead>
@@ -29,13 +30,20 @@
             <tr>
               <td>{{ order_item.item.title }}</td>
               <td>{{ order_item.quantity }}</td>
+              <td>
+                {% for attribute in order_item.attribute_values.all %}
+                  {{ attribute.attribute_value.attribute.name }}: {{ attribute.attribute_value.value }}<br>
+                {% empty %}
+                  Нет атрибутов
+                {% endfor %}
+              </td>
               <td>{{ order_item.total_price }}</td>
             </tr>
             {% endfor %}
           </tbody>
           <tfoot>
             <tr>
-              <td colspan="2"></td>
+              <td colspan="3"></td>
               <td><b>{{ order.total_price }}</b></td>
             </tr>
           </tfoot>

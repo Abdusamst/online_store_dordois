@@ -176,6 +176,92 @@
             "tag": 6
         }
     },
+        {
+            "model": "store.attribute",
+            "pk": 1,
+            "fields": {
+                "name": "Размер",
+                "type": "dropdown"
+            }
+        },
+        {
+            "model": "store.attribute",
+            "pk": 2,
+            "fields": {
+                "name": "Цвет",
+                "type": "dropdown"
+            }
+        },
+        {
+            "model": "store.attributevalue",
+            "pk": 1,
+            "fields": {
+                "attribute": 1,
+                "value": "XL",
+                "price_modifier": 0
+            }
+        },
+        {
+            "model": "store.attributevalue",
+            "pk": 2,
+            "fields": {
+                "attribute": 1,
+                "value": "XXL",
+                "price_modifier": 10
+            }
+        },
+        {
+            "model": "store.attributevalue",
+            "pk": 3,
+            "fields": {
+                "attribute": 1,
+                "value": "XXXL",
+                "price_modifier": 20
+            }
+        },
+        {
+            "model": "store.attributevalue",
+            "pk": 4,
+            "fields": {
+                "attribute": 2,
+                "value": "Черный",
+                "price_modifier": 0
+            }
+        },
+        {
+            "model": "store.attributevalue",
+            "pk": 5,
+            "fields": {
+                "attribute": 2,
+                "value": "Белый",
+                "price_modifier": 0
+            }
+        },
+        {
+            "model": "store.attributevalue",
+            "pk": 6,
+            "fields": {
+                "attribute": 2,
+                "value": "Красный",
+                "price_modifier": 5
+            }
+        },
+        {
+            "model": "store.attributecategory",
+            "pk": 1,
+            "fields": {
+                "attribute": 1,
+                "tag": 5
+            }
+        },
+        {
+            "model": "store.attributecategory",
+            "pk": 2,
+            "fields": {
+                "attribute": 2,
+                "tag": 1
+            }
+        },
     {
         "model": "store.item",
         "pk": 1,

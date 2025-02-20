@@ -63,32 +63,32 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Q
+from django.http import JsonResponse
 from checkout.models import Order
-from .models import Item, ItemTag, Review, Favorite, ItemAttribute
+from .models import Item, ItemTag, Attribute, AttributeValue, ItemAttributeValue
+from .forms import ItemForm
 
 def item_details(request, item_slug):
     item = get_object_or_404(Item, slug=item_slug)
     tags = ItemTag.objects.all().order_by('name')
     is_favorite = False
-    has_bought = False  # Установим False по умолчанию
+    has_bought = False  
     reviews = item.reviews.all()
-    average_rating = item.average_rating()  # Добавил расчет среднего рейтинга
-    user_has_reviewed = False  # Добавил проверку, оставил ли пользователь отзыв
-    
+    average_rating = item.average_rating()
+    user_has_reviewed = False  
+    item_attributes = item.attribute_values.select_related('attribute_value__attribute')
+    item_attr_values = {attr.attribute_value.id: attr for attr in item.attribute_values.all()}
 
+    
     if request.user.is_authenticated:
-        has_bought = Order.objects.filter(
-            user=request.user,
-            items__item=item,  # Убедись, что `items__item` соответствует реальной связи в модели
-            status='delivered'  # Убедись, что статус точно такой же в БД
-        ).exists()
+        has_bought = Order.objects.filter(user=request.user, items__item=item, status='delivered').exists()
         is_favorite = Favorite.objects.filter(user=request.user, item=item).exists()
         user_has_reviewed = reviews.filter(user=request.user).exists()
 
     similar_items = Item.objects.filter(
-        Q(tags__in=item.tags.all()) |
-        Q(title__icontains=item.title.split()[0])
-    ).exclude(id=item.id).distinct()[:4]
+            Q(tags__in=item.tags.all()) | Q(title__icontains=item.title.split()[0]),
+            is_approved=True 
+        ).exclude(id=item.id).distinct()[:4]
 
     context = {
         'page_obj_2': tags,
@@ -97,8 +97,10 @@ def item_details(request, item_slug):
         'similar_items': similar_items,
         'reviews': reviews,
         'has_bought': has_bought,
-        'average_rating': average_rating,  # Передаем средний рейтинг в контекст
-        'user_has_reviewed': user_has_reviewed,  # Передаем информацию о наличии отзыва
+        'average_rating': average_rating,
+        'user_has_reviewed': user_has_reviewed,
+        'item_attributes': item_attributes,
+        'item_attr_values': item_attr_values,
     }
     return render(request, 'store/item_details.html', context)
 
@@ -262,7 +264,8 @@ def search(request):
         results = Item.objects.filter(
             Q(title__icontains=query) |
             Q(description__icontains=query) |
-            Q(tags__name__icontains=query)
+            Q(tags__name__icontains=query),
+            is_approved=True
         ).distinct()
     else:
         results = Item.objects.all()  # Показываем все товары, если запрос пуст
@@ -290,7 +293,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .forms import SellerRegistrationForm
-from .models import User, Seller, ItemTag
+from .models import ItemTag
 import urllib.parse
 
 @login_required
@@ -313,90 +316,116 @@ def become_seller(request):
 
 
 
-from django.template.loader import render_to_string
-from .models import Item, ItemTag, ItemAttributeValue, AttributeValue
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect
+from .models import Item, ItemTag, ItemAttributeValue, AttributeValue, Attribute, AttributeCategory
+from .forms import ItemForm
+
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
 
 @login_required
 def add_item(request):
-    options=[]
     if request.method == 'POST':
         form = ItemForm(request.POST, request.FILES)
-        tag_query_param=request.POST.get('tag')
         tag_ids = request.POST.getlist('tags')
-        print('tag_query_param',tag_ids)
         tags = ItemTag.objects.filter(id__in=tag_ids)
         form.add_attribute_fields(tags)
 
         if form.is_valid():
             item = form.save(commit=False)
             item.seller = request.user
+            total_quantity = 0
+
+            # Сохраняем объект item без many-to-many полей
+            item.save()
+
+            for key, field_values in form.cleaned_data.items():
+                if key.startswith('attribute_') and field_values:
+                    attribute_id = key.split('_')[1]
+                    attribute = Attribute.objects.get(id=attribute_id)
+                    new_value = form.cleaned_data.get(f'new_value_{attribute_id}')
+                    new_quantity = form.cleaned_data.get(f'quantity_new_{attribute_id}', 0)
+                    new_price_modifier = form.cleaned_data.get(f'price_modifier_new_{attribute_id}', 0)
+
+                    # Обработка нового значения (только для этого товара)
+                    if new_value and new_quantity > 0:
+                        # Создаем AttributeValue только для этого товара
+                        attribute_value, created = AttributeValue.objects.get_or_create(
+                            attribute=attribute,
+                            value=new_value,
+                            price_modifier=new_price_modifier or 0
+                        )
+                        ItemAttributeValue.objects.create(
+                            item=item,
+                            attribute_value=attribute_value,
+                            quantity=new_quantity
+                        )
+                        total_quantity += new_quantity
+
+                    # Обработка существующих значений
+                    for value_id in field_values:
+                        if value_id != '-1':
+                            value_id = int(value_id)
+                            attribute_value = AttributeValue.objects.get(id=value_id)
+                            quantity = form.cleaned_data.get(f'quantity_{value_id}', 0)
+                            price_modifier = form.cleaned_data.get(f'price_modifier_{value_id}', 0)
+                            if quantity > 0:
+                                # Создаем запись только для этого товара, не изменяя глобальный AttributeValue
+                                new_attribute_value = AttributeValue.objects.create(
+                                    attribute=attribute,
+                                    value=attribute_value.value,
+                                    price_modifier=price_modifier or 0
+                                )
+                                ItemAttributeValue.objects.create(
+                                    item=item,
+                                    attribute_value=new_attribute_value,
+                                    quantity=quantity
+                                )
+                                total_quantity += quantity
+
+            item.quantity = total_quantity
             item.save()
             form.save_m2m()
-
-            # Сохранение значений атрибутов
-            for field_name, field_value in form.cleaned_data.items():
-                if field_name.startswith('attribute_'):
-                    attribute = form.fields[field_name].attribute
-                    value = field_value
-
-                    if attribute.type in ['dropdown', 'radio']:
-                        attribute_value = AttributeValue.objects.get(id=value)
-                        # Сохраняем связь между товаром и значением атрибута
-                        ItemAttributeValue.objects.create(
-                            item=item,
-                            attribute=attribute,
-                            value=attribute_value.value
-                        )
-                    else:
-                        # Для текстовых или цветовых данных
-                        ItemAttributeValue.objects.create(
-                            item=item,
-                            attribute=attribute,
-                            value=value
-                        )
-
             return redirect('store:thank_you')
 
-    else:
-        form = ItemForm()
-        tags = ItemTag.objects.all()
-
-    # AJAX для загрузки атрибутов при выборе категорий
+    form = ItemForm()
+    tags = ItemTag.objects.all()
+    
     if request.headers.get('x-requested-with') == 'XMLHttpRequest' and request.method == 'GET':
         tag_ids = request.GET.getlist('tags')
-        tags = ItemTag.objects.filter(id__in=tag_ids[0])
-
-        tags=tags.values('name')
-        form = ItemForm()
-        form.add_attribute_fields(tags)
-        print('tags',tags, 'tag_ids', tag_ids[0])
-        if tag_ids[0]==1:
-            # Получаем список опций для текущего тега
-            opt=['LG', 'Samsung', 'Bosch', 'Philips', 'Tefal', 'Electrolux', 'Siemens']
-            for i in opt:
-                options.append(i)
-        # Возвращаем HTML для атрибутов
-        attribute_fields_html = render_to_string(
-            'store/attribute_fields.html',
-            {'form': form},
-            request=request
-        )
-        return JsonResponse({'html': attribute_fields_html})
-    return render(
-        request, 
-        'store/add_item.html',
-        {
-            'form': form,
-            'tags': tags,
-            'opts': {
-                "bitavay_texnika": options,
+        print(f"Получены ID тегов: {tag_ids}")
+        
+        tags = ItemTag.objects.filter(id__in=tag_ids)
+        print(f"Найдены теги: {[tag.name for tag in tags]}")
+        
+        attribute_categories = AttributeCategory.objects.filter(tag__in=tags)
+        print(f"Найдены категории атрибутов: {[ac.attribute.name for ac in attribute_categories]}")
+        
+        attributes = Attribute.objects.filter(attributecategory__tag__in=tags).distinct()
+        print(f"Найдены атрибуты: {[attr.name for attr in attributes]}")
+        
+        dynamic_fields = []
+        for attribute in attributes:
+            values = attribute.values.all()
+            field_data = {
+                'attribute_id': attribute.id,
+                'attribute_name': attribute.name,
+                'attribute_type': attribute.type,
+                'values': [{'id': value.id, 'value': value.value} for value in values]
             }
-        }
-        )
+            dynamic_fields.append(field_data)
+        
+        print(f"Подготовлены поля: {dynamic_fields}")
+        return JsonResponse({'dynamic_fields': dynamic_fields})
 
+    context = {
+        'form': form,
+        'tags': tags,
+    }
+    return render(request, 'store/add_item.html', context)
 
-
-
+    
 def thank_you(request):
     return render(request, 'store/thank_you.html')
 
@@ -456,33 +485,5 @@ def delete_item(request, item_id):
     }
     return render(request, 'store/delete_item.html', context)
 
-from django.shortcuts import render, redirect, get_object_or_404
-from .models import Item, ItemAttribute, ItemAttributeValue, AttributeValue
 
-def attributes(request):
-    if request.method == "POST":
-        item_id = request.POST.get('item_id')
-        item = get_object_or_404(Item, id=item_id)
 
-        for key, value in request.POST.items():
-            if key.startswith('attribute_'):
-                attribute_id = key.split('_')[1] 
-                attribute = get_object_or_404(ItemAttribute, id=attribute_id)
-                
-                if attribute.type in ['dropdown', 'radio']:
-                    attribute_value = get_object_or_404(AttributeValue, id=value)
-                    ItemAttributeValue.objects.create(
-                        item=item,
-                        attribute=attribute,
-                        value=attribute_value.value
-                    )
-                else:
-                    ItemAttributeValue.objects.create(
-                        item=item,
-                        attribute=attribute,
-                        value=value
-                    )
-
-        return redirect('store:item_details', item_slug=item.slug)
-    else:
-        return redirect('store:home')

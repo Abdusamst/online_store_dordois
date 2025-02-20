@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
 
-
 {% block css %}
   <link rel="stylesheet" href="{% static "assets/cart.css" %}" />
 {% endblock %}
@@ -16,20 +15,28 @@
         <tr>
           <th>Название</th>
           <th>Количество</th>
+          <th>Атрибуты</th>
           <th>Цена</th>
           <th></th>
         </tr>
       </thead>
       <tbody>
         {% for cart_item in cart_items %}
-        <tr>
+        <tr data-max-quantity="{{ cart_item.item.quantity }}">
           <td><a href="{% url 'store:item_details' cart_item.item.slug %}">{{ cart_item.item.title }}</a></td>
           <td>
             <div class="count">
               <span class="minus" data-cart-item-id="{{ cart_item.id }}">—</span>
-              <input type="number" value="{{ cart_item.quantity }}" class="quantity-input" data-cart-item-id="{{ cart_item.id }}">
+              <input type="number" value="{{ cart_item.quantity }}" class="quantity-input" data-cart-item-id="{{ cart_item.id }}" min="1" max="{{ cart_item.item.quantity }}">
               <span class="plus" data-cart-item-id="{{ cart_item.id }}">+</span>
             </div>
+          </td>
+          <td>
+            {% for attribute in cart_item.attribute_values.all %}
+                {{ attribute.attribute_value.attribute.name }}: {{ attribute.attribute_value.value }}<br>
+            {% empty %}
+                Нет атрибутов
+            {% endfor %}
           </td>
           <td class="cart-item-total-price" data-cart-item-id="{{ cart_item.id }}">{{ cart_item.total_price }}</td>
           <td style="border: none; background-color: #ffffff;" align="center">
@@ -42,7 +49,7 @@
       </tbody>
       <tfoot>
         <tr>
-          <td colspan="2"></td>
+          <td colspan="3"></td>
           <td><u><b><span id="cart-total-price" data-cart-id="{{ cart.id }}">{{ cart.total_price }}</span></b></u></td>
         </tr>
       </tfoot>
@@ -63,8 +70,6 @@
 <script src="{% static "assets/js/cart.js" %}"></script>
 <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 <script src="{% static "assets/js/translator.js" %}"></script> <!-- Укажи правильный путь -->
-
 {% endblock %}
-
 
 {% endblock %}

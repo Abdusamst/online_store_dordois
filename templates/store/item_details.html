@@ -16,7 +16,7 @@
         {% endfor %}
     </p>
     <p>Количество отзывов: {{ reviews.count }}</p>
-
+    <p>Количество наличия товара: {{ item.quantity }}</p>
 
     <div class="item-card">
         
@@ -33,17 +33,41 @@
 
             {% if item.old_price %}
                 <p class="item-price">
-                    <span class="old-price"><s>{{ item.old_price }} Сом</s></span>
                     <span class="new-price"><b>{{ item.price }}</b> Сом</span>
                 </p>
             {% else %}
                 <p class="item-price">
-                   <b>{{ item.price }}</b> Сом
+                    <span class="current-price" id="current-price">
+                    <b>{{ item.price }}</b> Сом
+                    </span>
                 </p>
+                {% if item.wholesale_price %}
+                <p class="item-wholesale-price" id="wholesale-price" style="display:none;">
+                    <b>{{ item.wholesale_price }}</b> Сом (опт)
+                </p>
+                {% endif %}
             {% endif %}
 
+            <div class="item-attributes">
+                <form method="post" action="{% url 'cart:add_to_cart' item.slug %}">
+                    {% csrf_token %}
+                    {% for attr in item_attributes %}
+                        <div class="attribute-row">
+                            <label for="attribute_{{ attr.attribute_value.id }}">{{ attr.attribute_value.attribute.name }}:</label>
+                            <select name="attribute_{{ attr.attribute_value.id }}" id="attribute_{{ attr.attribute_value.id }}">
+                                {% for value in attr.attribute_value.attribute.values.all %}
+                                    <option value="{{ value.id }}" {% if value.id == attr.attribute_value.id %}selected{% endif %}>
+                                        {{ value.value }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    {% endfor %}
+                    <button type="submit" class="button add-to-cart">Добавить в корзину</button>
+                </form>
+            </div>
+            
             <div class="item-actions">
-                <a href="{% url 'cart:add_to_cart' item.slug %}" class="button add-to-cart">Добавить в корзину</a>
                 {% if user.is_authenticated %}
                     {% if is_favorite %}
                         <a href="{% url 'store:remove_from_favorites' item.id %}" class="button remove-favorite">Удалить из избранного</a>
@@ -58,7 +82,7 @@
     <h3>Отзывы</h3>
     {% if reviews.count > 3 %}
     <a href="{% url 'store:all_reviews' item.slug %}" class="button_view-all-reviews">Все отзовы -></a>
-{% endif %}
+    {% endif %}
     <p>
         {% for i in "12345" %}
             {% if i|add:0 <= average_rating %}
@@ -71,10 +95,7 @@
     </p>
 
     <div class="reviews">
-
-
         {% for review in reviews|slice:":3" %}
-
             <div class="review">
                 <p class="review-date">{{ review.created_at }}</p>
                 <p><strong>{{ review.user.username }}</strong> 
@@ -96,7 +117,6 @@
         {% endfor %}
     </div>
     
-
     {% if user.is_authenticated and has_bought and not user_has_reviewed %}
     <button id="show-review-form" class="button">Оставить отзыв</button>
     <div id="review-form-container" class="review-form-container" style="display: none;">
@@ -128,7 +148,7 @@
             <button type="submit" class="submit-button">Отправить отзыв</button>
         </form>
     </div>
-{% endif %}
+    {% endif %}
     <div class="seller-info">
         <h3>Продавец этого товара</h3>
         {% if item.seller %}
@@ -140,32 +160,30 @@
         {% endif %}
     </div>
     <h3>Похожие товары</h3>
-<div class="similar-items-container">
-    {% for similar_item in similar_items %}
-        <div class="similar-item">
-            <a href="{% url 'store:item_details' similar_item.slug %}">
-                {% if similar_item.image %}
-                    <img src="{{ similar_item.image.url }}" alt="{{ similar_item.title }}">
-                {% else %}
-                    <img src="/static/images/default.jpg" alt="Нет изображения" class="similar-image">
-                {% endif %}
-                <p class="title">{{ similar_item.title }}</p>
-                <p class="price" style="color: darkred;"><b>{{ similar_item.price }}</b> Сом</p>
-            </a>
-        </div>
-    {% empty %}
-        <p class="no-items">Нет похожих товаров</p>
-    {% endfor %}
+    <div class="similar-items-container">
+        {% for similar_item in similar_items %}
+            <div class="similar-item">
+                <a href="{% url 'store:item_details' similar_item.slug %}">
+                    {% if similar_item.image %}
+                        <img src="{{ similar_item.image.url }}" alt="{{ similar_item.title }}">
+                    {% else %}
+                        <img src="/static/images/default.jpg" alt="Нет изображения" class="similar-image">
+                    {% endif %}
+                    <p class="title">{{ similar_item.title }}</p>
+                    <p class="price" style="color: darkred;"><b>{{ similar_item.price }}</b> Сом</p>
+                </a>
+            </div>
+        {% empty %}
+            <p class="no-items">Нет похожих товаров</p>
+        {% endfor %}
+    </div>
 </div>
-
-</div>
-
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const showReviewFormButton = document.getElementById('show-review-form');
     const reviewFormContainer = document.getElementById('review-form-container');
-
+    
     if (showReviewFormButton && reviewFormContainer) {
         showReviewFormButton.addEventListener('click', function() {
             if (reviewFormContainer.style.display === 'none') {

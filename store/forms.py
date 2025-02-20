@@ -1,15 +1,13 @@
 from django import forms
-from .models import Seller
-from django import forms
-from .models import Item
-from .models import Item, ItemTag
-from django import forms
-from .models import Advertisement, ItemAttribute, AttributeValue
+from .models import Seller, Item, ItemTag, Advertisement, Attribute, AttributeValue
 
 class AdvertisementForm(forms.ModelForm):
     class Meta:
         model = Advertisement
         fields = ['image', 'link', 'position']
+
+from django import forms
+from .models import Seller, Item, ItemTag, Advertisement, Attribute, AttributeValue, AttributeCategory
 
 class ItemForm(forms.ModelForm):
     tags = forms.ModelMultipleChoiceField(
@@ -21,55 +19,58 @@ class ItemForm(forms.ModelForm):
 
     class Meta:
         model = Item
-        fields = ['title', 'description', 'price', 'old_price', 'image', 'is_available', 'tags']
+        fields = ['title', 'description', 'price', 'old_price', 'wholesale_price', 'quantity', 'image', 'video','to_order','is_available', 'tags']
 
     def __init__(self, *args, **kwargs):
         super(ItemForm, self).__init__(*args, **kwargs)
-        self.attribute_fields_added = False  # Флаг для предотвращения повторного добавления полей
+        self.attribute_fields_added = False
 
     def add_attribute_fields(self, tags):
         if self.attribute_fields_added:
             return
-        print(tags)
-        attributes = ItemAttribute.objects.filter(tags__in=tags).distinct()
-
+        
+        attributes = Attribute.objects.filter(attributecategory__tag__in=tags).distinct()
         for attribute in attributes:
             field_name = f'attribute_{attribute.id}'
-
-            # Определяем тип поля в зависимости от типа атрибута
-            if attribute.type == 'dropdown':
-                choices = AttributeValue.objects.filter(attribute=attribute).values_list('id', 'value')
-                self.fields[field_name] = forms.ChoiceField(
-                    label=attribute.name,
-                    choices=choices,
-                    required=attribute.required
+            choices = [(value.id, value.value) for value in attribute.values.all()]
+            self.fields[field_name] = forms.MultipleChoiceField(
+                label=f"{attribute.name} (выберите или добавьте)",
+                choices=choices + [(-1, "Добавить новое значение")],
+                widget=forms.CheckboxSelectMultiple,
+                required=False
+            )
+            # Поле для нового значения
+            self.fields[f'new_value_{attribute.id}'] = forms.CharField(
+                label=f"Новое значение для {attribute.name}",
+                required=False
+            )
+            # Поле для количества и модификатора цены для каждого значения
+            for value in attribute.values.all():
+                self.fields[f'quantity_{value.id}'] = forms.IntegerField(
+                    label=f"Количество для {value.value}",
+                    min_value=0,
+                    required=False
                 )
-            elif attribute.type == 'radio':
-                choices = AttributeValue.objects.filter(attribute=attribute).values_list('id', 'value')
-                self.fields[field_name] = forms.ChoiceField(
-                    label=attribute.name,
-                    choices=choices,
-                    widget=forms.RadioSelect,
-                    required=attribute.required
+                self.fields[f'price_modifier_{value.id}'] = forms.DecimalField(
+                    label=f"Модификатор цены для {value.value}",
+                    decimal_places=2,
+                    max_digits=10,
+                    required=False
                 )
-            elif attribute.type == 'color':
-                self.fields[field_name] = forms.CharField(
-                    label=attribute.name,
-                    widget=forms.TextInput(attrs={'type': 'color'}),
-                    required=attribute.required
-                )
-            else:
-                self.fields[field_name] = forms.CharField(
-                    label=attribute.name,
-                    required=attribute.required
-                )
-
-            # Сохраняем ссылку на атрибут в поле для последующего сохранения значения
-            self.fields[field_name].attribute = attribute
+            # Поля для нового значения
+            self.fields[f'quantity_new_{attribute.id}'] = forms.IntegerField(
+                label=f"Количество нового значения для {attribute.name}",
+                min_value=0,
+                required=False
+            )
+            self.fields[f'price_modifier_new_{attribute.id}'] = forms.DecimalField(
+                label=f"Модификатор цены нового значения для {attribute.name}",
+                decimal_places=2,
+                max_digits=10,
+                required=False
+            )
 
         self.attribute_fields_added = True
-
-
 
 class SellerRegistrationForm(forms.ModelForm):
     class Meta:
@@ -110,4 +111,4 @@ from .models import Review
 class ReviewForm(forms.ModelForm):
     class Meta:
         model = Review
-        fields = ['rating', 'text', 'user', 'images']
+        fields = ['rating', 'text', 'images']

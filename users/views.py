@@ -18,7 +18,7 @@ def user_orders(request):
     """
     Представление списка заказов пользователя.
     """
-    orders = Order.objects.filter(user=request.user)
+    orders = Order.objects.filter(user=request.user).prefetch_related('items__attribute_values')
     page_obj_2 = ItemTag.objects.all()
     tags = ItemTag.objects.all().order_by('name')
     context = {

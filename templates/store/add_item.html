@@ -9,75 +9,144 @@
     <p><label for="id_title">Название:</label> {{ form.title }}</p>
     <p><label for="id_description">Описание:</label> {{ form.description }}</p>
     <p><label for="id_price">Цена:</label> {{ form.price }}</p>
-    <p><label for="id_old_price">Старая цена:</label> {{ form.old_price }}</p>
+    <p><label for="id_wholesale_price">Цена оптом:</label> {{ form.wholesale_price }}</p>
+    <p><label for="id_quantity">Общее количество (будет обновлено):</label> {{ form.quantity }}</p>
     
     <p><label for="id_image">Изображение:</label></p>
     <div class="file-input-container">
         {{ form.image }}
         <div class="image-preview-container">
-            <div class="preview-placeholder">
-                Предварительный просмотр изображения
-            </div>
+            <div class="preview-placeholder">Предварительный просмотр изображения</div>
             <img id="imagePreview" class="image-preview" src="#" alt="Preview">
         </div>
     </div>
     
+    <p><label for="id_video">Видео:</label> {{ form.video }}</p>
     <p><label for="id_is_available">Доступно:</label> {{ form.is_available }}</p>
     
     <p><label for="id_tags">Выберите категорию:</label>
-        <select name="tags" id="id_tags" multiple onchange="changeSelectValue()">
+        <select name="tags" id="id_tags" multiple onchange="loadAttributes()">
             {% for tag in tags %}
                 <option value="{{ tag.id }}">{{ tag.name }}</option>
             {% endfor %}
         </select>
     </p>        
 
-    <div>
-        <form action="" method="post" class="optionsContainer">
-            {% csrf_token %}
-
-        </form>
-        <!-- Здесь будет динамически изменяться список опций в зависимости от выбранной категории -->
-    </div>
-        
-    <button type="submit" class="button" onclick="getCheckedValues()">Добавить</button>
+    <div id="dynamicAttributes"></div>
+    <button type="submit" class="button">Добавить товар</button>
 </form>
 
 <script>
-function changeSelectValue() {
-    const selectElement = document.getElementById("id_tags");
-    const optionsContainer = document.getElementById('optionsContainer');
-    const selectedValue = selectElement.value;
-    const checkboxList=[]
-    let optionList = [];
-
-    if (selectedValue === "1") {
-        optionList = ['LG', 'Samsung', 'Bosch', 'Philips', 'Tefal', 'Electrolux', 'Siemens'];
-    } else if (selectedValue === "2") {
-        optionList = ['Тональные кремы', 'Румяна', 'Тени для век', 'Помады', 'Палетки для макияжа', 'Пробники косметики', 'Парфюмерия', 'Уход за кожей', 'Уход за волосами', 'Декоративная косметика', 'Маникюр и педикюр', 'Средства для бритья', 'Антивозрастная косметика', 'Солнцезащитные средства', 'Гигиеническая косметика'];
-    } else if (selectedValue === "3") {
-        optionList = ['Одежда для новорожденных', 'Товары для кормления', 'Игрушки', 'Товары для сна', 'Коляски и автокресла', 'Детские книги', 'Пеленки и подгузники', 'Прогулочные коляски', 'Питание для детей', 'Гигиенические товары для детей', 'Товары для путешествий', 'Мебель для детской комнаты', 'Детская обувь', 'Косметика для детей', 'Спортивные товары для детей'];
-    } else if (selectedValue === "4") {
-        optionList = ['Одежда для спорта', 'Обувь для спорта', 'Тренажеры', 'Экипировка для фитнеса', 'Гири и штанги', 'Товары для бега', 'Велосипеды', 'Роликовые коньки', 'Снаряжение для туризма', 'Йога и пилатес', 'Спортивные аксессуары', 'Спортивное питание', 'Плавание', 'Теннис', 'Футбол', 'Баскетбол', 'Гольф'];
-    } else if (selectedValue === "5") {
-        optionList = ['Ручки и карандаши', 'Бумага и блокноты', 'Клеящие средства', 'Картриджи и тонеры', 'Организация рабочего пространства', 'Папки и файлы', 'Ластики и точилки', 'Ножницы', 'Степлеры и скобы', 'Корректирующие средства', 'Маркер и фломастеры', 'Стикеры и заметки', 'Канцелярские принадлежности для творчества', 'Письменные принадлежности', 'Папки-скоросшиватели'];
-    } else if (selectedValue === "6") {
-        optionList = ['Скидки на товары', 'Акции и распродажи', 'Бонусные программы', 'Купоны и промокоды', 'Подарочные карты', 'Скидки на первый заказ', 'Кэшбэк', 'Льготные предложения для постоянных клиентов', 'Сезонные скидки', 'Скидки на доставку', 'Скидки для студентов', 'Акции для подписчиков', 'Подарки при покупке', 'Специальные предложения для оптовых покупателей'];
-    } else if (selectedValue === "7") {
-        optionList = ['Подарки для мужчин', 'Подарки для женщин', 'Подарки для детей', 'Подарки для коллег', 'Подарки на день рождения', 'Подарки на свадьбу', 'Подарки на Новый год', 'Подарки на 8 марта', 'Подарки на 23 февраля', 'Подарки для влюбленных', 'Подарки для учителей', 'Подарки для друзей', 'Романтические подарки', 'Эко-подарки', 'Подарки ручной работы'];
-    }
-
-    // Обновление списка опций
-    optionsContainer.innerHTML = optionList.map(option => `<label><input type="checkbox" name="options" value="${option}"> ${option}</label>`).join('<br>');
-    localStorage.clear();
-    localStorage.setItem('selectedValue', selectedValue);
-}
-function getCheckedValues(){
-    const checkboxs=document.querySelectorAll('input["name"]:checked')
-    const values=Array.from(checkboxs).map(checkbox=>checkbox.value);
-    checkboxList.push(values);
-    console.log(checkboxList);
+function loadAttributes() {
+    console.log("Loading attributes...");
+    let tagIds = Array.from(document.getElementById('id_tags').selectedOptions).map(option => option.value);
+    console.log("Selected tag IDs:", tagIds);
     
+    const queryString = tagIds.map(id => `tags=${id}`).join('&');
+    
+    fetch(`/add_item/?${queryString}`, {
+        method: 'GET',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log("Attributes data received:", data);
+        if (data.dynamic_fields && data.dynamic_fields.length > 0) {
+            let html = '';
+            data.dynamic_fields.forEach(field => {
+                html += `
+                    <div class="attribute-group">
+                        <h4>${field.attribute_name}:</h4>
+                        <div class="attribute-options">
+                            ${field.values.map(val => `
+                                <div class="attribute-option">
+                                    <input type="checkbox" 
+                                           name="attribute_${field.attribute_id}" 
+                                           value="${val.id}" 
+                                           id="checkbox_${val.id}">
+                                    <label for="checkbox_${val.id}">${val.value}</label>
+                                    <input type="number" 
+                                           name="quantity_${val.id}" 
+                                           value="0" 
+                                           min="0" 
+                                           placeholder="Количество" 
+                                           class="quantity-input" 
+                                           style="display:none;">
+                                    <input type="number" 
+                                           name="price_modifier_${val.id}" 
+                                           value="0" 
+                                           step="0.01" 
+                                           placeholder="Модификатор цены" 
+                                           class="price-modifier-input" 
+                                           style="display:none;">
+                                </div>
+                            `).join('')}
+                            <div class="attribute-option new-value">
+                                <button type="button" 
+                                        class="add-new-value-btn" 
+                                        data-attribute-id="${field.attribute_id}">
+                                    Добавить новое значение
+                                </button>
+                                <input type="text" 
+                                       name="new_value_${field.attribute_id}" 
+                                       placeholder="Новое значение" 
+                                       class="new-value-input" 
+                                       style="display:none;">
+                                <input type="number" 
+                                       name="quantity_new_${field.attribute_id}" 
+                                       value="0" 
+                                       min="0" 
+                                       placeholder="Количество" 
+                                       class="quantity-input" 
+                                       style="display:none;">
+                                <input type="number" 
+                                       name="price_modifier_new_${field.attribute_id}" 
+                                       value="0" 
+                                       step="0.01" 
+                                       placeholder="Модификатор цены" 
+                                       class="price-modifier-input" 
+                                       style="display:none;">
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            document.getElementById('dynamicAttributes').innerHTML = html;
+
+            // Обработка чекбоксов
+            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const valueId = this.value;
+                    const attrId = this.name.split('_')[1];
+                    const quantityInput = document.querySelector(`input[name="quantity_${valueId}"]`);
+                    const priceInput = document.querySelector(`input[name="price_modifier_${valueId}"]`);
+                    if (quantityInput && priceInput) {
+                        quantityInput.style.display = this.checked ? 'inline' : 'none';
+                        priceInput.style.display = this.checked ? 'inline' : 'none';
+                    }
+                });
+            });
+
+            // Обработка кнопки "Добавить новое значение"
+            document.querySelectorAll('.add-new-value-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const attrId = this.getAttribute('data-attribute-id');
+                    const newInputs = [
+                        document.querySelector(`input[name="new_value_${attrId}"]`),
+                        document.querySelector(`input[name="quantity_new_${attrId}"]`),
+                        document.querySelector(`input[name="price_modifier_new_${attrId}"]`)
+                    ];
+                    newInputs.forEach(input => input.style.display = 'inline');
+                    this.style.display = 'none'; // Скрываем кнопку после нажатия
+                });
+            });
+        } else {
+            document.getElementById('dynamicAttributes').innerHTML = '<p>Нет атрибутов для выбранных категорий.</p>';
+        }
+    })
+    .catch(error => console.error("Error loading attributes:", error));
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -101,5 +170,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+
 </script>
 {% endblock %}

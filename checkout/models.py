@@ -1,10 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
-
 from django.conf import settings
-
-from store.models import Item
-
+from store.models import Item, ItemAttributeValue
 
 class Order(models.Model):
     PAYMENT_METHOD_CHOICES = [
@@ -55,7 +52,6 @@ class Order(models.Model):
     def __str__(self):
         return f"Заказ номер {self.id} для {self.user}"
 
-
 class OrderItem(models.Model):
     order = models.ForeignKey(
         Order,
@@ -64,11 +60,20 @@ class OrderItem(models.Model):
         verbose_name='Заказ',
     )
     item = models.ForeignKey(
-        Item, on_delete=models.CASCADE, verbose_name='Товар',)
+        Item, on_delete=models.CASCADE, verbose_name='Товар',
+    )
     quantity = models.PositiveIntegerField(
-        default=1, verbose_name='Количество',)
+        default=1, verbose_name='Количество',
+    )
     price = models.DecimalField(
-        max_digits=10, decimal_places=2, verbose_name='Цена',)
+        max_digits=10, decimal_places=2, verbose_name='Цена',
+    )
+    attribute_values = models.ManyToManyField(
+        ItemAttributeValue,
+        blank=True,
+        related_name='order_items',
+        verbose_name='Атрибуты товара'
+    )
 
     class Meta:
         verbose_name = 'Товар в заказе'
@@ -76,8 +81,9 @@ class OrderItem(models.Model):
 
     @property
     def total_price(self):
-        total_price = self.quantity * self.item.price
-        return total_price
+        base_price = self.price  # Use stored price instead of item.price for flexibility
+        price_modifier = sum(attr.attribute_value.price_modifier or 0 for attr in self.attribute_values.all())
+        return (base_price + price_modifier) * self.quantity
 
     def __str__(self):
         return f"{self.quantity} x {self.item.title} in Order {self.order.id}"

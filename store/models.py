@@ -1,52 +1,32 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from taggit.managers import TaggableManager 
-from taggit .models import GenericTaggedItemBase, TagBase
+from taggit.models import GenericTaggedItemBase, TagBase
 from django.utils.text import slugify
 from django.conf import settings
 from django.db.models import Avg
 
-from django.db import models
-from django.db import models
-
-class AttributeValue(models.Model):
-    attribute = models.ForeignKey('ItemAttribute', related_name='values', on_delete=models.CASCADE, verbose_name='Атрибут')
-    value = models.CharField(max_length=255, verbose_name='Значение')
-
-    class Meta:
-        verbose_name = 'Значение атрибута'
-        verbose_name_plural = 'Значения атрибутов'
-
-    def __str__(self):
-        return f"{self.attribute.name}: {self.value}"
-
-class ItemAttribute(models.Model):
-    ATTRIBUTE_TYPE_CHOICES = [
-        ('dropdown', 'Dropdown'),
-        ('radio', 'Radio'),
-        ('color', 'Color'),
-        ('text', 'Text'),
-        # Добавь другие типы, если необходимо
-    ]
-
-    name = models.CharField(max_length=255, verbose_name='Название атрибута')
-    type = models.CharField(max_length=50, choices=ATTRIBUTE_TYPE_CHOICES, verbose_name='Тип атрибута')
-    required = models.BooleanField(default=False, verbose_name='Обязательный атрибут')
-    tags = models.ManyToManyField('ItemTag', related_name='attributes', verbose_name='Категории (теги)', blank=True)
-
-    class Meta:
-        verbose_name = 'Атрибут товара'
-        verbose_name_plural = 'Атрибуты товаров'
+class Attribute(models.Model):
+    name = models.CharField(max_length=100, verbose_name='Название атрибута')
+    type = models.CharField(max_length=20, choices=[
+        ('dropdown', 'Выпадающий список'),
+        ('checkbox', 'Чекбоксы'),
+        ('text', 'Текстовое поле'),
+        ('color', 'Выбор цвета')
+    ], verbose_name='Тип атрибута')
 
     def __str__(self):
         return self.name
+    
 
-class Attributes(models.Model):
-    item = models.OneToOneField('store.Item', on_delete=models.CASCADE, related_name='attributes', verbose_name='Товар')
-    name = models.CharField(max_length=255, verbose_name='Имя атрибута')
+
+class AttributeValue(models.Model):
+    attribute = models.ForeignKey(Attribute, on_delete=models.CASCADE, related_name='values', verbose_name='Атрибут')
+    value = models.CharField(max_length=255, verbose_name='Значение')
+    price_modifier = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name='Модификатор цены')
 
     def __str__(self):
-        return self.name    
+        return f"{self.attribute.name}: {self.value}"
 
 class ItemTag(TagBase):
     image = models.ImageField(
@@ -57,14 +37,25 @@ class ItemTag(TagBase):
     description = models.TextField(
         blank=True,
         verbose_name='Описание',
-        )
+    )
+    name = models.CharField(max_length=100)
+    slug = models.SlugField(unique=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = "Категория"
         verbose_name_plural = "Категории"
 
-from django.db import models
-from django.conf import settings
+class AttributeCategory(models.Model):
+    attribute = models.ForeignKey(Attribute, on_delete=models.CASCADE)
+    tag = models.ForeignKey(ItemTag, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('attribute', 'tag')
 
 class Review(models.Model):
     item = models.ForeignKey('store.Item', on_delete=models.CASCADE, related_name='reviews', verbose_name='Товар')
@@ -81,7 +72,6 @@ class Review(models.Model):
 
     def __str__(self):
         return f'Отзыв от {self.user.username} на {self.item.title}'
-
 
 class Favorite(models.Model):
     user = models.ForeignKey(
@@ -102,10 +92,6 @@ class TaggedItem(GenericTaggedItemBase):
         related_name="items",
         verbose_name='Категория',
     )
-    
-    
-
-from django.db import models
 
 class Advertisement(models.Model):
     POSITION_CHOICES = [
@@ -119,7 +105,6 @@ class Advertisement(models.Model):
 
     def __str__(self):
         return f"{self.position} - {self.link}"
-
 
 class Poster(models.Model):
     image = models.ImageField(
@@ -136,61 +121,41 @@ class Poster(models.Model):
         verbose_name_plural = "Постеры"
 
 class Item(models.Model):
-    title = models.CharField(max_length=200, verbose_name='Название',)
-    description = models.TextField(verbose_name='Описание',)
-    slug = models.SlugField(
-        unique=True,
-        blank=True,
-    )
-    pub_date = models.DateTimeField(auto_now_add=True, verbose_name='Дата добавления',)
-    price = models.DecimalField(
-        max_digits=8,
-        decimal_places=2,
-        verbose_name='Новая цена',
-    )
-    old_price = models.DecimalField(
-        max_digits=8,
-        decimal_places=2,
-        verbose_name='Старая цена',
-        blank=True,
-        null=True,
-    )
-    wholesale_price = models.DecimalField(
-        max_digits=8,
-        decimal_places=2,
-        verbose_name='Оптовая цена',
-        blank=True,
-        null=True,
-    )
-    image = models.ImageField(
-        verbose_name='Изображение',
-        upload_to='items/',
-        blank=True,
-    )
-    is_available = models.BooleanField(
-        default=True,
-        verbose_name='Доступно',
-    )
-    is_approved = models.BooleanField(default=False, verbose_name="Одобрено администратором")  # ✅ Добавлено поле
-    
-    tags = TaggableManager(through=TaggedItem, related_name="tagged_items", verbose_name='Категории',)
-    seller = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,default = 1 ,related_name='items', verbose_name='Продавец')
+    title = models.CharField(max_length=200, verbose_name='Название')
+    description = models.TextField(verbose_name='Описание')
+    slug = models.SlugField(unique=True, blank=True)
+    pub_date = models.DateTimeField(auto_now_add=True, verbose_name='Дата добавления')
+    price = models.DecimalField(max_digits=8, decimal_places=2, verbose_name='Новая цена')
+    old_price = models.DecimalField(max_digits=8, decimal_places=2, verbose_name='Старая цена', blank=True, null=True)
+    wholesale_price = models.DecimalField(max_digits=8, decimal_places=2, verbose_name='Оптовая цена', blank=True, null=True)
+    image = models.ImageField(verbose_name='Изображение', upload_to='items/', blank=True)
+    is_available = models.BooleanField(default=True, verbose_name='Доступно')
+    is_approved = models.BooleanField(default=False, verbose_name="Одобрено администратором")
+    quantity = models.PositiveIntegerField(default=0, verbose_name='Количество в наличии')
+    video = models.FileField(upload_to='videos/', blank=True,null=True, verbose_name='Видео')
+    to_order = models.BooleanField(default=False, verbose_name='Под заказа')
+    tags = TaggableManager(through=TaggedItem, related_name="tagged_items", verbose_name='Категории')
+    seller = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, default=1, related_name='items', verbose_name='Продавец')
+
     def __str__(self):
         return self.title
     
     def save(self, *args, **kwargs):
-        if not self.slug:  # если slug еще не создан
+        if not self.slug:
             self.slug = slugify(self.title)
             original_slug = self.slug
             counter = 1
             while Item.objects.filter(slug=self.slug).exists():
                 self.slug = f'{original_slug}-{counter}'
                 counter += 1
+        if self.quantity <= 0:  
+            self.is_available = False
+        else:
+            self.is_available = True
         super().save(*args, **kwargs)
-
+        
     def average_rating(self):
         return self.reviews.aggregate(Avg('rating'))['rating__avg'] or 0
-    
     
     class Meta:
         ordering = ['-price']
@@ -199,19 +164,14 @@ class Item(models.Model):
 
 class ItemAttributeValue(models.Model):
     item = models.ForeignKey(Item, related_name='attribute_values', on_delete=models.CASCADE)
-    attribute = models.ForeignKey(ItemAttribute, on_delete=models.CASCADE)
-    value = models.CharField(max_length=255)
-
+    attribute_value = models.ForeignKey(AttributeValue, on_delete=models.CASCADE, verbose_name='Значение атрибута', default=1)
+    quantity = models.PositiveIntegerField(default=0, verbose_name='Количество')
     class Meta:
         verbose_name = 'Значение атрибута товара'
         verbose_name_plural = 'Значения атрибутов товаров'
 
     def __str__(self):
-        return f"{self.item.title} - {self.attribute.name}: {self.value}"
-
-
-
-from django.contrib.auth.models import User
+        return f"{self.item.title} - {self.attribute_value}"
 
 class Seller(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='seller', verbose_name='Пользователь')
@@ -244,4 +204,3 @@ class Seller(models.Model):
     class Meta:
         verbose_name = 'Продавец'
         verbose_name_plural = 'Продавцы'
-

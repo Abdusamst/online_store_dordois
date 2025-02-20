@@ -43,6 +43,28 @@
     resize: vertical;
 }
 
+.attribute-field {
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.quantity-field {
+    margin-top: 10px;
+    margin-left: 20px;
+}
+
+.radio-group {
+    margin: 10px 0;
+}
+
+.form-control {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+}
+
 .radio-group {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
