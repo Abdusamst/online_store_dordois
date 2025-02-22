@@ -20,6 +20,9 @@ class Attribute(models.Model):
     
 
 
+
+
+
 class AttributeValue(models.Model):
     attribute = models.ForeignKey(Attribute, on_delete=models.CASCADE, related_name='values', verbose_name='Атрибут')
     value = models.CharField(max_length=255, verbose_name='Значение')
@@ -203,4 +206,4 @@ class Seller(models.Model):
 
     class Meta:
         verbose_name = 'Продавец'
-        verbose_name_plural = 'Продавцы'
+verbose_name_plural = 'Продавцы'                                            

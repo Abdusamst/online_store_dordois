@@ -22,7 +22,15 @@
     </div>
     
     <p><label for="id_video">Видео:</label> {{ form.video }}</p>
-    <p><label for="id_is_available">Доступно:</label> {{ form.is_available }}</p>
+    <div class="form-group availability-options">
+        <label>Наличие:</label>
+        <div class="radio-group">
+            <input type="radio" id="available" name="to_order" value="0" {% if not form.instance.to_order %}checked{% endif %}>
+            <label for="available">Доступно</label>
+            <input type="radio" id="to_order" name="to_order" value="1" {% if form.instance.to_order %}checked{% endif %}>
+            <label for="to_order">Под заказ</label>
+        </div>
+    </div>
     
     <p><label for="id_tags">Выберите категорию:</label>
         <select name="tags" id="id_tags" multiple onchange="loadAttributes()">

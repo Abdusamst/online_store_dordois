@@ -79,16 +79,61 @@ def item_details(request, item_slug):
     item_attributes = item.attribute_values.select_related('attribute_value__attribute')
     item_attr_values = {attr.attribute_value.id: attr for attr in item.attribute_values.all()}
 
-    
     if request.user.is_authenticated:
         has_bought = Order.objects.filter(user=request.user, items__item=item, status='delivered').exists()
         is_favorite = Favorite.objects.filter(user=request.user, item=item).exists()
         user_has_reviewed = reviews.filter(user=request.user).exists()
 
+    # Обработка кнопки "Купить оптом"
+    if request.method == 'POST' and 'wholesale' in request.POST:
+        if item.wholesale_price and item.quantity >= 10:
+            cart, _ = Cart.objects.get_or_create(user=request.user)
+            quantity = 10  # Оптовая покупка фиксирует количество 10
+
+            # Собираем выбранные атрибуты из POST-запроса (если они есть)
+            selected_attributes = {}
+            for key, value in request.POST.items():
+                if key.startswith('attribute_'):
+                    attribute_id = key.split('_')[1]
+                    attribute_value_id = int(value)
+                    selected_attributes[attribute_id] = attribute_value_id
+
+            # Ищем существующий CartItem с таким же набором атрибутов
+            cart_items = CartItem.objects.filter(cart=cart, item=item)
+            matching_cart_item = None
+            for cart_item in cart_items:
+                cart_item_attrs = {str(attr.attribute_value.attribute.id): attr.attribute_value.id 
+                                 for attr in cart_item.attribute_values.all()}
+                if cart_item_attrs == selected_attributes:
+                    matching_cart_item = cart_item
+                    break
+
+            if matching_cart_item:
+                # Если товар с такими атрибутами уже есть, обновляем количество до 10
+                matching_cart_item.quantity = min(quantity, item.quantity)  # Не больше, чем в наличии
+                matching_cart_item.save()
+            else:
+                # Создаем новый CartItem с количеством 10
+                cart_item = CartItem.objects.create(cart=cart, item=item, quantity=quantity)
+                for attribute_id, attribute_value_id in selected_attributes.items():
+                    attribute_value = AttributeValue.objects.get(id=attribute_value_id)
+                    item_attr_value, _ = ItemAttributeValue.objects.get_or_create(
+                        item=item,
+                        attribute_value=attribute_value,
+                        defaults={'quantity': item.quantity}
+                    )
+                    cart_item.attribute_values.add(item_attr_value)
+                cart_item.save()
+
+            messages.success(request, 'Товар добавлен в корзину оптом!')
+            return redirect('cart:cart')
+        else:
+            messages.error(request, 'Оптовая покупка недоступна для этого товара.')
+
     similar_items = Item.objects.filter(
-            Q(tags__in=item.tags.all()) | Q(title__icontains=item.title.split()[0]),
-            is_approved=True 
-        ).exclude(id=item.id).distinct()[:4]
+        Q(tags__in=item.tags.all()) | Q(title__icontains=item.title.split()[0]),
+        is_approved=True 
+    ).exclude(id=item.id).distinct()[:4]
 
     context = {
         'page_obj_2': tags,

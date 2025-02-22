@@ -47,11 +47,15 @@ from django.contrib import messages
 from store.models import Item, AttributeValue, ItemAttributeValue
 from .models import Cart, CartItem
 
+# cart/views.py
 @login_required
 def add_to_cart(request, item_slug):
     item = get_object_or_404(Item, slug=item_slug)
     cart, _ = Cart.objects.get_or_create(user=request.user)
-    quantity = int(request.GET.get('quantity', 1))
+    
+    # Проверяем, оптовая покупка или обычная
+    is_wholesale = 'wholesale' in request.POST
+    quantity = 10 if is_wholesale else int(request.POST.get('quantity', 1))  # Используем POST для一致性
 
     if quantity > item.quantity:
         messages.error(request, f'Невозможно добавить больше {item.quantity} {item.title} в корзину.')
@@ -69,33 +73,32 @@ def add_to_cart(request, item_slug):
     cart_items = CartItem.objects.filter(cart=cart, item=item)
     matching_cart_item = None
     for cart_item in cart_items:
-        # Получаем атрибуты текущего CartItem
         cart_item_attrs = {str(attr.attribute_value.attribute.id): attr.attribute_value.id 
                           for attr in cart_item.attribute_values.all()}
-        # Сравниваем с выбранными атрибутами
         if cart_item_attrs == selected_attributes:
             matching_cart_item = cart_item
             break
 
     if matching_cart_item:
-        # Если нашли совпадение, увеличиваем количество
-        matching_cart_item.quantity += quantity
+        # Если нашли совпадение, устанавливаем количество для опта или прибавляем для обычной покупки
+        matching_cart_item.quantity = quantity if is_wholesale else matching_cart_item.quantity + quantity
         if matching_cart_item.quantity > item.quantity:
             matching_cart_item.quantity = item.quantity
         matching_cart_item.save()
     else:
-        # Если нет совпадения, создаём новый CartItem
+        # Создаем новый CartItem
         cart_item = CartItem.objects.create(cart=cart, item=item, quantity=quantity)
         for attribute_id, attribute_value_id in selected_attributes.items():
             attribute_value = AttributeValue.objects.get(id=attribute_value_id)
             item_attr_value, _ = ItemAttributeValue.objects.get_or_create(
                 item=item,
                 attribute_value=attribute_value,
-                defaults={'quantity': item.quantity}  # Общее количество товара
+                defaults={'quantity': item.quantity}
             )
             cart_item.attribute_values.add(item_attr_value)
         cart_item.save()
 
+    messages.success(request, f'{item.title} добавлен в корзину{" оптом" if is_wholesale else ""}!')
     return redirect('cart:cart')
 
 @login_required

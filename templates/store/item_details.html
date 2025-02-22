@@ -49,12 +49,12 @@
             {% endif %}
 
             <div class="item-attributes">
-                <form method="post" action="{% url 'cart:add_to_cart' item.slug %}">
+                <form method="post" action="{% url 'cart:add_to_cart' item.slug %}" class="cart-form">
                     {% csrf_token %}
                     {% for attr in item_attributes %}
                         <div class="attribute-row">
-                            <label for="attribute_{{ attr.attribute_value.id }}">{{ attr.attribute_value.attribute.name }}:</label>
-                            <select name="attribute_{{ attr.attribute_value.id }}" id="attribute_{{ attr.attribute_value.id }}">
+                            <label for="attribute_{{ attr.attribute_value.attribute.id }}">{{ attr.attribute_value.attribute.name }}:</label>
+                            <select name="attribute_{{ attr.attribute_value.attribute.id }}" id="attribute_{{ attr.attribute_value.attribute.id }}">
                                 {% for value in attr.attribute_value.attribute.values.all %}
                                     <option value="{{ value.id }}" {% if value.id == attr.attribute_value.id %}selected{% endif %}>
                                         {{ value.value }}
@@ -64,6 +64,11 @@
                         </div>
                     {% endfor %}
                     <button type="submit" class="button add-to-cart">Добавить в корзину</button>
+                    {% if item.wholesale_price and item.quantity >= 10 %}
+                        <input type="hidden" name="wholesale" value="true" id="wholesale-input" disabled>
+                        <p>Цена оптом {{ item.wholesale_price }} Сом</p>
+                        <button type="submit" class="button wholesale-button" onclick="enableWholesale()">Купить оптом (+10)</button>
+                    {% endif %}
                 </form>
             </div>
             
@@ -275,5 +280,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+function enableWholesale() {
+    document.getElementById('wholesale-input').disabled = false;
+}
 </script>
 {% endblock %}
