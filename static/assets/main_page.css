@@ -2142,12 +2142,12 @@ i.fa-heart {
     .Jhin {
         width: 500px;
         height: 850px;
-        margin-left: 1830px;
+        margin-left: 1630px;
         margin-top: -540px;
     }
     .beseller {
-        margin-top: -600px;
-        margin-left: 1750px;
+        margin-top: -620px;
+        margin-left: 1580px;
     }
     .carousel-slide {
         width: 1500px;
@@ -2248,6 +2248,18 @@ i.fa-heart {
     .product-item {
         flex: 1 1 calc(12.5% - 50px);
         max-width: calc(12.5% - 10px);
+    }
+    .tags_mainpage .image {
+        width: 200px;
+        height: 200px;
+    }
+
+    .tags_mainpage img {
+        width: 200px;
+        height: 200px;
+    }
+    .tags_mainpage b {
+        font-size: 28px;
     }
 }
 

@@ -7,17 +7,131 @@
 {% endblock %}
 
 {% block content %}
-<div class="item-details-container">
-    <h2 class="item-title">{{ item.title }}</h2>
-    <p class="item-category">Товар принадлежит к категории: 
-        {% for tag in item.tags.all %}
-            <b><a href="{% url 'store:tag_details' tag.slug %}" class="item-tag">{{ tag }}</a></b>
-            {% if not forloop.last %},{% endif %}
-        {% endfor %}
-    </p>
-    <p>Количество отзывов: {{ reviews.count }}</p>
-    <p>Количество наличия товара: {{ item.quantity }}</p>
+<div class="ad-section">
+    <div class="ad-header">Реклама</div>
+    
+    <!-- Верхний рекламный блок -->
+    <div class="top-ads">
+        {% if top_ads %}
+            <div id="topAdsCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    {% for ad in top_ads %}
+                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                            <a href="{{ ad.link }}" target="_blank" class="ad-card">
+                                <img src="{{ ad.image.url }}" alt="Реклама">
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% else %}
+            <div class="ad-placeholder-container">
+                <a href="https://wa.me/996552840777" target="_blank" class="ad-placeholder">Здесь может быть ваша реклама</a>
+            </div>
+        {% endif %}
+    </div>
+    
+    <!-- Нижний рекламный блок -->
+    <div class="bottom-ads">
+        {% if bottom_ads %}
+            <div id="bottomAdsCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    {% for ad in bottom_ads %}
+                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                            <a href="{{ ad.link }}" target="_blank" class="ad-card">
+                                <img src="{{ ad.image.url }}" alt="Реклама">
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% else %}
+            <div class="ad-placeholder-container">
+                <a href="https://wa.me/ВашНомер" target="_blank" class="ad-placeholder">Здесь может быть ваша реклама</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+<div class="left-section">
+    <!-- Секция с маркетплейсами -->
+    <div class="marketplace-section">
+        <div class="section-header">
+            <span class="bold-text">Ваш товар увидят</span>
+            <span class="grey-text">на площадке</span>
+        </div>
+        <div class="marketplace-logos">
+            <img src="{% static 'images/ozon.png' %}" alt="OZON" class="marketplace-logo">
+            <img src="{% static 'images/wildberries.png' %}" alt="Wildberries" class="marketplace-logo">
+            <img src="{% static 'images/logo_door.png' %}" alt="DOOR" class="marketplace-logo">
+        </div>
+    </div>
+    
 
+    <!-- Секция с доставкой -->
+    <div class="delivery-section">
+        <div class="delivery-item">
+            <span>ДОСТАВКА<br>ПО<br>КЫРГЫЗСТАНУ</span>
+            <img src="{% static 'images/krgyz.png' %}" alt="Кыргызстан" class="country-flag">
+        </div>
+        <div class="delivery-item">
+            <span>ДОСТАВКА<br>В<br>РОССИЮ</span>
+            <img src="{% static 'images/russian.png' %}" alt="Россия" class="country-flag">
+        </div>
+        <div class="delivery-item">
+            <span>ДОСТАВКА<br>В<br>КАЗАХСТАН</span>
+            <img src="{% static 'images/kazakhstan.png' %}" alt="Казахстан" class="country-flag">
+
+        </div>
+    </div>
+</div>
+
+</div>
+<div class="item-details-container">
+    <div class="item_titles">
+        <h2 class="item-title">{{ item.title }}</h2>
+        <p class="item-description">{{ item.description }}</p>
+    </div>
+    <div class="seller-info">
+        {% if item.seller %}
+            <div class="seller-details">
+                <p><strong>Продавец:</strong> {{ item.seller.username }}</p>
+            </div>
+        {% else %}
+            <p>Информация о продавце недоступна.</p>
+        {% endif %}
+    </div>
+    <div class="reviews_container">
+        <p>{{ reviews.count }}</p>
+        <h3>отзовы</h3>
+        {% if reviews.count > 3 %}
+        <a href="{% url 'store:all_reviews' item.slug %}" class="button_view-all-reviews">Все отзовы -></a>
+        {% endif %}
+        <p>
+            {% for i in "1" %}
+                {% if i|add:0 <= average_rating %}
+                    <i class="fas fa-star" style="color: gold;"></i>
+                {% else %}
+                    <i class="far fa-star" style="color: gold;"></i>
+                {% endif %}
+            {% endfor %}
+            {{ average_rating|floatformat:1 }}
+        </p>
+    </div>
+    <div class="reviews-title">
+        <p>фото и видео клиентов</p>
+    </div>
+    <div class="reviews">
+        {% for review in reviews|slice:":3" %}
+            <div class="review">
+                {% if review.images %}
+                    <img src="{{ review.images.url }}" alt="Изображение отзыва" class="review-image">
+                {% endif %}
+            </div>
+        {% empty %}
+            <p>Нет отзывов для этого товара.</p>
+        {% endfor %}
+    </div>
+    
     <div class="item-card">
         
         <div class="item-image-wrapper">
@@ -29,7 +143,6 @@
         </div>
 
         <div class="item-info">
-            <p class="item-description">{{ item.description }}</p>
 
             {% if item.old_price %}
                 <p class="item-price">
@@ -84,43 +197,9 @@
         </div>
     </div>
 
-    <h3>Отзывы</h3>
-    {% if reviews.count > 3 %}
-    <a href="{% url 'store:all_reviews' item.slug %}" class="button_view-all-reviews">Все отзовы -></a>
-    {% endif %}
-    <p>
-        {% for i in "12345" %}
-            {% if i|add:0 <= average_rating %}
-                <i class="fas fa-star" style="color: gold;"></i>
-            {% else %}
-                <i class="far fa-star" style="color: gold;"></i>
-            {% endif %}
-        {% endfor %}
-        ({{ average_rating|floatformat:1 }} / 5)
-    </p>
 
-    <div class="reviews">
-        {% for review in reviews|slice:":3" %}
-            <div class="review">
-                <p class="review-date">{{ review.created_at }}</p>
-                <p><strong>{{ review.user.username }}</strong> 
-                    {% for i in "12345" %}
-                        {% if i|add:0 <= review.rating %}
-                            <i class="fas fa-star" style="color: gold;"></i>
-                        {% else %}
-                            <i class="far fa-star" style="color: gold;"></i>
-                        {% endif %}
-                    {% endfor %}
-                </p>
-                <p>{{ review.text }}</p>
-                {% if review.images %}
-                    <img src="{{ review.images.url }}" alt="Изображение отзыва" class="review-image">
-                {% endif %}
-            </div>
-        {% empty %}
-            <p>Нет отзывов для этого товара.</p>
-        {% endfor %}
-    </div>
+
+
     
     {% if user.is_authenticated and has_bought and not user_has_reviewed %}
     <button id="show-review-form" class="button">Оставить отзыв</button>
@@ -154,16 +233,7 @@
         </form>
     </div>
     {% endif %}
-    <div class="seller-info">
-        <h3>Продавец этого товара</h3>
-        {% if item.seller %}
-            <div class="seller-details">
-                <p><strong>Продавец:</strong> {{ item.seller.username }}</p>
-            </div>
-        {% else %}
-            <p>Информация о продавце недоступна.</p>
-        {% endif %}
-    </div>
+
     <h3>Похожие товары</h3>
     <div class="similar-items-container">
         {% for similar_item in similar_items %}

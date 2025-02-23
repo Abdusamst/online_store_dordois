@@ -181,7 +181,7 @@
             "pk": 1,
             "fields": {
                 "name": "Размер",
-                "type": "dropdown"
+                "type": "radio"
             }
         },
         {
@@ -189,7 +189,7 @@
             "pk": 2,
             "fields": {
                 "name": "Цвет",
-                "type": "dropdown"
+                "type": "radio"
             }
         },
         {
