@@ -48,68 +48,54 @@ from store.models import Item, AttributeValue, ItemAttributeValue
 from .models import Cart, CartItem
 
 # cart/views.py
-@login_required
+from django.shortcuts import get_object_or_404, redirect
+from cart.models import Cart, CartItem
+from store.models import Item, ItemAttributeValue
+from django.db.models import Q
+
 def add_to_cart(request, item_slug):
     item = get_object_or_404(Item, slug=item_slug)
-    cart, _ = Cart.objects.get_or_create(user=request.user)
+    cart, created = Cart.objects.get_or_create(user=request.user)
     
-    # Проверяем, оптовая покупка или обычная
-    is_wholesale = 'wholesale' in request.POST
-    quantity = 10 if is_wholesale else int(request.POST.get('quantity', 1))  # Используем POST для一致性
-
-    if quantity > item.quantity:
-        messages.error(request, f'Невозможно добавить больше {item.quantity} {item.title} в корзину.')
-        return redirect('store:item_details', item_slug=item.slug)
-
-    # Собираем выбранные атрибуты из POST-запроса
+    # Получаем выбранные атрибуты из POST-запроса
     selected_attributes = {}
     for key, value in request.POST.items():
         if key.startswith('attribute_'):
-            attribute_id = key.split('_')[1]
-            attribute_value_id = int(value)
-            selected_attributes[attribute_id] = attribute_value_id
-
-    # Ищем существующий CartItem с таким же набором атрибутов
-    cart_items = CartItem.objects.filter(cart=cart, item=item)
-    matching_cart_item = None
-    for cart_item in cart_items:
-        cart_item_attrs = {str(attr.attribute_value.attribute.id): attr.attribute_value.id 
-                          for attr in cart_item.attribute_values.all()}
-        if cart_item_attrs == selected_attributes:
-            matching_cart_item = cart_item
-            break
-
-    if matching_cart_item:
-        # Если нашли совпадение, устанавливаем количество для опта или прибавляем для обычной покупки
-        matching_cart_item.quantity = quantity if is_wholesale else matching_cart_item.quantity + quantity
-        if matching_cart_item.quantity > item.quantity:
-            matching_cart_item.quantity = item.quantity
-        matching_cart_item.save()
-    else:
-        # Создаем новый CartItem
-        cart_item = CartItem.objects.create(cart=cart, item=item, quantity=quantity)
-        for attribute_id, attribute_value_id in selected_attributes.items():
-            attribute_value = AttributeValue.objects.get(id=attribute_value_id)
-            item_attr_value, _ = ItemAttributeValue.objects.get_or_create(
-                item=item,
-                attribute_value=attribute_value,
-                defaults={'quantity': item.quantity}
-            )
-            cart_item.attribute_values.add(item_attr_value)
+            attribute_id = key.replace('attribute_', '')
+            selected_attributes[attribute_id] = value
+    
+    # Если атрибуты выбраны, ищем CartItem с таким же набором атрибутов
+    if selected_attributes:
+        # Получаем все CartItem для этого item в корзине
+        cart_items = CartItem.objects.filter(cart=cart, item=item)
+        
+        # Ищем CartItem с таким же набором атрибутов
+        for cart_item in cart_items:
+            cart_item_attrs = {str(attr.attribute_value.attribute.id): attr.attribute_value.id for attr in cart_item.attribute_values.all()}
+            if cart_item_attrs == selected_attributes:
+                # Нашли совпадение, увеличиваем количество
+                cart_item.quantity += 1
+                cart_item.save()
+                return redirect('cart:cart')
+        
+        # Если совпадений нет, создаем новый CartItem
+        cart_item = CartItem.objects.create(cart=cart, item=item, quantity=1)
+        for attr_id, value_id in selected_attributes.items():
+            attr_value = get_object_or_404(ItemAttributeValue, item=item, attribute_value__id=value_id)
+            cart_item.attribute_values.add(attr_value)
         cart_item.save()
-
-    messages.success(request, f'{item.title} добавлен в корзину{" оптом" if is_wholesale else ""}!')
+    else:
+        # Если атрибутов нет, добавляем или обновляем CartItem без атрибутов
+        cart_item, created = CartItem.objects.get_or_create(cart=cart, item=item)
+        if not created:
+            cart_item.quantity += 1
+        cart_item.save()
+    
     return redirect('cart:cart')
 
 @login_required
-def delete_cart_item(request, item_slug):
-    """
-    Представление для удаления объекта товара в корзине.
-    """
-    cart_item = CartItem.objects.get(
-        cart=Cart.objects.get(user=request.user),
-        item=get_object_or_404(Item, slug=item_slug)
-    )
+def delete_cart_item(request, cart_item_id):
+    cart_item = get_object_or_404(CartItem, id=cart_item_id, cart__user=request.user)
     cart_item.delete()
     return redirect('cart:cart')
 

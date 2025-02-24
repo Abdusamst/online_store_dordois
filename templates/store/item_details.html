@@ -171,16 +171,26 @@
             <div class="item-attributes">
                 <form method="post" action="{% url 'cart:add_to_cart' item.slug %}" class="cart-form">
                     {% csrf_token %}
-                    {% for attr in item_attributes %}
+                    <!-- Группируем атрибуты по их типу -->
+                    {% regroup item_attributes by attribute_value.attribute as attributes_list %}
+                    {% for attr in attributes_list %}
                         <div class="attribute-row">
-                            <label for="attribute_{{ attr.attribute_value.attribute.id }}">{{ attr.attribute_value.attribute.name }}:</label>
-                            {% for value in attr.attribute_value.attribute.values.all %}
-                            <input type="radio" name="sizeCheck" value="{{ value.id }}" id="sizeCheck_{{ value.id }}" data-price-modifier="{{ value.price_modifier }}">
-                            {{ value.value }}
-                        {% endfor %}
+                            <!-- Название атрибута (например, "Размер" или "Цвет") -->
+                            <label for="attribute_{{ attr.grouper.id }}">{{ attr.grouper.name }}:</label>
+                            <!-- Радио-кнопки для значений атрибута -->
+                            {% for iav in attr.list %}
+                                <input type="radio" 
+                                       name="attribute_{{ attr.grouper.id }}" 
+                                       value="{{ iav.attribute_value.id }}" 
+                                       id="attr_{{ attr.grouper.id }}_{{ iav.attribute_value.id }}" 
+                                       data-price-modifier="{{ iav.attribute_value.price_modifier }}">
+                                {{ iav.attribute_value.value }}
+                            {% endfor %}
                         </div>
                     {% endfor %}
+                    <!-- Кнопка добавления в корзину -->
                     <button type="submit" class="button add-to-cart">Добавить в корзину</button>
+                    <!-- Оптовая цена и кнопка (если есть) -->
                     {% if item.wholesale_price and item.quantity >= 10 %}
                         <input type="hidden" name="wholesale" value="true" id="wholesale-input" disabled>
                         <p>Цена оптом {{ item.wholesale_price }} Сом</p>
@@ -259,6 +269,46 @@
 </div>
 
 <script>
+    document.querySelector('.cart-form').addEventListener('submit', function(event) {
+    const attributeRows = document.querySelectorAll('.attribute-row');
+    let allSelected = true;
+
+    attributeRows.forEach(function(row) {
+        const radios = row.querySelectorAll('input[type="radio"]');
+        const isSelected = Array.from(radios).some(radio => radio.checked);
+        if (!isSelected) {
+            allSelected = false;
+        }
+    });
+
+    if (!allSelected && attributeRows.length > 0) {
+        event.preventDefault();
+        alert('Пожалуйста, выберите значение для каждого атрибута.');
+    }
+});
+    document.addEventListener('DOMContentLoaded', function() {
+    const basePrice = parseFloat('{{ item.price }}');
+    const priceElement = document.getElementById('current-price');
+    
+    function updatePrice() {
+        let totalModifier = 0;
+        const selectedRadios = document.querySelectorAll('input[type="radio"]:checked');
+        selectedRadios.forEach(function(radio) {
+            const modifier = parseFloat(radio.dataset.priceModifier) || 0;
+            totalModifier += modifier;
+        });
+        const newPrice = basePrice + totalModifier;
+        priceElement.textContent = newPrice.toFixed(2) + ' Сом';
+    }
+    
+    // Обновляем цену при изменении выбора атрибутов
+    document.querySelectorAll('input[type="radio"]').forEach(function(radio) {
+        radio.addEventListener('change', updatePrice);
+    });
+    
+    // Инициализируем цену при загрузке страницы
+    updatePrice();
+});
        
        function handleImageClick(event) {
         const itemImage = document.getElementsByClassName("item-image")[0]; 
