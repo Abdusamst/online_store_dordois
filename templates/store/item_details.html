@@ -134,6 +134,13 @@
     
     <div class="item-card">
         
+        <div class="item-images">
+            <img src="https://cdn.mos.cms.futurecdn.net/aSKEwAj45HqsqPiVzP3edE-1200-80.jpg" alt="404" onclick="handleImageClick(event)">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRGi5L0OjqpVgVi4Ilh1zHpLsuvyKrTMtyhlA&s" alt="404" onclick="handleImageClick(event)">
+            <img src="https://media.istockphoto.com/id/1371317396/photo/assortment-of-hard-strong-alcoholic-drinks-and-spirits.jpg?s=612x612&w=0&k=20&c=nH5UFeng_BwbrXrnULOSNQxF2vCKEk8V42AKOST4shY=" alt="404" onclick="handleImageClick(event)">
+            <img src="https://hips.hearstapps.com/hmg-prod/images/delish-220517-dirty-shirley-cocktail-001-ab-web-1657145301.jpg?crop=0.828xw:0.829xh;0.123xw,0.0932xh&resize=980:*" alt="404" onclick="handleImageClick(event)">
+        </div>
+        
         <div class="item-image-wrapper">
             {% if item.image %}
                 <img src="{{ item.image.url }}" alt="{{ item.title }}" class="item-image">
@@ -167,13 +174,10 @@
                     {% for attr in item_attributes %}
                         <div class="attribute-row">
                             <label for="attribute_{{ attr.attribute_value.attribute.id }}">{{ attr.attribute_value.attribute.name }}:</label>
-                            <select name="attribute_{{ attr.attribute_value.attribute.id }}" id="attribute_{{ attr.attribute_value.attribute.id }}">
-                                {% for value in attr.attribute_value.attribute.values.all %}
-                                    <option value="{{ value.id }}" {% if value.id == attr.attribute_value.id %}selected{% endif %}>
-                                        {{ value.value }}
-                                    </option>
-                                {% endfor %}
-                            </select>
+                            {% for value in attr.attribute_value.attribute.values.all %}
+                            <input type="radio" name="sizeCheck" value="{{ value.id }}" id="sizeCheck_{{ value.id }}" data-price-modifier="{{ value.price_modifier }}">
+                            {{ value.value }}
+                        {% endfor %}
                         </div>
                     {% endfor %}
                     <button type="submit" class="button add-to-cart">Добавить в корзину</button>
@@ -255,6 +259,15 @@
 </div>
 
 <script>
+       
+       function handleImageClick(event) {
+        const itemImage = document.getElementsByClassName("item-image")[0]; 
+        const clickedImageSrc = event.target.src;
+
+        event.target.src = itemImage.src;
+        itemImage.src = clickedImageSrc;
+    }
+
 document.addEventListener('DOMContentLoaded', function() {
     const showReviewFormButton = document.getElementById('show-review-form');
     const reviewFormContainer = document.getElementById('review-form-container');
