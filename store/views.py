@@ -381,12 +381,14 @@ def add_item(request):
             item = form.save(commit=False)
             item.seller = request.user
             total_quantity = 0
+            has_attributes = False
 
             # Сохраняем объект item без many-to-many полей
             item.save()
 
             for key, field_values in form.cleaned_data.items():
                 if key.startswith('attribute_') and field_values:
+                    has_attributes = True
                     attribute_id = key.split('_')[1]
                     attribute = Attribute.objects.get(id=attribute_id)
                     new_value = form.cleaned_data.get(f'new_value_{attribute_id}')
@@ -429,6 +431,10 @@ def add_item(request):
                                 )
                                 total_quantity += quantity
 
+            # Если нет выбранных атрибутов, используем значение из формы
+            if not has_attributes:
+                total_quantity = form.cleaned_data.get('quantity', 0)
+                
             item.quantity = total_quantity
             item.save()
             form.save_m2m()
