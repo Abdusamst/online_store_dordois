@@ -269,7 +269,7 @@ def remove_from_favorites(request, item_id):
     item = get_object_or_404(Item, id=item_id)
     favorite = get_object_or_404(Favorite, user=request.user, item=item)
     favorite.delete()
-    return redirect(reverse('store:item_details', kwargs={'item_slug': item.slug}))
+    return redirect('store:favorite_list')
 
 @login_required
 def favorite_list(request):
