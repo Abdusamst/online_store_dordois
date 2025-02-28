@@ -91,32 +91,6 @@ function loadAttributes() {
                                            style="display:none;">
                                 </div>
                             `).join('')}
-                            <div class="attribute-option new-value">
-                                <button type="button" 
-                                        class="add-new-value-btn" 
-                                        data-attribute-id="${field.attribute_id}">
-                                    Добавить новое значение
-                                </button>
-                                <input type="text" 
-                                       name="new_value_${field.attribute_id}" 
-                                       placeholder="Новое значение" 
-                                       class="new-value-input" 
-                                       style="display:none;">
-                                <input type="number" 
-                                       name="quantity_new_${field.attribute_id}" 
-                                       value="0" 
-                                       min="0" 
-                                       placeholder="Количество" 
-                                       class="quantity-input" 
-                                       style="display:none;">
-                                <input type="number" 
-                                       name="price_modifier_new_${field.attribute_id}" 
-                                       value="0" 
-                                       step="0.01" 
-                                       placeholder="Модификатор цены" 
-                                       class="price-modifier-input" 
-                                       style="display:none;">
-                            </div>
                         </div>
                     </div>
                 `;
@@ -134,20 +108,6 @@ function loadAttributes() {
                         quantityInput.style.display = this.checked ? 'inline' : 'none';
                         priceInput.style.display = this.checked ? 'inline' : 'none';
                     }
-                });
-            });
-
-            // Обработка кнопки "Добавить новое значение"
-            document.querySelectorAll('.add-new-value-btn').forEach(button => {
-                button.addEventListener('click', function() {
-                    const attrId = this.getAttribute('data-attribute-id');
-                    const newInputs = [
-                        document.querySelector(`input[name="new_value_${attrId}"]`),
-                        document.querySelector(`input[name="quantity_new_${attrId}"]`),
-                        document.querySelector(`input[name="price_modifier_new_${attrId}"]`)
-                    ];
-                    newInputs.forEach(input => input.style.display = 'inline');
-                    this.style.display = 'none'; // Скрываем кнопку после нажатия
                 });
             });
         } else {
@@ -178,7 +138,5 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
-
-
 </script>
 {% endblock %}

@@ -6,13 +6,22 @@ body {
 .goog-te-banner-frame {
     display: none !important;
 }
-  
+
+
+.header-logo .right {
+    margin-left: 600px;
+}
+
+.header-logo .left {
+    margin-left: 150px;
+}
 
 .logo {
     width: 100%;
     height: 100px;
     display: flex;
     align-items: center;
+    margin-bottom: 80px;
     padding: 0 20px;
     text-decoration: none;
     box-sizing: border-box;  /* Убедитесь, что padding не вызывает прокрутку */
@@ -60,19 +69,18 @@ body {
     font-size: 18px;
     font-weight: bold;
     color: rgb(255, 255, 255);
-    margin-bottom: 10px;
 }
 
 .header-logo a img {
-    height: 60px;
-    margin-bottom: 10px;
+    height: 50px;
+    margin-top: 10px;
 }
+
 
 .header-logo {
     background-color: rgb(32,87,167);
     display: flex;
-    height: 90px;
-    justify-content: space-between; /* Распределяет элементы по краям */
+    height: 150px;
     align-items: center; /* Выравнивает элементы по вертикали */
     width: 100%; /* Чтобы заняло всю ширину */
 }
@@ -155,12 +163,19 @@ body {
     font-size: 14px;
 }
 
+
+
 .inner1 {
+    width: 71%;
+    position: relative;
+    background-color: white;
+    top: -80px;
+    left: -18px;
     display: flex;
     flex-direction: row;
     align-items: center;
     gap: 40px;
-    margin-left: 300px;
+    padding: 10px;
 }
 
 .actions {
@@ -294,7 +309,6 @@ body {
 .header-logo {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
 }
 /* Mobile First Base Styles (apply to all sizes) */
 /* Add your default styles here */

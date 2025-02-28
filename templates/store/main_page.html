@@ -102,7 +102,7 @@
                     </div>
                 {% else %}
                     <div class="ad-placeholder-container">
-                        <a href="https://wa.me/ВашНомер" target="_blank" class="ad-placeholder">Здесь может быть ваша реклама</a>
+                        <a href="https://wa.me/+996552840777" target="_blank" class="ad-placeholder">Здесь может быть ваша реклама</a>
                     </div>
                 {% endif %}
             </div>
@@ -150,8 +150,7 @@
             {% for item in items %}
                 <div class="product-item" id="item-{{ item.id }}">
                     <p><span class="image right">
-                        {% if item.image %}
-                            {% if user.is_authenticated %}
+                        {% if user.is_authenticated %}
                                 <button id="favorite-btn-{{ item.id }}" class="btn btn-sm btn-outline-primary" onclick="toggleFavorite({{ item.id }})">
                                     {% if item.id in favorites %}
                                     <i class="fa-solid fa-heart"></i>
@@ -160,6 +159,7 @@
                                     {% endif %}
                                 </button>   
                             {% endif %}
+                        {% if item.image %}
                             <img src="{{ item.image.url }}" alt=""  />
                         {% else %}
                             <img src="{% static 'images/pic14.jpg' %}" alt="" />

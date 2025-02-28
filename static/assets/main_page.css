@@ -272,7 +272,7 @@ i.fa-heart {
  .left-section {
     position: absolute;
     left: 1px;
-    top: 365px;
+    top: 425px;
     transform: translateY(-50%);
     width: 200px;
     background: #fff;
@@ -362,7 +362,7 @@ i.fa-heart {
  .ad-section {
     position: absolute;
     right: 15px;
-    top: 380px;
+    top: 440px;
     transform: translateY(-50%);
     width: 200px;
     background: #fff;
@@ -386,8 +386,9 @@ i.fa-heart {
     height: 250px;
     margin: 10px 0;
     position: relative;
-    background: #fff;
-    border: 1px solid #e0e0e0;
+    background: #ff1414;
+    border: 1px solid #000000;
+   
 }
 
 .top-ads .carousel-inner,
@@ -601,9 +602,12 @@ i.fa-heart {
 }
 
 .inner12 {
+ 
     max-width: 1200px; /* Same max-width as products .inner */
     width: 100%;
     margin: 0 auto; /* This centers the content */
+    position: relative;
+    top: -90px;
 }
 
 #products {
@@ -2007,6 +2011,7 @@ i.fa-heart {
     }
 
     .inner12 {
+      
         margin-left: 400px;
     }
     .product-item {
