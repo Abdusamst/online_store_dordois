@@ -12,7 +12,26 @@
     margin-bottom: 20px;
 }
 
+.new-value-option {
+    margin-top: 15px;
+    padding-top: 10px;
+    border-top: 1px dashed #ccc;
+}
 
+.new-value-inputs {
+    margin-top: 8px;
+    padding: 8px;
+    background-color: #f9f9f9;
+    border-radius: 4px;
+}
+
+.new-value-input {
+    width: 100%;
+    margin-bottom: 8px;
+    padding: 6px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
 
 .add-item-form label {
     display: block;

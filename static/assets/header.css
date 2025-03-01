@@ -813,6 +813,7 @@ body {
         height: 40px;
         margin-bottom: 5px;
     }
+        
         body {
             font-size: 14px;
         }
@@ -865,7 +866,6 @@ body {
         .catalog-button {
             font-size: 14px;
             border-width: 2px;
-            margin-left: 150px;
         }
     
         .catalog-button i.fa-solid.fa-bars {
@@ -917,12 +917,27 @@ body {
         .inner1 {
             display: flex;
             justify-content: space-between;
-            width: 95%;
+            width: 100%;
+            max-width: 550px;
+            margin-left: 170px;
         } 
+
+        .header-logo .right {
+            margin-left: -100px;
+        }
+        .header-logo .left {
+            margin-left: 100px;
+        }
   }
   
   /* Desktop (992-1199px) */
   @media (min-width: 992px) and (max-width: 1199px) { 
+    .header-logo .right {
+        margin-left: -100px;
+    }
+    .header-logo .left {
+        margin-left: 100px;
+    }
     .logo .symbol img {
         height: 70px;
     }
@@ -976,7 +991,7 @@ body {
     
         /* Внутренний контейнер */
         .inner1 {
-            margin-left: 5px;
+            margin-left: 170px;
             gap: 10px;
         }
     
@@ -984,7 +999,7 @@ body {
         .catalog-button {
             font-size: 14px;
             border-width: 2px;
-            margin-left: 210px;
+            margin-left: 50px;
         }
     
         .catalog-button i.fa-solid.fa-bars {
@@ -1036,7 +1051,8 @@ body {
         .inner1 {
             display: flex;
             justify-content: space-between;
-            width: 95%;
+            width: 100%;
+            max-width: 680px;
         }   
   }
   
@@ -1052,7 +1068,11 @@ body {
         height: 40px;
         margin-bottom: 5px;
     }
-        body {
+
+    .header-logo .right {
+        margin-left: -200px;
+    }
+            body {
             font-size: 14px;
         }
     
@@ -1155,7 +1175,8 @@ body {
         .inner1 {
             display: flex;
             justify-content: space-between;
-            width: 95%;
+            width: 68%;
+            margin-left: 220px;
         }
   }
   
@@ -1224,6 +1245,22 @@ body {
     /* Further increased container widths */
       /* Increase overall container widths */
 
+    .inner1 {
+        width: 77%;
+        top: -60px;
+    }
+
+    .header-logo a img {
+        height: 60px;
+
+    }
+
+    .logo {
+        margin-bottom: 50px;
+    }
+    .header-logo .right {
+        margin-left: 880px;
+    }
       .search-bar {
         width: 700px;
     }
@@ -1232,7 +1269,6 @@ body {
     }
 
     .inner1 {
-        margin-left: 250px;
         gap: 50px;
     }
 
@@ -1289,16 +1325,28 @@ body {
 
 
 @media (min-width: 2300px) {
+    .delivery-item span {
+        font-size: 20px;
+    }
     .search-bar {
         width: 900px;
     }
     .inner1 {
-        margin-left: 350px;
+        margin-left: 300px;
+        top: -50px;
+    }
+
+    .header-logo .right {
+        margin-left: 1150px;
+    }
+    .header-logo .left {
+        margin-left: 230px;
     }
 }
 
 
 @media (min-width: 2560px) {
+
     .inner1 {
         margin: 0 auto;  /* Центрирование */
         max-width: 2000px;  /* Максимальная ширина контента */
@@ -1404,16 +1452,27 @@ body {
 
 }
 @media (min-width: 2880px)  {
+    .logo {
+        margin-top: -150px;
+    }
 
+    .header-logo .right {
+        margin-left: 1550px;
+    }
+    .header-logo .left {
+        margin-left: 250px;
+    }
     .inner1 {
         margin: 0 auto;  /* Центрирование */
-        max-width: 2000px;  /* Максимальная ширина контента */
+        max-width: 2110px;  /* Максимальная ширина контента */
         padding: 0 30px;
+        width: 90%;
         gap: 20px;
         display: flex;
         justify-content: center;  /* Центрирование всех элементов */
         align-items: center;
-        margin-left: 290px;
+        margin-left: 340px;
+        top: -150px;
     }
 
     /* Увеличенная поисковая строка */
@@ -1473,7 +1532,7 @@ body {
 
     /* Увеличенный логотип */
     .header-logo {
-        height: 140px;  /* Увеличенная высота шапки */
+        height: 300px;  /* Увеличенная высота шапки */
     }
 
     .header-logo a img {

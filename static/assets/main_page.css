@@ -1406,8 +1406,9 @@ i.fa-heart {
 
   @media (min-width: 769px) and (max-width: 991px) {
 
+
     .left-section {
-        top:315px;
+        top:400px;
         width: 150px;
     }
     
@@ -1438,12 +1439,12 @@ i.fa-heart {
         object-fit: contain;
     }
     
-    
+
     
     .ad-section {
         position: absolute;
         right: 15px;
-        top:315px;
+        top:415px;
         transform: translateY(-50%);
         width: 150px;
         background: #fff;
@@ -1559,7 +1560,7 @@ i.fa-heart {
   @media (min-width: 992px) and (max-width: 1199px) { 
 
  .left-section {
-    top: 315px;
+    top: 415px;
     width: 150px;
 }
 
@@ -1595,7 +1596,7 @@ i.fa-heart {
 .ad-section {
     position: absolute;
     right: 15px;
-    top: 315px;
+    top: 395px;
     transform: translateY(-50%);
     width: 150px;
     background: #fff;
@@ -1705,12 +1706,12 @@ i.fa-heart {
   }
   
   @media (min-width: 1200px) and (max-width: 1399px) { 
-
+    
     .ad-section {
-        top: 360px;
+        top: 450px;
     }
     .left-section {
-        top: 345px;
+        top: 425px;
     }
     .product-image {
         width: 100%;
@@ -1804,10 +1805,13 @@ i.fa-heart {
   
 @media (min-width: 1920px) {
     .ad-section {
-        top: 380px;
+        top: 450px;
     }
     .left-section {
-        top: 365px;
+        top: 420px;
+    }
+    .inner12 {
+        top: -60px;
     }
     .carousel-content {
         width: 1000px;
@@ -1862,6 +1866,7 @@ i.fa-heart {
     }
 }
 @media (min-width: 2300px) {
+    
     .carousel-slide {
         width: 1100px;
         margin-left: -100px;
@@ -2095,7 +2100,7 @@ i.fa-heart {
 
     .left-section {
         width: 320px;
-        top: 570px;
+        top: 650px;
     }
     .bold-text {
         font-size: 27px;
@@ -2120,8 +2125,8 @@ i.fa-heart {
     }
 
   .ad-section {
-        top: 600px;
-        width: 450px; /* Увеличенная ширина */
+        top: 760px;
+        width: 400px; /* Увеличенная ширина */
         right: calc((100% - 2880px) / 2 + 20px); /* Центрирование относительно контейнера */
     }
 
