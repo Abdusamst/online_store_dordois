@@ -91,49 +91,10 @@
         <h2 class="item-title">{{ item.title }}</h2>
         <p class="item-description">{{ item.description }}</p>
     </div>
-    <div class="seller-info">
-        {% if item.seller %}
-            <div class="seller-details">
-                <p><strong>Продавец:</strong> {{ item.seller.username }}</p>
-            </div>
-        {% else %}
-            <p>Информация о продавце недоступна.</p>
-        {% endif %}
-    </div>
-    <div class="reviews_container">
-        <p>{{ reviews.count }}</p>
-        <h3>отзовы</h3>
-        {% if reviews.count > 3 %}
-        <a href="{% url 'store:all_reviews' item.slug %}" class="button_view-all-reviews">Все отзовы -></a>
-        {% endif %}
-        <p>
-            {% for i in "1" %}
-                {% if i|add:0 <= average_rating %}
-                    <i class="fas fa-star" style="color: gold;"></i>
-                {% else %}
-                    <i class="far fa-star" style="color: gold;"></i>
-                {% endif %}
-            {% endfor %}
-            {{ average_rating|floatformat:1 }}
-        </p>
-    </div>
-    <div class="reviews-title">
-        <p>фото и видео клиентов</p>
-    </div>
-    <div class="reviews">
-        {% for review in reviews|slice:":3" %}
-            <div class="review">
-                {% if review.images %}
-                    <img src="{{ review.images.url }}" alt="Изображение отзыва" class="review-image">
-                {% endif %}
-            </div>
-        {% empty %}
-            <p>Нет отзывов для этого товара.</p>
-        {% endfor %}
-    </div>
+    
     
     <div class="item-card">
-        
+            
             <div class="item-images">
                 {% if item.image1 %}
                     <img src="{{ item.image1.url }}" alt="{{ item.title }} - 1" onclick="handleImageClick(event)">
@@ -156,66 +117,139 @@
                 <img src="{% static 'images/pic14.jpg' %}" alt="Default image" class="item-image">
             {% endif %}
         </div>
-
-        <div class="item-info">
-
-            {% if item.old_price %}
-                <p class="item-price">
-                    <span class="new-price"><b>{{ item.price }}</b> Сом</span>
+        <div class="item-attributes">
+            <div class="seller-info">
+                {% if item.seller %}
+                    <div class="seller-details">
+                        <p><strong>Продавец:</strong> {{ item.seller.username }}</p>
+                    </div>
+                {% else %}
+                    <p>Информация о продавце недоступна.</p>
+                {% endif %}
+            </div>
+            <div class="reviews_container">
+                <p>{{ reviews.count }}</p>
+                <h3>отзовы</h3>
+                {% if reviews.count > 3 %}
+                <a href="{% url 'store:all_reviews' item.slug %}" class="button_view-all-reviews">Все отзовы -></a>
+                {% endif %}
+                <p>
+                    {% for i in "1" %}
+                        {% if i|add:0 <= average_rating %}
+                            <i class="fas fa-star" style="color: gold;"></i>
+                        {% else %}
+                            <i class="far fa-star" style="color: gold;"></i>
+                        {% endif %}
+                    {% endfor %}
+                    {{ average_rating|floatformat:1 }}
                 </p>
-            {% else %}
+            </div>
+            <div class="reviews-title">
+                <p>фото и видео клиентов</p>
+            </div>
+            <div class="reviews">
+                {% for review in reviews|slice:":3" %}
+                    <div class="review">
+                        {% if review.images %}
+                            <img src="{{ review.images.url }}" alt="Изображение отзыва" class="review-image">
+                        {% endif %}
+                    </div>
+                {% empty %}
+                    <p>Нет отзывов для этого товара.</p>
+                {% endfor %}
+            </div>
+            <form method="post" action="{% url 'cart:add_to_cart' item.slug %}" class="cart-form">
+                {% csrf_token %}
+                <!-- Группируем атрибуты по их типу -->
+                {% regroup item_attributes by attribute_value.attribute as attributes_list %}
+                {% for attr in attributes_list %}
+                    <div class="attribute-row">
+                        <!-- Название атрибута (например, "Размер" или "Цвет") -->
+                        <label for="attribute_{{ attr.grouper.id }}">{{ attr.grouper.name }}:</label>
+                        <!-- Радио-кнопки для значений атрибута -->
+                        {% for iav in attr.list %}
+                            <label class="custom-radio">
+                                <input type="radio" 
+                                    name="attribute_{{ attr.grouper.id }}" 
+                                    value="{{ iav.attribute_value.id }}" 
+                                    id="attr_{{ attr.grouper.id }}_{{ iav.attribute_value.id }}" 
+                                    data-price-modifier="{{ iav.attribute_value.price_modifier }}">
+                                <span>{{ iav.attribute_value.value }}</span>
+                            </label>
+                        {% endfor %}
+
+
+                        
+                    </div>
+                {% endfor %}
+                
+            </form>
+        </div>
+
+        <!-- <div class="item-info">
+
+
+            <div class="price-container-top">
                 <p class="item-price">
                     <span class="current-price" id="current-price">
-                    <b>{{ item.price }}</b> Сом
+                    <b>{{ item.price }}</b> СОМ
+                    <form method="post" action="{% url 'cart:add_to_cart' item.slug %}" class="cart-form">
+                        {% csrf_token %}
+                        <button type="submit" class="button add-to-cart">Добавить в корзину</button>
                     </span>
                 </p>
+
+            </div>
+            <div class="price-container-bottom">
                 {% if item.wholesale_price %}
                 <p class="item-wholesale-price" id="wholesale-price" style="display:none;">
                     <b>{{ item.wholesale_price }}</b> Сом (опт)
+                    <form method="post" action="{% url 'cart:add_to_cart' item.slug %}" class="cart-form">
+                        {% csrf_token %}
+
+                        {% regroup item_attributes by attribute_value.attribute as attributes_list %}
+                        
+                        {% if item.wholesale_price and item.quantity >= 10 %}
+                            <input type="hidden" name="wholesale" value="true" id="wholesale-input" disabled>
+                            <p>{{ item.wholesale_price }} Сом</p>
+                            <button type="submit" class="button wholesale-button" onclick="enableWholesale()">Купить оптом (+10)</button>
+                        {% endif %}
+                    </form>
+                    
                 </p>
                 {% endif %}
-            {% endif %}
-
-            <div class="item-attributes">
-                <form method="post" action="{% url 'cart:add_to_cart' item.slug %}" class="cart-form">
-                    {% csrf_token %}
-                    <!-- Группируем атрибуты по их типу -->
-                    {% regroup item_attributes by attribute_value.attribute as attributes_list %}
-                    {% for attr in attributes_list %}
-                        <div class="attribute-row">
-                            <!-- Название атрибута (например, "Размер" или "Цвет") -->
-                            <label for="attribute_{{ attr.grouper.id }}">{{ attr.grouper.name }}:</label>
-                            <!-- Радио-кнопки для значений атрибута -->
-                            {% for iav in attr.list %}
-                                <input type="radio" 
-                                       name="attribute_{{ attr.grouper.id }}" 
-                                       value="{{ iav.attribute_value.id }}" 
-                                       id="attr_{{ attr.grouper.id }}_{{ iav.attribute_value.id }}" 
-                                       data-price-modifier="{{ iav.attribute_value.price_modifier }}">
-                                {{ iav.attribute_value.value }}
-                            {% endfor %}
-                        </div>
-                    {% endfor %}
-                    <!-- Кнопка добавления в корзину -->
-                    <button type="submit" class="button add-to-cart">Добавить в корзину</button>
-                    <!-- Оптовая цена и кнопка (если есть) -->
+            </div> -->
+            <div class="item-info">
+                <div class="price-container-top">
+                    <p class="item-price">
+                        <span class="current-price" id="current-price">
+                            <b>{{ item.price }}</b> СОМ
+                        </span>
+                    </p>
+                    <form method="post" action="{% url 'cart:add_to_cart' item.slug %}" class="cart-form">
+                        {% csrf_token %}
+                        <button type="submit" class="button add-to-cart">добавить в корзину</button>
+                    </form>
+                </div>
+                
+                <div class="price-container-bottom">
                     {% if item.wholesale_price and item.quantity >= 10 %}
-                        <input type="hidden" name="wholesale" value="true" id="wholesale-input" disabled>
-                        <p>Цена оптом {{ item.wholesale_price }} Сом</p>
-                        <button type="submit" class="button wholesale-button" onclick="enableWholesale()">Купить оптом (+10)</button>
+                        <p class="item-wholesale-price" id="wholesale-price">
+                            <b>{{ item.wholesale_price }}</b> СОМ ОПТОМ
+                        </p>
+                        <form method="post" action="{% url 'cart:add_to_cart' item.slug %}" class="cart-form">
+                            {% csrf_token %}
+                            <input type="hidden" name="wholesale" value="true" id="wholesale-input">
+                            <button type="submit" class="button wholesale-button" onclick="enableWholesale()">Купить оптом</button>
+                        </form>
                     {% endif %}
-                </form>
-            </div>
+                </div>
             
-            <div class="item-actions">
-                {% if user.is_authenticated %}
-                    {% if is_favorite %}
-                        <a href="{% url 'store:remove_from_favorites' item.id %}" class="button remove-favorite">Удалить из избранного</a>
-                    {% else %}
-                        <a href="{% url 'store:add_to_favorites' item.id %}" class="button add-favorite">Добавить в избранное</a>
-                    {% endif %}
-                {% endif %}
+
             </div>
+
+            
+
         </div>
     </div>
 
@@ -298,18 +332,18 @@
     // Update the price display
     if (priceElement) {
         priceElement.textContent = totalPrice.toFixed(2);
-        console.log('Price updated to:', totalPrice.toFixed(2));
-    } else {
-        console.error('Price element not found');
     }
     
-    // If wholesale price exists, update it as well
+    // If you want the wholesale price to NOT change based on attributes,
+    // simply remove or comment out this section
+    /*
     const wholesalePriceElement = document.querySelector('#wholesale-price b');
     if (wholesalePriceElement) {
         const wholesaleBasePrice = parseFloat('{{ item.wholesale_price }}'.replace(',', '.'));
         const wholesaleTotalPrice = wholesaleBasePrice + totalModifier;
         wholesalePriceElement.textContent = wholesaleTotalPrice.toFixed(2);
     }
+    */
 }
 
 // Дождемся полной загрузки DOM

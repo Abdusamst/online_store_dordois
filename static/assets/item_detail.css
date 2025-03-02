@@ -7,6 +7,7 @@
     background-color: #fff;
 }
 
+
 .item-attributes {
     margin: 20px 0;
     padding: 15px;
@@ -21,6 +22,152 @@
     border-bottom: 1px solid #f5f5f5;
 }
 
+.item-info {
+    padding: 15px;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+    font-family: Arial, sans-serif;
+}
+
+/* Top Price Container */
+.price-container-top {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.item-price {
+    margin: 0;
+}
+
+.current-price {
+    display: block;
+    position: relative;
+}
+
+.current-price::before {
+    content: "цена";
+    display: block;
+    font-size: 14px;
+    color: #333;
+    font-weight: normal;
+    margin-bottom: 5px;
+}
+
+.current-price b {
+    font-size: 36px;
+    color: #e63946;
+    font-weight: bold;
+    display: block;
+    margin: 5px 0;
+}
+
+.current-price::after {
+    content: "в розницу";
+    display: block;
+    font-size: 16px;
+    color: #333;
+    margin: 5px 0 15px;
+}
+
+/* Add to Cart Button */
+.button.add-to-cart {
+    width: 100%;
+    background-color: #1a66cc;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 12px 10px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+    margin-top: 10px;
+    position: relative;
+}
+
+/* Стили для кастомных радио-кнопок */
+
+
+
+
+
+.item-wholesale-price {
+
+    font-size: 28px;
+    color: #000;
+    font-weight: bold;
+}
+
+.button.add-to-cart::after {
+    content: "доставка в течении 1-2 дней";
+    display: block;
+    font-size: 12px;
+    color: #ffffff;
+    margin-top: 5px;
+    font-weight: normal;
+}
+
+/* Bottom Price Container */
+.price-container-bottom {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.item-wholesale-price {
+    display: block !important;
+    margin: 0;
+    position: relative;
+}
+
+.item-wholesale-price::before {
+    content: "цена";
+    display: block;
+    font-size: 14px;
+    color: #333;
+    font-weight: normal;
+    margin-bottom: 5px;
+}
+
+.item-wholesale-price b {
+    font-size: 28px;
+    color: #000;
+    font-weight: bold;
+}
+
+.item-wholesale-price p {
+    display: none;
+}
+
+/* Wholesale Button */
+.button.wholesale-button {
+    width: 100%;
+    background-color: #4a5568;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 12px 10px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 10px;
+    text-align: center;
+}
+
+.button.wholesale-button::after {
+    content: "от 10 шт.(ед пар)";
+    display: block;
+    font-size: 14px;
+    color: #ffffff;
+    margin-top: 10px;
+    text-align: center;
+    font-weight: normal;
+}
+
+/* Fix for cart forms */
+.cart-form {
+    margin: 10px 0;
+}
 .attribute-name {
     font-weight: bold;
     min-width: 150px;
@@ -113,7 +260,6 @@
 }
 
 .item-info {
-    flex: 2;
     min-width: 300px;
 }
 
