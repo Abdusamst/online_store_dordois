@@ -250,7 +250,22 @@
     </div>
     {% endif %}
 
-    <h3>Похожие товары</h3>
+    <h3 style="
+    position: relative; 
+    text-align: center; 
+    color: rgba(0, 0, 0, 0.5); 
+    font-size: 24px;
+    display: flex; 
+    align-items: center; 
+    justify-content: center;">
+    
+    <span style="flex-grow: 1; height: 1px; background: rgba(0, 0, 0, 0.5);"></span>
+    
+    <span style="padding: 0 10px; white-space: nowrap;">Похожие товары</span>
+    
+    <span style="flex-grow: 1; height: 1px; background: rgba(0, 0, 0, 0.5);"></span>
+    </h3>
+
     <div class="similar-items-container">
         {% for similar_item in similar_items %}
             <div class="similar-item">
