@@ -1,4 +1,4 @@
-/* Основные стили для контейнера */
+                                                                                          /* Основные стили для контейнера */
 .item-details-container {
     max-width: 1000px;
     margin: 20px auto;
@@ -917,8 +917,9 @@
 
 /* Extra Large Desktop (1920px) */
 @media (min-width: 1920px) {
+
     .ad-section {
-        top: 380px;
+        top: 430px;
     }
     .left-section {
         top: 365px;

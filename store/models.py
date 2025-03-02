@@ -132,6 +132,10 @@ class Item(models.Model):
     old_price = models.DecimalField(max_digits=8, decimal_places=2, verbose_name='Старая цена', blank=True, null=True)
     wholesale_price = models.DecimalField(max_digits=8, decimal_places=2, verbose_name='Оптовая цена', blank=True, null=True)
     image = models.ImageField(verbose_name='Изображение', upload_to='items/', blank=True)
+    image1 = models.ImageField(upload_to='items/', blank=True, null=True)
+    image2 = models.ImageField(upload_to='items/', blank=True, null=True)
+    image3 = models.ImageField(upload_to='items/', blank=True, null=True)
+    image4 = models.ImageField(upload_to='items/', blank=True, null=True)
     is_available = models.BooleanField(default=True, verbose_name='Доступно')
     is_approved = models.BooleanField(default=False, verbose_name="Одобрено администратором")
     quantity = models.PositiveIntegerField(default=0, verbose_name='Количество в наличии')
@@ -165,14 +169,14 @@ class Item(models.Model):
         verbose_name = 'Товар'
         verbose_name_plural = 'Товары'
 
+# store/models.py
 class ItemAttributeValue(models.Model):
     item = models.ForeignKey(Item, related_name='attribute_values', on_delete=models.CASCADE)
-    attribute_value = models.ForeignKey(AttributeValue, on_delete=models.CASCADE, verbose_name='Значение атрибута', default=1)
-    quantity = models.PositiveIntegerField(default=0, verbose_name='Количество')
-    class Meta:
-        verbose_name = 'Значение атрибута товара'
-        verbose_name_plural = 'Значения атрибутов товаров'
+    attribute_value = models.ForeignKey(AttributeValue, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=0)
 
+    class Meta:
+        unique_together = ('item', 'attribute_value')  # Добавляем это
     def __str__(self):
         return f"{self.item.title} - {self.attribute_value}"
 
@@ -207,3 +211,5 @@ class Seller(models.Model):
     class Meta:
         verbose_name = 'Продавец'
 verbose_name_plural = 'Продавцы'                                            
+
+

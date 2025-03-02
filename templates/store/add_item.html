@@ -12,12 +12,19 @@
     <p><label for="id_wholesale_price">Цена оптом:</label> {{ form.wholesale_price }}</p>
     <p><label for="id_quantity">Общее количество (будет обновлено):</label> {{ form.quantity }}</p>
     
-    <p><label for="id_image">Изображение:</label></p>
+    <p><label>Изображения:</label></p>
     <div class="file-input-container">
-        {{ form.image }}
+        <p><label for="id_image">Главное изображение:</label> {{ form.image }}</p>
+        <p><label for="id_image1">Изображение 1:</label> {{ form.image1 }}</p>
+        <p><label for="id_image2">Изображение 2:</label> {{ form.image2 }}</p>
+        <p><label for="id_image3">Изображение 3:</label> {{ form.image3 }}</p>
+        <p><label for="id_image4">Изображение 4:</label> {{ form.image4 }}</p>
         <div class="image-preview-container">
-            <div class="preview-placeholder">Предварительный просмотр изображения</div>
-            <img id="imagePreview" class="image-preview" src="#" alt="Preview">
+            <div class="preview-placeholder">Предварительный просмотр изображений</div>
+            <img id="imagePreview1" class="image-preview" src="#" alt="Preview 1">
+            <img id="imagePreview2" class="image-preview" src="#" alt="Preview 2">
+            <img id="imagePreview3" class="image-preview" src="#" alt="Preview 3">
+            <img id="imagePreview4" class="image-preview" src="#" alt="Preview 4">
         </div>
     </div>
     
@@ -83,12 +90,12 @@ function loadAttributes() {
                                            class="quantity-input" 
                                            style="display:none;">
                                     <input type="number" 
-                                           name="price_modifier_${val.id}" 
-                                           value="0" 
-                                           step="0.01" 
-                                           placeholder="Модификатор цены" 
-                                           class="price-modifier-input" 
-                                           style="display:none;">
+                                            name="price_modifier_${val.id}" 
+                                            value="0" 
+                                            step="0.01" 
+                                            placeholder="Полная цена для ${val.value}" 
+                                            class="price-modifier-input" 
+                                            style="display:none;">
                                 </div>
                             `).join('')}
                         </div>
@@ -136,6 +143,34 @@ document.addEventListener('DOMContentLoaded', function() {
             imagePreview.classList.remove('active');
             placeholder.style.display = 'flex';
         }
+    });
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const imageInputs = [
+        { input: document.querySelector('#id_image1'), preview: document.querySelector('#imagePreview1') },
+        { input: document.querySelector('#id_image2'), preview: document.querySelector('#imagePreview2') },
+        { input: document.querySelector('#id_image3'), preview: document.querySelector('#imagePreview3') },
+        { input: document.querySelector('#id_image4'), preview: document.querySelector('#imagePreview4') }
+    ];
+    const placeholder = document.querySelector('.preview-placeholder');
+
+    imageInputs.forEach(({ input, preview }) => {
+        input.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.classList.add('active');
+                    placeholder.style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                preview.classList.remove('active');
+                placeholder.style.display = 'flex';
+            }
+        });
     });
 });
 </script>

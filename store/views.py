@@ -378,83 +378,84 @@ def add_item(request):
         form.add_attribute_fields(tags)
 
         if form.is_valid():
-            item = form.save(commit=False)
-            item.seller = request.user
-            total_quantity = 0
-            has_attributes = False
+            from django.db import transaction
+            with transaction.atomic():
+                item = form.save(commit=False)
+                item.seller = request.user
+                total_quantity = 0
+                has_attributes = False
 
-            # Сохраняем объект item без many-to-many полей
-            item.save()
+                # Сохраняем товар с базовой ценой
+                item.save()
 
-            for key, field_values in form.cleaned_data.items():
-                if key.startswith('attribute_') and field_values:
-                    has_attributes = True
-                    attribute_id = key.split('_')[1]
-                    attribute = Attribute.objects.get(id=attribute_id)
-                    new_value = form.cleaned_data.get(f'new_value_{attribute_id}')
-                    new_quantity = form.cleaned_data.get(f'quantity_new_{attribute_id}', 0)
-                    new_price_modifier = form.cleaned_data.get(f'price_modifier_new_{attribute_id}', 0)
+                for key, field_values in form.cleaned_data.items():
+                    if key.startswith('attribute_') and field_values:
+                        has_attributes = True
+                        attribute_id = key.split('_')[1]
+                        attribute = Attribute.objects.get(id=attribute_id)
+                        new_value = form.cleaned_data.get(f'new_value_{attribute_id}')
+                        new_quantity = form.cleaned_data.get(f'quantity_new_{attribute_id}', 0)
+                        new_price_modifier_input = form.cleaned_data.get(f'price_modifier_new_{attribute_id}', 0)
 
-                    # Обработка нового значения (только для этого товара)
-                    if new_value and new_quantity > 0:
-                        # Создаем AttributeValue только для этого товара
-                        attribute_value, created = AttributeValue.objects.get_or_create(
-                            attribute=attribute,
-                            value=new_value,
-                            price_modifier=new_price_modifier or 0
-                        )
-                        ItemAttributeValue.objects.create(
-                            item=item,
-                            attribute_value=attribute_value,
-                            quantity=new_quantity
-                        )
-                        total_quantity += new_quantity
+                        # Новое значение атрибута
+                        if new_value and new_quantity > 0:
+                            price_modifier = new_price_modifier_input - item.price if new_price_modifier_input else 0
+                            attribute_value, created = AttributeValue.objects.get_or_create(
+                                attribute=attribute,
+                                value=new_value,
+                                defaults={'price_modifier': price_modifier}
+                            )
+                            if not created and new_price_modifier_input:
+                                attribute_value.price_modifier = price_modifier
+                                attribute_value.save()
+                            ItemAttributeValue.objects.create(
+                                item=item,
+                                attribute_value=attribute_value,
+                                quantity=new_quantity
+                            )
+                            total_quantity += new_quantity
 
-                    # Обработка существующих значений
-                    for value_id in field_values:
-                        if value_id != '-1':
-                            value_id = int(value_id)
-                            attribute_value = AttributeValue.objects.get(id=value_id)
-                            quantity = form.cleaned_data.get(f'quantity_{value_id}', 0)
-                            price_modifier = form.cleaned_data.get(f'price_modifier_{value_id}', 0)
-                            if quantity > 0:
-                                # Создаем запись только для этого товара, не изменяя глобальный AttributeValue
-                                new_attribute_value = AttributeValue.objects.create(
-                                    attribute=attribute,
-                                    value=attribute_value.value,
-                                    price_modifier=price_modifier or 0
-                                )
-                                ItemAttributeValue.objects.create(
+                        # Существующие значения атрибутов
+                        for value_id in field_values:
+                            if str(value_id).isdigit():
+                                value_id = int(value_id)
+                                attribute_value = AttributeValue.objects.get(id=value_id)
+                                quantity = form.cleaned_data.get(f'quantity_{value_id}', 0)
+                                price_modifier_input = form.cleaned_data.get(f'price_modifier_{value_id}', 0)
+                                if price_modifier_input:
+                                    attribute_value.price_modifier = price_modifier_input - item.price
+                                    attribute_value.save()
+                                ItemAttributeValue.objects.update_or_create(
                                     item=item,
-                                    attribute_value=new_attribute_value,
-                                    quantity=quantity
+                                    attribute_value=attribute_value,
+                                    defaults={'quantity': quantity}
                                 )
                                 total_quantity += quantity
 
-            # Если нет выбранных атрибутов, используем значение из формы
-            if not has_attributes:
-                total_quantity = form.cleaned_data.get('quantity', 0)
-                
-            item.quantity = total_quantity
-            item.save()
-            form.save_m2m()
+                if not has_attributes:
+                    total_quantity = form.cleaned_data.get('quantity', 0)
+                item.quantity = total_quantity
+                item.save()
+                form.save_m2m()
             return redirect('store:thank_you')
 
+    form = ItemForm()
+    tags = ItemTag.objects.all()
+    # ... остальной код для AJAX ...
+                
     form = ItemForm()
     tags = ItemTag.objects.all()
     
     if request.headers.get('x-requested-with') == 'XMLHttpRequest' and request.method == 'GET':
         tag_ids = request.GET.getlist('tags')
-        print(f"Получены ID тегов: {tag_ids}")
         
         tags = ItemTag.objects.filter(id__in=tag_ids)
-        print(f"Найдены теги: {[tag.name for tag in tags]}")
-        
         attribute_categories = AttributeCategory.objects.filter(tag__in=tags)
-        print(f"Найдены категории атрибутов: {[ac.attribute.name for ac in attribute_categories]}")
         
-        attributes = Attribute.objects.filter(attributecategory__tag__in=tags).distinct()
-        print(f"Найдены атрибуты: {[attr.name for attr in attributes]}")
+        # Use prefetch_related to avoid N+1 queries
+        attributes = Attribute.objects.filter(
+            attributecategory__tag__in=tags
+        ).distinct().prefetch_related('values')
         
         dynamic_fields = []
         for attribute in attributes:
@@ -467,7 +468,6 @@ def add_item(request):
             }
             dynamic_fields.append(field_data)
         
-        print(f"Подготовлены поля: {dynamic_fields}")
         return JsonResponse({'dynamic_fields': dynamic_fields})
 
     context = {
@@ -475,7 +475,6 @@ def add_item(request):
         'tags': tags,
     }
     return render(request, 'store/add_item.html', context)
-
     
 def thank_you(request):
     return render(request, 'store/thank_you.html')

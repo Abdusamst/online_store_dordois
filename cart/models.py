@@ -55,13 +55,13 @@ class CartItem(models.Model):
 
     @property
     def total_price(self):
-        base_price = self.item.price
-        if self.quantity >= 10 and self.item.wholesale_price:
-            base_price = self.item.wholesale_price
-
-        # Adjust price based on attributes
-        price_modifier = sum(attr.attribute_value.price_modifier or 0 for attr in self.attribute_values.all())
-        return (base_price + price_modifier) * self.quantity
+        base_price = self.item.price * self.quantity
+        price_modifier = sum(
+            attr.attribute_value.price_modifier or 0 
+            for attr in self.attribute_values.all() 
+            if attr.attribute_value  # Only include if attribute_value exists
+        )
+        return base_price + price_modifier
 
     def __str__(self):
         return f"{self.quantity} x {self.item.title}"

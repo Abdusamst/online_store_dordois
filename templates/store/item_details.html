@@ -134,12 +134,20 @@
     
     <div class="item-card">
         
-        <div class="item-images">
-            <img src="https://cdn.mos.cms.futurecdn.net/aSKEwAj45HqsqPiVzP3edE-1200-80.jpg" alt="404" onclick="handleImageClick(event)">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRGi5L0OjqpVgVi4Ilh1zHpLsuvyKrTMtyhlA&s" alt="404" onclick="handleImageClick(event)">
-            <img src="https://media.istockphoto.com/id/1371317396/photo/assortment-of-hard-strong-alcoholic-drinks-and-spirits.jpg?s=612x612&w=0&k=20&c=nH5UFeng_BwbrXrnULOSNQxF2vCKEk8V42AKOST4shY=" alt="404" onclick="handleImageClick(event)">
-            <img src="https://hips.hearstapps.com/hmg-prod/images/delish-220517-dirty-shirley-cocktail-001-ab-web-1657145301.jpg?crop=0.828xw:0.829xh;0.123xw,0.0932xh&resize=980:*" alt="404" onclick="handleImageClick(event)">
-        </div>
+            <div class="item-images">
+                {% if item.image1 %}
+                    <img src="{{ item.image1.url }}" alt="{{ item.title }} - 1" onclick="handleImageClick(event)">
+                {% endif %}
+                {% if item.image2 %}
+                    <img src="{{ item.image2.url }}" alt="{{ item.title }} - 2" onclick="handleImageClick(event)">
+                {% endif %}
+                {% if item.image3 %}
+                    <img src="{{ item.image3.url }}" alt="{{ item.title }} - 3" onclick="handleImageClick(event)">
+                {% endif %}
+                {% if item.image4 %}
+                    <img src="{{ item.image4.url }}" alt="{{ item.title }} - 4" onclick="handleImageClick(event)">
+                {% endif %}
+            </div>
         
         <div class="item-image-wrapper">
             {% if item.image %}
@@ -269,6 +277,118 @@
 </div>
 
 <script>
+    // Добавьте в начало скрипта функцию для подсветки невыбранных атрибутов
+    function updatePrice() {
+    // Get the base price from the Django template
+    const basePrice = parseFloat('{{ item.price }}'.replace(',', '.'));
+    let totalModifier = 0;
+    
+    // Calculate modifiers from selected attributes
+    document.querySelectorAll('input[type="radio"]:checked').forEach(radio => {
+        const modifier = parseFloat(radio.dataset.priceModifier) || 0;
+        totalModifier += modifier;
+    });
+
+    // Calculate final price
+    const totalPrice = basePrice + totalModifier;
+    
+    // Find the price element
+    const priceElement = document.querySelector('#current-price b');
+    
+    // Update the price display
+    if (priceElement) {
+        priceElement.textContent = totalPrice.toFixed(2);
+        console.log('Price updated to:', totalPrice.toFixed(2));
+    } else {
+        console.error('Price element not found');
+    }
+    
+    // If wholesale price exists, update it as well
+    const wholesalePriceElement = document.querySelector('#wholesale-price b');
+    if (wholesalePriceElement) {
+        const wholesaleBasePrice = parseFloat('{{ item.wholesale_price }}'.replace(',', '.'));
+        const wholesaleTotalPrice = wholesaleBasePrice + totalModifier;
+        wholesalePriceElement.textContent = wholesaleTotalPrice.toFixed(2);
+    }
+}
+
+// Дождемся полной загрузки DOM
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded, initializing price updater');
+    
+    // Находим все радио-кнопки атрибутов
+    const allRadios = document.querySelectorAll('input[type="radio"]');
+    console.log('Found', allRadios.length, 'radio buttons');
+    
+    // Добавляем обработчики событий на радио-кнопки (только один раз!)
+    allRadios.forEach(function(radio) {
+        // Удаляем старые обработчики, если они есть
+        radio.removeEventListener('change', updatePrice);
+        
+        // Добавляем новый обработчик
+        radio.addEventListener('change', function() {
+            console.log('Radio changed:', this.name, 'Value:', this.value, 'Price modifier:', this.dataset.priceModifier);
+            updatePrice();
+        });
+    });
+    
+    // Инициализируем цену при загрузке
+    updatePrice();
+});
+
+// Make sure event listeners are properly set up
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded, initializing price updater');
+    
+    // Log initial price for debugging
+    const basePrice = parseFloat('{{ item.price }}'.replace(',', '.'));
+    console.log('Base price:', basePrice);
+    
+    // Find all attribute radio buttons
+    const allRadios = document.querySelectorAll('input[type="radio"]');
+    console.log('Found', allRadios.length, 'radio buttons');
+    
+    // Add change event listeners to all radio buttons
+    allRadios.forEach(function(radio) {
+        radio.addEventListener('change', function() {
+            console.log('Radio changed:', this.name, 'Value:', this.value, 'Price modifier:', this.dataset.priceModifier);
+            updatePrice();
+        });
+    });
+    
+    // Initialize price display
+    updatePrice();
+});
+
+
+    // Вызываем при загрузке
+    updatePrice();
+    
+    // Вешаем обработчики на радио-кнопки
+    document.querySelectorAll('input[type="radio"]').forEach(function(radio) {
+        radio.addEventListener('change', updatePrice);
+    });
+
+    // Остальной код инициализации...
+    highlightRequiredAttributes();
+    
+    document.querySelector('.cart-form').addEventListener('submit', function(event) {
+        const attributeRows = document.querySelectorAll('.attribute-row');
+        let allSelected = true;
+
+        attributeRows.forEach(function(row) {
+            const radios = row.querySelectorAll('input[type="radio"]');
+            const isSelected = Array.from(radios).some(radio => radio.checked);
+            if (!isSelected) {
+                allSelected = false;
+            }
+        });
+
+        if (!allSelected && attributeRows.length > 0) {
+            event.preventDefault();
+            alert('Пожалуйста, выберите значение для каждого атрибута.');
+        }
+    });
     document.querySelector('.cart-form').addEventListener('submit', function(event) {
     const attributeRows = document.querySelectorAll('.attribute-row');
     let allSelected = true;
@@ -286,31 +406,67 @@
         alert('Пожалуйста, выберите значение для каждого атрибута.');
     }
 });
-    document.addEventListener('DOMContentLoaded', function() {
-    const basePrice = parseFloat('{{ item.price }}');
-    const priceElement = document.getElementById('current-price');
+document.addEventListener('DOMContentLoaded', function() {
+    // Находим базовую цену товара
+    const basePrice = parseFloat('{{ item.price }}'.replace(',', '.'));
+    // Находим элемент, где отображается цена
+    const priceElement = document.querySelector('.current-price b');
     
-    function updatePrice() {
-        let totalModifier = 0;
-        const selectedRadios = document.querySelectorAll('input[type="radio"]:checked');
-        selectedRadios.forEach(function(radio) {
-            const modifier = parseFloat(radio.dataset.priceModifier) || 0;
-            totalModifier += modifier;
-        });
-        const newPrice = basePrice + totalModifier;
-        priceElement.textContent = newPrice.toFixed(2) + ' Сом';
+    if (!priceElement) {
+        console.error('Price element not found');
+        return;
     }
     
-    // Обновляем цену при изменении выбора атрибутов
-    document.querySelectorAll('input[type="radio"]').forEach(function(radio) {
-        radio.addEventListener('change', updatePrice);
+    // cart/static/assets/js/cart.js
+const updateCartItem = async (cartItemId, newQuantity, cartId) => {
+  try {
+    // Собираем выбранные атрибуты
+    const attributes = [];
+    document.querySelectorAll(`input[type="radio"]:checked`).forEach(radio => {
+      attributes.push(radio.value);
+    });
+
+    const formData = new URLSearchParams({
+      cart_item_id: cartItemId,
+      new_quantity: newQuantity,
+      cart_id: cartId,
+      'attributes[]': attributes  // Добавляем атрибуты
+    });
+
+    const response = await fetch("/cart/update_cart_item/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value,
+      },
+      body: formData,
+    });
+
+    } catch (error) {
+            console.error("Ошибка при обновлении товара в корзине:", error);
+        }
+    };
+
+    // ... остальной код
+    
+    // Выводим в консоль всех радио-кнопок для отладки
+    const allRadios = document.querySelectorAll('input[type="radio"]');
+    console.log('Found radio buttons:', allRadios.length);
+    
+    // Добавляем обработчики событий
+    allRadios.forEach(function(radio) {
+        console.log('Radio button:', radio.name, 'Price modifier:', radio.dataset.priceModifier);
+        radio.addEventListener('change', function() {
+            console.log('Radio changed:', this.name, 'New price modifier:', this.dataset.priceModifier);
+            updatePrice();
+        });
     });
     
     // Инициализируем цену при загрузке страницы
     updatePrice();
 });
        
-       function handleImageClick(event) {
+    function handleImageClick(event) {
         const itemImage = document.getElementsByClassName("item-image")[0]; 
         const clickedImageSrc = event.target.src;
 

@@ -19,7 +19,7 @@ class ItemForm(forms.ModelForm):
 
     class Meta:
         model = Item
-        fields = ['title', 'description', 'price', 'old_price', 'wholesale_price', 'quantity', 'image', 'video','to_order','is_available', 'tags']
+        fields = ['title', 'description', 'price', 'old_price', 'wholesale_price', 'quantity', 'image','image1', 'image2', 'image3', 'image4', 'video','to_order','is_available', 'tags']
 
     def __init__(self, *args, **kwargs):
         super(ItemForm, self).__init__(*args, **kwargs)
@@ -63,11 +63,13 @@ class ItemForm(forms.ModelForm):
                 min_value=0,
                 required=False
             )
+            # В методе add_attribute_fields добавить валидацию
             self.fields[f'price_modifier_new_{attribute.id}'] = forms.DecimalField(
                 label=f"Модификатор цены нового значения для {attribute.name}",
                 decimal_places=2,
                 max_digits=10,
-                required=False
+                required=False,
+                initial=0  # Установить значение по умолчанию
             )
 
         self.attribute_fields_added = True
