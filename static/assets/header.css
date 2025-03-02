@@ -1239,7 +1239,11 @@ body {
         height: 35px;
     }
 }
-
+@media (min-width: 1700px) and (max-width: 1919px) {
+    .inner1 {
+        width: 1300px;
+    }
+}
 /* Ultra HD (1920px+) */
 @media (min-width: 1920px) { 
     /* Further increased container widths */
@@ -1563,5 +1567,18 @@ body {
 
     .icons-header {
         width: 100px;
+    }
+}
+
+
+@media (min-width: 3840px) {
+    .inner1 {
+        max-width: 3110px;
+    }
+    .header-logo .right {
+        margin-left: 2550px;
+    }
+    .header-logo .left {
+        margin-left: 250px;
     }
 }

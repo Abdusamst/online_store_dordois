@@ -47,7 +47,7 @@
             </div>
         {% else %}
             <div class="ad-placeholder-container">
-                <a href="https://wa.me/ВашНомер" target="_blank" class="ad-placeholder">Здесь может быть ваша реклама</a>
+                <a href="https://wa.me/996552840777" target="_blank" class="ad-placeholder">Здесь может быть ваша реклама</a>
             </div>
         {% endif %}
     </div>
@@ -178,76 +178,36 @@
                             </label>
                         {% endfor %}
 
-
                         
                     </div>
                 {% endfor %}
                 
             </form>
         </div>
-
-        <!-- <div class="item-info">
-
-
+        <div class="item-info">
             <div class="price-container-top">
                 <p class="item-price">
                     <span class="current-price" id="current-price">
-                    <b>{{ item.price }}</b> СОМ
-                    <form method="post" action="{% url 'cart:add_to_cart' item.slug %}" class="cart-form">
-                        {% csrf_token %}
-                        <button type="submit" class="button add-to-cart">Добавить в корзину</button>
+                        <b>{{ item.price }}</b> СОМ
                     </span>
                 </p>
-
+                <!-- Кнопка "Добавить в корзину" теперь вне формы -->
+                <button type="button" class="button add-to-cart" onclick="submitCartForm()">Добавить в корзину</button>
             </div>
-            <div class="price-container-bottom">
-                {% if item.wholesale_price %}
-                <p class="item-wholesale-price" id="wholesale-price" style="display:none;">
-                    <b>{{ item.wholesale_price }}</b> Сом (опт)
-                    <form method="post" action="{% url 'cart:add_to_cart' item.slug %}" class="cart-form">
-                        {% csrf_token %}
-
-                        {% regroup item_attributes by attribute_value.attribute as attributes_list %}
-                        
-                        {% if item.wholesale_price and item.quantity >= 10 %}
-                            <input type="hidden" name="wholesale" value="true" id="wholesale-input" disabled>
-                            <p>{{ item.wholesale_price }} Сом</p>
-                            <button type="submit" class="button wholesale-button" onclick="enableWholesale()">Купить оптом (+10)</button>
-                        {% endif %}
-                    </form>
-                    
-                </p>
-                {% endif %}
-            </div> -->
-            <div class="item-info">
-                <div class="price-container-top">
-                    <p class="item-price">
-                        <span class="current-price" id="current-price">
-                            <b>{{ item.price }}</b> СОМ
-                        </span>
-                    </p>
-                    <form method="post" action="{% url 'cart:add_to_cart' item.slug %}" class="cart-form">
-                        {% csrf_token %}
-                        <button type="submit" class="button add-to-cart">добавить в корзину</button>
-                    </form>
-                </div>
-                
-                <div class="price-container-bottom">
-                    {% if item.wholesale_price and item.quantity >= 10 %}
-                        <p class="item-wholesale-price" id="wholesale-price">
-                            <b>{{ item.wholesale_price }}</b> СОМ ОПТОМ
-                        </p>
-                        <form method="post" action="{% url 'cart:add_to_cart' item.slug %}" class="cart-form">
-                            {% csrf_token %}
-                            <input type="hidden" name="wholesale" value="true" id="wholesale-input">
-                            <button type="submit" class="button wholesale-button" onclick="enableWholesale()">Купить оптом</button>
-                        </form>
-                    {% endif %}
-                </div>
             
-
+            <div class="price-container-bottom">
+                {% if item.wholesale_price and item.quantity >= 10 %}
+                    <p class="item-wholesale-price" id="wholesale-price">
+                        <b>{{ item.wholesale_price }}</b> СОМ ОПТОМ
+                    </p>
+                    <form method="post" action="{% url 'cart:add_to_cart' item.slug %}" class="cart-form wholesale-form">
+                        {% csrf_token %}
+                        <input type="hidden" name="wholesale" value="true" id="wholesale-input">
+                        <button type="submit" class="button wholesale-button" onclick="enableWholesale()">Купить оптом</button>
+                    </form>
+                {% endif %}
             </div>
-
+        </div>
             
 
         </div>
@@ -311,6 +271,33 @@
 </div>
 
 <script>
+function submitCartForm() {
+    const form = document.querySelector('.cart-form');
+    if (form) {
+        // Check if we have attribute rows
+        const attributeRows = form.querySelectorAll('.attribute-row');
+        let allSelected = true;
+
+        // Only perform the check if there are attribute rows
+        if (attributeRows.length > 0) {
+            attributeRows.forEach(function(row) {
+                const radios = row.querySelectorAll('input[type="radio"]');
+                const isSelected = Array.from(radios).some(radio => radio.checked);
+                if (!isSelected) {
+                    allSelected = false;
+                }
+            });
+        }
+
+        if (!allSelected && attributeRows.length > 0) {
+            alert('Пожалуйста, выберите значение для каждого атрибута.');
+            return; // Don't submit the form
+        }
+        
+        // All attributes selected or no attributes needed, submit the form
+        form.submit();
+    }
+}
     // Добавьте в начало скрипта функцию для подсветки невыбранных атрибутов
     function updatePrice() {
     // Get the base price from the Django template

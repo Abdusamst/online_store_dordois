@@ -55,13 +55,18 @@ class CartItem(models.Model):
 
     @property
     def total_price(self):
-        base_price = self.item.price * self.quantity
+        # Получаем сумму модификаторов цены от всех атрибутов
         price_modifier = sum(
             attr.attribute_value.price_modifier or 0 
             for attr in self.attribute_values.all() 
             if attr.attribute_value  # Only include if attribute_value exists
         )
-        return base_price + price_modifier
+        
+        # Базовая цена товара с учетом модификаторов атрибутов для КАЖДОЙ единицы товара
+        adjusted_unit_price = self.item.price + price_modifier
+        
+        # Умножаем на количество
+        return adjusted_unit_price * self.quantity
 
     def __str__(self):
         return f"{self.quantity} x {self.item.title}"

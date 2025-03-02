@@ -8,10 +8,164 @@
 }
 
 
+/* Left Section */
+.left-section {
+    position: absolute;
+    left: 1px;
+    top: 425px;
+    transform: translateY(-50%);
+    width: 200px;
+    background: #fff;
+    border: 1px solid #ddd;
+    overflow: hidden;
+}
+
+/* Секция маркетплейсов */
+.marketplace-section {
+    font-family: Arial, Helvetica, sans-serif;
+    padding: 15px;
+    border: 3px solid black;
+}
+
+.section-header {
+    text-align: center;
+    font-size: 22px;
+}
+
+.bold-text {
+    font-weight: 900;
+    font-size: 15px;
+    display: block;
+}
+
+.grey-text {
+    font-weight: normal;
+    font-size: 18px;
+    color: grey;
+    display: block;
+}
+
+.marketplace-logos {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+}
+
+.marketplace-logo {
+    max-width: 150px;
+    height: auto;
+}
+
+/* Секция доставки */
+.delivery-section {
+    padding: 15px;
+}
+
+.delivery-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 5px;
+}
+
+.country-flag {
+    width: 90px;
+    height: auto;
+    object-fit: contain;
+}
+
+.delivery-item span {
+    font-family: Arial, Helvetica, sans-serif;
+    display: flex;
+    flex-direction: column;
+    font-size: 15px;
+    font-weight: bold;
+    text-transform: uppercase;
+    line-height: 1.2;
+}
+
+/* Ad Section */
+.ad-section {
+    position: absolute;
+    right: 15px;
+    top: 440px;
+    transform: translateY(-50%);
+    width: 200px;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.ad-header {
+    color: rgb(0, 0, 0);
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.top-ads,
+.bottom-ads {
+    width: 200px;
+    height: 250px;
+    margin: 10px 0;
+    position: relative;
+    background: #ff1414;
+    border: 1px solid #000000;
+}
+
+.top-ads .carousel-inner,
+.bottom-ads .carousel-inner {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+    height: 100%;
+}
+
+.top-ads .carousel-item,
+.bottom-ads .carousel-item {
+    flex: 0 0 100%;
+    width: 100%;
+    height: 100%;
+    align-items: stretch;
+    justify-content: center;
+}
+
+.ad-card {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    text-decoration: none;
+}
+
+.ad-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.ad-placeholder-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    text-align: center;
+}
+
+.ad-placeholder {
+    color: #666;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+
 .item-attributes {
+    min-width: 300px;
     margin: 20px 0;
     padding: 15px;
-    border: 1px solid #eee;
     border-radius: 5px;
 }
 
@@ -89,7 +243,47 @@
 
 /* Стили для кастомных радио-кнопок */
 
+/* Делаем контейнеры радио-кнопок горизонтальными и добавляем отступы */
+.custom-radio {
+    display: inline-block;
+    margin-right: 10px;
+}
 
+/* Скрываем стандартные радио-кнопки */
+.custom-radio input[type="radio"] {
+    display: none;
+}
+
+/* Стилизуем span как кнопку */
+.custom-radio span {
+    display: inline-block;
+    padding: 10px 20px;
+    border: 1px solid #ccc;    /* Граница */
+    border-radius: 5px;        /* Закругленные углы */
+    cursor: pointer;           /* Курсор как при наведении на кнопку */
+    transition: background-color 0.3s, color 0.3s; /* Плавный переход цветов */
+}
+
+/* Эффект при наведении на кнопку */
+.custom-radio span:hover {
+    background-color: #e0e0e0; /* Чуть темнее при наведении */
+}
+
+/* Стили для выбранного состояния */
+.custom-radio input[type="radio"]:checked + span {
+    background-color: #007bff; /* Синий фон для выбранной кнопки */
+    color: white;             /* Белый текст */
+}
+
+/* Дополнительно стилизуем ряд атрибутов (опционально) */
+.attribute-row {
+    margin-bottom: 15px; /* Отступ между рядами атрибутов */
+}
+
+.attribute-row > label {
+    font-weight: bold;   /* Название атрибута жирным */
+    margin-right: 10px;  /* Отступ перед кнопками */
+}
 
 
 
@@ -588,6 +782,64 @@
     background-color: #0056b3;
 }
 
+
+@media (max-width: 575px) {
+    .left-section {
+        top: 445px;
+        width: 120px;
+    }
+    .section-header {
+        font-size: 18px;
+    }
+    .marketplace-logo {
+        max-width: 100px;
+    }
+    .country-flag {
+        width: 60px;
+    }
+    .ad-section {
+        top: 350px;
+        width: 100px;
+    }
+    .top-ads,
+    .bottom-ads {
+        height: 150px;
+        background: #fff;
+        border: 1px solid #e0e0e0;
+    }
+    .ad-card img {
+        width: 50%;
+    }
+}
+
+@media (min-width: 576px) and (max-width: 767px) {
+    .left-section {
+        top: 325px;
+        width: 120px;
+    }
+    .section-header {
+        font-size: 18px;
+    }
+    .marketplace-logo {
+        max-width: 100px;
+    }
+    .country-flag {
+        width: 60px;
+    }
+    .ad-section {
+        top: 340px;
+        width: 100px;
+    }
+    .top-ads,
+    .bottom-ads {
+        height: 150px;
+        background: #fff;
+        border: 1px solid #e0e0e0;
+    }
+    .ad-card img {
+        width: 50%;
+    }
+}
 /* Адаптивные стили */
 @media (max-width: 768px) {
     .item-card {
@@ -619,6 +871,32 @@
     .submit-button {
         width: 100%;
     }
+    .left-section {
+        top: 325px;
+        width: 120px;
+    }
+    .section-header {
+        font-size: 18px;
+    }
+    .marketplace-logo {
+        max-width: 100px;
+    }
+    .country-flag {
+        width: 60px;
+    }
+    .ad-section {
+        top: 260px;
+        width: 100px;
+    }
+    .top-ads,
+    .bottom-ads {
+        height: 150px;
+        background: #fff;
+        border: 1px solid #e0e0e0;
+    }
+    .ad-card img {
+        width: 50%;
+    }
 }
 
 @media (max-width: 480px) {
@@ -645,12 +923,22 @@
     }
 }
 
+@media (min-width: 1530px) and (max-width: 1700px) {
+    .left-section {
+        top: 405px;
+        width: 120px;
+    }
+    .ad-section {
+        top: 455px;
+        width: 120px;
+    }
 
+
+}
 /* Left Section */
 .left-section {
     position: absolute;
     left: 1px;
-    top: 365px;
     transform: translateY(-50%);
     width: 200px;
     background: #fff;
@@ -736,7 +1024,6 @@
 .ad-section {
     position: absolute;
     right: 15px;
-    top: 380px;
     transform: translateY(-50%);
     width: 200px;
     background: #fff;
@@ -812,189 +1099,27 @@
 /* Media Queries */
 
 /* Standard Mobile (400-575px) */
-@media (max-width: 575px) {
-    .left-section {
-        top: 445px;
-        width: 120px;
-    }
-    
-    .section-header {
-        text-align: center;
-        font-size: 18px; /* Общий размер шрифта */
-    }
-    
-    .marketplace-logo {
-        max-width: 100px;
-        height: auto;
-    }
-    
-    .country-flag {
-        width: 60px;
-        height: auto;
-        object-fit: contain;
-    }
-    
-    .ad-section {
-        position: absolute;
-        right: 15px;
-        top: 350px;
-        transform: translateY(-50%);
-        width: 100px;
-        background: #fff;
-        border-radius: 8px;
-        overflow: hidden;
-    }
-    
-    .top-ads,
-    .bottom-ads {
-        width: 200px;
-        height: 150px;
-        margin: 10px 0;
-        position: relative;
-        background: #fff;
-        border: 1px solid #e0e0e0;
-    }
-    .ad-card img {
-        width: 50%;
-    }
-}
-
-/* Large Mobile/Tablet Portrait (576-767px) */
-@media (min-width: 576px) and (max-width: 767px) { 
-    .left-section {
-        top: 325px;
-        width: 120px;
-    }
-    
-    .section-header {
-        text-align: center;
-        font-size: 18px; /* Общий размер шрифта */
-    }
-    
-    .marketplace-logo {
-        max-width: 100px;
-        height: auto;
-    }
-    
-    .country-flag {
-        width: 60px;
-        height: auto;
-        object-fit: contain;
-    }
-    
-    .ad-section {
-        position: absolute;
-        right: 15px;
-        top: 340px;
-        transform: translateY(-50%);
-        width: 100px;
-        background: #fff;
-        border-radius: 8px;
-        overflow: hidden;
-    }
-    
-    .top-ads,
-    .bottom-ads {
-        width: 200px;
-        height: 150px;
-        margin: 10px 0;
-        position: relative;
-        background: #fff;
-        border: 1px solid #e0e0e0;
-    }
-    .ad-card img {
-        width: 50%;
-    }
-}
-
-/* Tablet Portrait (768px) */
-@media (width: 768px) {
-    .left-section {
-        top: 325px;
-        width: 120px;
-    }
-    
-    .section-header {
-        text-align: center;
-        font-size: 18px; /* Общий размер шрифта */
-    }
-    
-    .marketplace-logo {
-        max-width: 100px;
-        height: auto;
-    }
-    
-    .country-flag {
-        width: 60px;
-        height: auto;
-        object-fit: contain;
-    }
-    
-    .ad-section {
-        position: absolute;
-        right: 15px;
-        top: 260px;
-        transform: translateY(-50%);
-        width: 100px;
-        background: #fff;
-        border-radius: 8px;
-        overflow: hidden;
-    }
-    
-    .top-ads,
-    .bottom-ads {
-        width: 200px;
-        height: 150px;
-        margin: 10px 0;
-        position: relative;
-        background: #fff;
-        border: 1px solid #e0e0e0;
-    }
-    .ad-card img {
-        width: 50%;
-    }
-}
-
-/* Tablet Landscape (769-991px) */
 @media (min-width: 769px) and (max-width: 991px) {
     .left-section {
-        top: 315px;
+        top: 400px;
         width: 150px;
     }
-    
     .section-header {
-        text-align: center;
-        font-size: 18px; /* Общий размер шрифта */
+        font-size: 18px;
     }
-    
     .marketplace-logo {
         max-width: 100px;
-        height: auto;
     }
-    
     .country-flag {
         width: 60px;
-        height: auto;
-        object-fit: contain;
     }
-    
     .ad-section {
-        position: absolute;
-        right: 15px;
-        top: 315px;
-        transform: translateY(-50%);
+        top: 415px;
         width: 150px;
-        background: #fff;
-        border-radius: 8px;
-        overflow: hidden;
     }
-    
     .top-ads,
     .bottom-ads {
-        width: 200px;
         height: 200px;
-        margin: 10px 0;
-        position: relative;
         background: #fff;
         border: 1px solid #e0e0e0;
     }
@@ -1003,46 +1128,28 @@
     }
 }
 
-/* Desktop (992-1199px) */
-@media (min-width: 992px) and (max-width: 1199px) { 
+
+@media (min-width: 992px) and (max-width: 1199px) {
     .left-section {
-        top: 315px;
+        top: 415px;
         width: 150px;
     }
-    
     .section-header {
-        text-align: center;
-        font-size: 18px; /* Общий размер шрифта */
+        font-size: 18px;
     }
-    
     .marketplace-logo {
         max-width: 100px;
-        height: auto;
     }
-    
     .country-flag {
         width: 60px;
-        height: auto;
-        object-fit: contain;
     }
-    
     .ad-section {
-        position: absolute;
-        right: 15px;
-        top: 315px;
-        transform: translateY(-50%);
+        top: 395px;
         width: 150px;
-        background: #fff;
-        border-radius: 8px;
-        overflow: hidden;
     }
-    
     .top-ads,
     .bottom-ads {
-        width: 200px;
         height: 200px;
-        margin: 10px 0;
-        position: relative;
         background: #fff;
         border: 1px solid #e0e0e0;
     }
@@ -1051,32 +1158,38 @@
     }
 }
 
-/* Large Desktop (1200-1399px) */
-@media (min-width: 1200px) and (max-width: 1399px) { 
-    .ad-section {
-        top: 360px;
-    }
+/* Desktop (1200-1399px) */
+@media (min-width: 1200px) and (max-width: 1399px) {
     .left-section {
-        top: 345px;
+        top: 425px;
+    }
+    .ad-section {
+        top: 450px;
+    }
+
+}
+@media (min-width: 1700px) and (max-width: 1919px) {
+    .left-section {
+        top: 420px;
+    }
+    .ad-section {
+        top: 450px;
     }
 }
-
-/* Extra Large Desktop (1920px) */
+/* Desktop (1920px) */
 @media (min-width: 1920px) {
 
-    .ad-section {
-        top: 430px;
-    }
     .left-section {
-        top: 365px;
+        top: 420px;
+    }
+    .ad-section {
+        top: 450px;
     }
 }
 
-/* 2K (2560x1440) */
-@media (min-width: 2560px) { 
-    .ad-section {
-        top: 430px;
-    }
+/* 2K (2560px) */
+@media (min-width: 2560px) {
+
     .left-section {
         top: 520px;
         width: 300px;
@@ -1085,33 +1198,7 @@
         font-size: 27px;
     }
     .grey-text {
-        font-size: 22px;    
-    }
-    .country-flag {
-        width: 200px;
-    }
-    .delivery-item span {
-        font-size: 23px;
-    }
-    .marketplace-logo {
-        max-width: 200px;
-    }
-    .ad-section {
-        top: 600px;
-        width: 350px;
-        right: calc((100% - 2560px) / 2 + 20px);
-    }
-    .top-ads,
-    .bottom-ads {
-        width: 350px;
-        height: 400px;
-    }
-    .ad-header {
-        padding: 15px;
-        font-size: 44px;
-    }
-    .ad-placeholder {
-        font-size: 20px;
+        font-size: 22px;
     }
     .country-flag {
         width: 150px;
@@ -1119,19 +1206,38 @@
     .delivery-item span {
         font-size: 18px;
     }
+    .marketplace-logo {
+        max-width: 200px;
+    }
+    .ad-section {
+        top: 600px;
+        width: 350px;
+    }
+    .top-ads,
+    .bottom-ads {
+        width: 350px;
+        height: 400px;
+    }
+    .ad-header {
+        font-size: 44px;
+        padding: 15px;
+    }
+    .ad-placeholder {
+        font-size: 20px;
+    }
 }
 
-/* 2880px */
+/* Higher resolutions (2880px) */
 @media (min-width: 2880px) {
     .left-section {
         width: 320px;
-        top: 570px;
+        top: 650px;
     }
     .bold-text {
         font-size: 27px;
     }
     .grey-text {
-        font-size: 22px;    
+        font-size: 22px;
     }
     .country-flag {
         width: 200px;
@@ -1142,13 +1248,9 @@
     .marketplace-logo {
         max-width: 200px;
     }
-    .ad-header {
-        font-size: 44px;
-    }
     .ad-section {
-        top: 600px;
-        width: 450px;
-        right: calc((100% - 2880px) / 2 + 20px);
+        top: 760px;
+        width: 400px;
     }
     .top-ads,
     .bottom-ads {
@@ -1156,6 +1258,7 @@
         height: 400px;
     }
     .ad-header {
+        font-size: 44px;
         padding: 15px;
     }
     .ad-placeholder {
@@ -1163,17 +1266,17 @@
     }
 }
 
-/* 4K (3840x2160) */
+/* 4K (3840px) */
 @media (min-width: 3840px) {
+
     .left-section {
         width: 320px;
-        top: 570px;
     }
     .bold-text {
         font-size: 27px;
     }
     .grey-text {
-        font-size: 22px;    
+        font-size: 22px;
     }
     .country-flag {
         width: 200px;
@@ -1184,13 +1287,9 @@
     .marketplace-logo {
         max-width: 200px;
     }
-    .ad-header {
-        font-size: 44px;
-    }
     .ad-section {
-        top: 600px;
+        top: 800px;
         width: 350px;
-        right: calc((100% - 2880px) / 2 + 20px);
     }
     .top-ads,
     .bottom-ads {
@@ -1198,29 +1297,10 @@
         height: 400px;
     }
     .ad-header {
+        font-size: 44px;
         padding: 15px;
     }
     .ad-placeholder {
         font-size: 20px;
     }
-}
-
-
-.item-images{
-    flex-direction: column;
-    display: flex;
-    gap: 10px;
-}
-.item-images img{
-    width: 100px;
-    height: 100px;
-    object-fit: cover;
-    border-radius: 5px;
-}
-.item-images img:hover{
-    transform: scale(1.1);
-    cursor: pointer;
-    width: 110px;
-    height: 110px;
-    object-fit: cover;
 }
