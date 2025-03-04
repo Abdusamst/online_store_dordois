@@ -1,3 +1,152 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5f5; /* Серый фон по бокам */
+    min-height: 100vh;
+}
+
+/* Центральный контейнер с фиксированной шириной */
+.site-container {
+    max-width: 1500px; /* Фиксированная ширина контента */
+    margin: 0 auto; /* Центрирование */
+    background-color: #fff; /* Белый фон центральной части */
+    min-height: 100vh; /* На всю высоту экрана */
+    position: relative; /* Важно для правильного позиционирования внутренних элементов */
+    overflow: hidden; /* Чтобы содержимое не выходило за пределы контейнера */
+    margin-top: -90px;
+    overflow: visible;
+}
+
+/* Структура основного контента */
+.main_page1 {
+    position: relative; /* Для правильного позиционирования дочерних элементов */
+    width: 100%;
+    display: block; /* Меняем на block для более предсказуемого размещения */
+    padding-top: 30px; /* Чтобы был отступ сверху */
+}
+
+.inner12 {
+    width: 100%;
+    position: relative;
+    top: 0; /* Убираем отрицательный top */
+    padding: 0;
+    max-width: 800px; /* Максимальная ширина для центрального контента */
+    margin: 0 auto; /* Центрирование */
+}
+
+/* Стили для карусели */
+.carousel-slide {
+    width: 100%;
+    max-width: 800px;
+    height: 300px;
+    margin: 0 auto;
+    border: 4px solid #0047AB;
+    border-radius: 25px;
+    background: #2057a7;
+    overflow: hidden;
+}
+
+/* Стиль для изображения Jhin */
+.jhin-seller-container {
+    position: absolute;
+    right: 0;
+    top: 50px;
+    width: 220px;
+    z-index: 5;
+}
+
+.Jhin {
+    width: 220px;
+    height: 350px;
+    position: static; /* Убираем абсолютное позиционирование */
+    margin: 0;
+}
+
+.become-seller {
+    position: relative;
+    text-align: center;
+    margin-top: 10px;
+}
+
+/* Стили для левой секции */
+.left-section {
+    position: absolute;
+    left: 0;
+    top: 205px;
+    width: 200px;
+    background: #fff;
+    border: 1px solid #ddd;
+    z-index: 10;
+    transform: none; /* Убираем transform */
+}
+
+/* Стили для рекламной секции */
+.ad-section {
+    position: absolute;
+    right: 0;
+    top: 220px;
+    width: 200px;
+    background: #fff;
+    border-radius: 8px;
+    z-index: 10;
+    transform: none; /* Убираем transform */
+}
+
+/* Стили для тегов */
+.tags_mainpage {
+    display: flex;
+    overflow-x: auto; /* Добавляем горизонтальную прокрутку */
+    gap: 20px;
+    padding: 20px;
+    margin: 30px auto;
+    max-width: 100%;
+    justify-content: flex-start;
+}
+
+/* Секция продуктов */
+#products {
+    padding: 20px;
+    clear: both;
+}
+
+#products .inner {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+.product-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+/* Адаптивность */
+@media (max-width: 1200px) {
+    .left-section, .ad-section {
+        display: none; /* Скрываем боковые секции на маленьких экранах */
+    }
+    
+    .jhin-seller-container {
+        position: relative;
+        margin: 20px auto;
+        text-align: center;
+    }
+    
+    #products {
+        margin-top: 50px;
+    }
+}
+
+
+
+
+
+
+
+
+
+
 /* Стили для карусели */
 .carousel-slide {
     position: relative;
@@ -9,6 +158,11 @@
 }
 .market-title {
     opacity: 0.5;
+}
+
+.become-seller img {
+    width: 170px;
+    height: 100px;
 }
 
 .carousel-inner {
@@ -104,10 +258,10 @@
     padding: 7px 25px;
     text-decoration: none;
     border-radius: 30px;
-    margin-left: 995px;
     position: absolute;
-    margin-top: -330px;
     color: white;
+    margin-top: -55px;
+    margin-left: -90px;
 }
 
 .beseller img {
@@ -124,9 +278,8 @@
     width: 220px;
     height: 350px;
     position: absolute;
-    margin-left: 1074px;
-    margin-top: -300px;
-    z-index: -1;
+    margin-left: 74px;
+    z-index: 1;
 }
 
 .tags_mainpage {
@@ -271,8 +424,6 @@ i.fa-heart {
 
  .left-section {
     position: absolute;
-    left: 1px;
-    top: 425px;
     transform: translateY(-50%);
     width: 200px;
     background: #fff;
@@ -361,8 +512,6 @@ i.fa-heart {
 
  .ad-section {
     position: absolute;
-    right: 15px;
-    top: 440px;
     transform: translateY(-50%);
     width: 200px;
     background: #fff;
@@ -440,8 +589,8 @@ i.fa-heart {
 
 .carousel-container {
     position: relative;
-    max-width: 1120px;
-    margin-right: 400px;
+    max-width: 2520px;
+    margin-right: 200px;
 }
 
 .carousel-slide {
@@ -537,8 +686,9 @@ i.fa-heart {
     scroll-behavior: smooth;
     gap: 20px;
     padding: 20px 50px;
-    margin-left: 140px;
+    margin-left: 200px;
     margin-top: 20px;
+    z-index: 5;
 }
 
 .next, .previous {
@@ -607,7 +757,6 @@ i.fa-heart {
     width: 100%;
     margin: 0 auto; /* This centers the content */
     position: relative;
-    top: -90px;
 }
 
 #products {
@@ -717,1726 +866,3 @@ i.fa-heart {
 
 
 
-/* Small Mobile (0-399px) */
-@media (max-width: 399px) {
-
-    .product-image {
-        width: 100%;
-        height: 100%;
-        object-fit: fill;
-    }
-    .doorlogo {
-        width: 60px;
-        height: 20px;
-    }
-    
-    .subtitle {
-        font-size: 14px;
-    }
-
-
-    .market-title {
-        font-size: 22px;
-    }
-    .beseller {
-        margin-top: 250px;
-        margin-left: 10px;
-    }
-
-    #products {
-        margin-top: 600px;
-    }
-
-    .Jhin {
-        margin-top: 300px;
-        margin-left: 100px;
-        width: 300px;
-        height: 500px;
-    }
-    
-    .carousel-slide {
-        width: 350px;
-        height: 200px;
-        margin-left: 20px;
-        margin-top: 10px;
-    }
-
-    .carousel-container {
-        width: 400px;
-        margin-left: 20px;
-    }
-
-
-    .tags_mainpage .image {
-        width: 150px;
-        height: 150px;
-        border-radius: 50%;
-        margin-left: 70px;
-    }
-    .tags_mainpage {
-        margin-right: 100px;
-    }
-
-    .product-item {
-        flex: 1 1 calc(50% - 20px);
-        max-width: calc(50% - 20px);
-    }
-
-}
-  
-  /* Standard Mobile (400-575px) */
-  @media (max-width: 575px) {
-    .left-section {
-        top: 445px;
-        width: 120px;
-    }
-    
-    /* Стили для секции маркетплейсов */
-    
-
-    .section-header {
-        text-align: center;
-        font-size: 18px; /* Общий размер шрифта */
-    }
-    
-    .ad-card img {
-        width: 50%;
-    }
-    
-    
-    .marketplace-logo {
-        max-width: 100px;
-        height: auto;
-    }
-    
-    /* Стили для секции доставки */
-    
-    
-    .country-flag {
-        width: 60px;
-        height: auto;
-        object-fit: contain;
-    }
-    
-    
-    
-    .ad-section {
-        position: absolute;
-        right: 15px;
-        top: 350px;
-        transform: translateY(-50%);
-        width: 100px;
-        background: #fff;
-        border-radius: 8px;
-        overflow: hidden;
-    }
-    
-    /* Заголовок рекламы */
-    
-    /* Контейнер для рекламных блоков */
-    .top-ads,
-    .bottom-ads {
-        width: 200px;
-        height: 150px;
-        margin: 10px 0;
-        position: relative;
-        background: #fff;
-        border: 1px solid #e0e0e0;
-    }
-    
-    
-    
-        
-    
-    
-        .product-image {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-    
-        .carousel-content {
-            width: 200px;
-            height: 200px;
-        }
-        .carousel-slide {
-            width: 100px;
-            height: 100px;
-            margin-left: 250px;
-            margin-top: 10px;
-        }
-    
-        
-        .subtitle {
-            font-size: 20px;
-        }
-    
-    
-        .market-title {
-            font-size: 30px;
-        }
-        .beseller {
-            margin-top: -210px;
-            margin-left: 620px;
-        }
-    
-        .beseller img {
-            width: 90px;
-            height: 60px;
-        }
-    
-        .doorlogo {
-            width: 100px;
-            height: 50px;
-        }
-        
-
-        .carousel-container {
-            margin-left: 180px;
-        }
-        .image-caption {
-            font-size: 19px;
-        }
-            
-        .tags_mainpage {
-            display: flex;
-            width: 505px;
-            flex-wrap: wrap; /* Добавляем перенос элементов */
-            gap: 5px; /* Уменьшаем отступы между элементами */
-            padding: 10px; 
-            margin-left: 90px;
-        }
-    
-        .tags_mainpage .image {
-            width: 60px; /* Уменьшаем размер изображений */
-            height: 60px;
-            border-radius: 50%;
-            margin-left: 0; /* Убираем отступ слева */
-        }
-    
-        .tags_mainpage a {
-            flex: 0 0 auto; /* Предотвращаем растягивание элементов */
-            margin: 5px; /* Добавляем небольшой отступ между элементами */
-        }
-    
-        .tags_mainpage b {
-            font-size: 12px; /* Уменьшаем размер текста */
-            margin-top: 5px; /* Уменьшаем отступ сверху */
-        }
-
-    .carousel-content {
-        width: 230px;
-        height: 150px;
-    }
-    .product-image {
-        width: 100%;
-        height: 100%;
-        object-fit: fill;
-    }
-    .doorlogo {
-        width: 60px;
-        height: 20px;
-    }
-    
-    .subtitle {
-        font-size: 14px;
-    }
-
-
-    .market-title {
-        margin-top: -20px;
-        font-size: 17px;
-    }
-    .beseller {
-        margin-top: 410px;
-        margin-left: 360px;
-    }
-
-    #products {
-        margin-top: 200px;
-    }
-    .doorlogo {
-        width: 80px;
-        height: 20px;
-    }
-
-    .Jhin {
-        margin-top: 450px;
-        margin-left: 400px;
-        width: 200px;
-        height: 300px;
-    }
-    
-    .carousel-slide {
-        width: 230px;
-        height: 150px;
-        margin-left: 290px;
-        margin-top: 10px;
-    }
-
-    .carousel-container {
-        width: 400px;
-        margin-left: 180px;
-    }
-    .image-caption {
-        font-size: 10px;
-    }
-        
-    .tags_mainpage {
-        display: flex;
-        width: 280px;
-        flex-wrap: wrap; /* Добавляем перенос элементов */
-        gap: 10px; /* Уменьшаем отступы между элементами */
-        padding: 10px; /* Уменьшаем отступы по краям */
-    }
-
-    .tags_mainpage .image {
-        width: 60px; /* Уменьшаем размер изображений */
-        height: 60px;
-        border-radius: 50%;
-        margin-left: 0; /* Убираем отступ слева */
-    }
-
-    .tags_mainpage a {
-        flex: 0 0 auto; /* Предотвращаем растягивание элементов */
-        margin: 5px; /* Добавляем небольшой отступ между элементами */
-    }
-
-    .tags_mainpage b {
-        font-size: 12px; /* Уменьшаем размер текста */
-        margin-top: 5px; /* Уменьшаем отступ сверху */
-    }
-
-    .product-item {
-        flex: 1 1 calc(50% - 20px);
-        max-width: calc(50% - 20px);
-    }
-    .beseller img {
-        width: 150px;
-        height: 75px;
-    }
-  }
-  
-  /* Large Mobile/Tablet Portrait (576-767px) */
-  @media (min-width: 576px) and (max-width: 767px) { 
-    .left-section {
-        top: 325px;
-        width: 120px;
-    }
-    
-    /* Стили для секции маркетплейсов */
-    
-
-    .section-header {
-        text-align: center;
-        font-size: 18px; /* Общий размер шрифта */
-    }
-    
-    .ad-card img {
-        width: 50%;
-    }
-    
-    
-    .marketplace-logo {
-        max-width: 100px;
-        height: auto;
-    }
-    
-    /* Стили для секции доставки */
-    
-    
-    .country-flag {
-        width: 60px;
-        height: auto;
-        object-fit: contain;
-    }
-    
-    
-    
-    .ad-section {
-        position: absolute;
-        right: 15px;
-        top: 340px;
-        transform: translateY(-50%);
-        width: 100px;
-        background: #fff;
-        border-radius: 8px;
-        overflow: hidden;
-    }
-    
-    /* Заголовок рекламы */
-    
-    /* Контейнер для рекламных блоков */
-    .top-ads,
-    .bottom-ads {
-        width: 200px;
-        height: 150px;
-        margin: 10px 0;
-        position: relative;
-        background: #fff;
-        border: 1px solid #e0e0e0;
-    }
-    
-    
-    
-        
-    
-    
-        .product-image {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-    
-        .carousel-content {
-            width: 350px;
-            height: 200px;
-        }
-        
-        .subtitle {
-            font-size: 20px;
-        }
-    
-    
-        .market-title {
-            font-size: 30px;
-        }
-        .beseller {
-            margin-top: -210px;
-            margin-left: 620px;
-        }
-    
-        .beseller img {
-            width: 90px;
-            height: 60px;
-        }
-    
-        .doorlogo {
-            width: 100px;
-            height: 50px;
-        }
-        
-        .carousel-slide {
-            width: 350px;
-            height: 200px;
-            margin-left: 280px;
-            margin-top: 10px;
-        }
-    
-        .carousel-container {
-            margin-left: 180px;
-        }
-        .image-caption {
-            font-size: 19px;
-        }
-            
-        .tags_mainpage {
-            display: flex;
-            width: 505px;
-            flex-wrap: wrap; /* Добавляем перенос элементов */
-            gap: 5px; /* Уменьшаем отступы между элементами */
-            padding: 10px; 
-            margin-left: 90px;
-        }
-    
-        .tags_mainpage .image {
-            width: 60px; /* Уменьшаем размер изображений */
-            height: 60px;
-            border-radius: 50%;
-            margin-left: 0; /* Убираем отступ слева */
-        }
-    
-        .tags_mainpage a {
-            flex: 0 0 auto; /* Предотвращаем растягивание элементов */
-            margin: 5px; /* Добавляем небольшой отступ между элементами */
-        }
-    
-        .tags_mainpage b {
-            font-size: 12px; /* Уменьшаем размер текста */
-            margin-top: 5px; /* Уменьшаем отступ сверху */
-        }
-
-    .carousel-content {
-        width: 330px;
-        height: 150px;
-    }
-    .product-image {
-        width: 100%;
-        height: 100%;
-        object-fit: fill;
-    }
-    .doorlogo {
-        width: 60px;
-        height: 20px;
-    }
-    
-    .subtitle {
-        font-size: 14px;
-    }
-
-
-    .market-title {
-        margin-top: -20px;
-        font-size: 17px;
-    }
-    .beseller {
-        margin-top: 410px;
-        margin-left: 260px;
-    }
-
-    #products {
-        margin-top: 350px;
-    }
-    .doorlogo {
-        width: 80px;
-        height: 20px;
-    }
-
-    .Jhin {
-        margin-top: 450px;
-        margin-left: 300px;
-        width: 200px;
-        height: 300px;
-    }
-    
-    .carousel-slide {
-        width: 330px;
-        height: 150px;
-        margin-left: 290px;
-        margin-top: 10px;
-    }
-
-    .carousel-container {
-        width: 400px;
-        margin-left: 180px;
-    }
-    .image-caption {
-        font-size: 10px;
-    }
-        
-    .tags_mainpage {
-        display: flex;
-        width: 370px;
-        flex-wrap: wrap; /* Добавляем перенос элементов */
-        gap: 10px; /* Уменьшаем отступы между элементами */
-        padding: 10px; /* Уменьшаем отступы по краям */
-    }
-
-    .tags_mainpage .image {
-        width: 60px; /* Уменьшаем размер изображений */
-        height: 60px;
-        border-radius: 50%;
-        margin-left: 0; /* Убираем отступ слева */
-    }
-
-    .tags_mainpage a {
-        flex: 0 0 auto; /* Предотвращаем растягивание элементов */
-        margin: 5px; /* Добавляем небольшой отступ между элементами */
-    }
-
-    .tags_mainpage b {
-        font-size: 12px; /* Уменьшаем размер текста */
-        margin-top: 5px; /* Уменьшаем отступ сверху */
-    }
-
-    .product-item {
-        flex: 1 1 calc(50% - 20px);
-        max-width: calc(50% - 20px);
-    }
-    .beseller img {
-        width: 150px;
-        height: 75px;
-    }
-
-  }
-  @media (width: 768px) {
-
-    .left-section {
-        top: 325px;
-        width: 120px;
-    }
-    
-    /* Стили для секции маркетплейсов */
-    
-
-    .section-header {
-        text-align: center;
-        font-size: 18px; /* Общий размер шрифта */
-    }
-    
-    .ad-card img {
-        width: 50%;
-    }
-    
-    
-    .marketplace-logo {
-        max-width: 100px;
-        height: auto;
-    }
-    
-    /* Стили для секции доставки */
-    
-    
-    .country-flag {
-        width: 60px;
-        height: auto;
-        object-fit: contain;
-    }
-    
-    
-    
-    .ad-section {
-        position: absolute;
-        right: 15px;
-        top: 260px;
-        transform: translateY(-50%);
-        width: 100px;
-        background: #fff;
-        border-radius: 8px;
-        overflow: hidden;
-    }
-    
-    /* Заголовок рекламы */
-    
-    /* Контейнер для рекламных блоков */
-    .top-ads,
-    .bottom-ads {
-        width: 200px;
-        height: 150px;
-        margin: 10px 0;
-        position: relative;
-        background: #fff;
-        border: 1px solid #e0e0e0;
-    }
-    
-    
-    
-        
-    
-    
-        .product-image {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-    
-        .carousel-content {
-            width: 350px;
-            height: 200px;
-        }
-        
-        .subtitle {
-            font-size: 20px;
-        }
-    
-    
-        .market-title {
-            font-size: 30px;
-        }
-        .beseller {
-            margin-top: -210px;
-            margin-left: 620px;
-        }
-    
-        .beseller img {
-            width: 90px;
-            height: 60px;
-        }
-    
-        .doorlogo {
-            width: 100px;
-            height: 50px;
-        }
-    
-        .Jhin {
-            margin-top: -180px;
-            margin-left: 650px;
-            width: 140px;
-            height: 230px;  
-        }
-        
-        .carousel-slide {
-            width: 350px;
-            height: 200px;
-            margin-left: 280px;
-            margin-top: 10px;
-        }
-    
-        .carousel-container {
-            margin-left: 180px;
-        }
-        .image-caption {
-            font-size: 19px;
-        }
-            
-        .tags_mainpage {
-            display: flex;
-            width: 505px;
-            flex-wrap: wrap; /* Добавляем перенос элементов */
-            gap: 5px; /* Уменьшаем отступы между элементами */
-            padding: 10px; 
-            margin-left: 90px;
-        }
-    
-        .tags_mainpage .image {
-            width: 60px; /* Уменьшаем размер изображений */
-            height: 60px;
-            border-radius: 50%;
-            margin-left: 0; /* Убираем отступ слева */
-        }
-    
-        .tags_mainpage a {
-            flex: 0 0 auto; /* Предотвращаем растягивание элементов */
-            margin: 5px; /* Добавляем небольшой отступ между элементами */
-        }
-    
-        .tags_mainpage b {
-            font-size: 12px; /* Уменьшаем размер текста */
-            margin-top: 5px; /* Уменьшаем отступ сверху */
-        }
-
-
-        
-        .product-item {
-            flex: 1 1 calc(25% - 20px);
-            max-width: calc(25% - 20px);
-        }
-            
-  }
-
-  @media (min-width: 769px) and (max-width: 991px) {
-
-
-    .left-section {
-        top:400px;
-        width: 150px;
-    }
-    
-    /* Стили для секции маркетплейсов */
-    
-    
-    .section-header {
-        text-align: center;
-        font-size: 18px; /* Общий размер шрифта */
-    }
-    
-    .ad-card img {
-        width: 75%;
-    }
-    
-    
-    .marketplace-logo {
-        max-width: 100px;
-        height: auto;
-    }
-    
-    /* Стили для секции доставки */
-    
-    
-    .country-flag {
-        width: 60px;
-        height: auto;
-        object-fit: contain;
-    }
-    
-
-    
-    .ad-section {
-        position: absolute;
-        right: 15px;
-        top:415px;
-        transform: translateY(-50%);
-        width: 150px;
-        background: #fff;
-        border-radius: 8px;
-        overflow: hidden;
-    }
-    
-    /* Заголовок рекламы */
-    
-    /* Контейнер для рекламных блоков */
-    .top-ads,
-    .bottom-ads {
-        width: 200px;
-        height: 200px;
-        margin: 10px 0;
-        position: relative;
-        background: #fff;
-        border: 1px solid #e0e0e0;
-    }
-    
-
-    
-        .product-image {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-    
-        .carousel-content {
-            width: 350px;
-            height: 200px;
-        }
-        
-        .subtitle {
-            font-size: 20px;
-        }
-    
-    
-        .market-title {
-            font-size: 30px;
-        }
-        .beseller {
-            margin-top: -210px;
-            margin-left: 660px;
-        }
-    
-        .beseller img {
-            width: 100px;
-            height: 60px;
-        }
-    
-        .doorlogo {
-            width: 100px;
-            height: 50px;
-        }
-    
-        .Jhin {
-            margin-top: -180px;
-            margin-left: 700px;
-            width: 150px;
-            height: 230px;  
-        }
-        
-        .carousel-slide {
-            width: 350px;
-            height: 200px;
-            margin-left: 310px;
-            margin-top: 10px;
-        }
-    
-        .carousel-container {
-            margin-left: 180px;
-        }
-        .image-caption {
-            font-size: 19px;
-        }
-            
-        .tags_mainpage {
-            display: flex;
-            width: 505px;
-            flex-wrap: wrap; /* Добавляем перенос элементов */
-            gap: 5px; /* Уменьшаем отступы между элементами */
-            padding: 10px; 
-            margin-left: 120px;
-        }
-    
-        .tags_mainpage .image {
-            width: 60px; /* Уменьшаем размер изображений */
-            height: 60px;
-            border-radius: 50%;
-            margin-left: 0; /* Убираем отступ слева */
-        }
-    
-        .tags_mainpage a {
-            flex: 0 0 auto; /* Предотвращаем растягивание элементов */
-            margin: 5px; /* Добавляем небольшой отступ между элементами */
-        }
-    
-        .tags_mainpage b {
-            font-size: 12px; /* Уменьшаем размер текста */
-            margin-top: 5px; /* Уменьшаем отступ сверху */
-        }
-
-
-        
-        .product-item {
-            flex: 1 1 calc(25% - 20px);
-            max-width: calc(25% - 20px);
-        }
-  }
-
-  /* Desktop (992-1199px) */
-  @media (min-width: 992px) and (max-width: 1199px) { 
-
- .left-section {
-    top: 415px;
-    width: 150px;
-}
-
-/* Стили для секции маркетплейсов */
-.ad-card img {
-    width: 75%;
-}
-
-.section-header {
-    text-align: center;
-    font-size: 18px; /* Общий размер шрифта */
-}
-
-
-
-
-.marketplace-logo {
-    max-width: 100px;
-    height: auto;
-}
-
-/* Стили для секции доставки */
-
-
-.country-flag {
-    width: 60px;
-    height: auto;
-    object-fit: contain;
-}
-
-
-
-.ad-section {
-    position: absolute;
-    right: 15px;
-    top: 395px;
-    transform: translateY(-50%);
-    width: 150px;
-    background: #fff;
-    border-radius: 8px;
-    overflow: hidden;
-}
-
-/* Заголовок рекламы */
-
-/* Контейнер для рекламных блоков */
-.top-ads,
-.bottom-ads {
-    width: 200px;
-    height: 200px;
-    margin: 10px 0;
-    position: relative;
-    background: #fff;
-    border: 1px solid #e0e0e0;
-}
-
-
-
-    
-
-
-    .product-image {
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
-    }
-
-    .carousel-content {
-        width: 400px;
-        height: 200px;
-    }
-    
-    .subtitle {
-        font-size: 20px;
-    }
-
-
-    .market-title {
-        font-size: 30px;
-    }
-    .beseller {
-        margin-top: -220px;
-        margin-left: 760px;
-    }
-
-    .beseller img {
-        width: 120px;
-        height: 80px;
-    }
-
-    .doorlogo {
-        width: 100px;
-        height: 50px;
-    }
-
-    .Jhin {
-        margin-top: -180px;
-        margin-left: 800px;
-        width: 180px;
-        height: 260px;  
-    }
-    
-    .carousel-slide {
-        width: 400px;
-        height: 200px;
-        margin-left: 350px;
-        margin-top: 10px;
-    }
-
-    .carousel-container {
-        margin-left: 180px;
-    }
-    .image-caption {
-        font-size: 19px;
-    }
-        
-    .tags_mainpage {
-        display: flex;
-        width: 605px;
-        flex-wrap: wrap; /* Добавляем перенос элементов */
-        gap: 5px; /* Уменьшаем отступы между элементами */
-        padding: 10px; 
-        margin-left: 120px;
-    }
-
-    .tags_mainpage .image {
-        width: 60px; /* Уменьшаем размер изображений */
-        height: 60px;
-        border-radius: 50%;
-        margin-left: 0; /* Убираем отступ слева */
-    }
-
-    .tags_mainpage a {
-        flex: 0 0 auto; /* Предотвращаем растягивание элементов */
-        margin: 5px; /* Добавляем небольшой отступ между элементами */
-    }
-
-    .tags_mainpage b {
-        font-size: 12px; /* Уменьшаем размер текста */
-        margin-top: 5px; /* Уменьшаем отступ сверху */
-    }
-
-  }
-  
-  @media (min-width: 1200px) and (max-width: 1399px) { 
-    
-    .ad-section {
-        top: 450px;
-    }
-    .left-section {
-        top: 425px;
-    }
-    .product-image {
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
-    }
-
-    .carousel-content {
-        width: 600px;
-        height: 280px;
-    }
-    
-    .subtitle {
-        font-size: 20px;
-    }
-
-
-    .market-title {
-        font-size: 30px;
-    }
-    .beseller {
-        margin-top: -290px;
-        margin-left: 940px;
-    }
-
-    .beseller img {
-        width: 120px;
-        height: 80px;
-    }
-
-    .doorlogo {
-        width: 100px;
-        height: 50px;
-    }
-
-    .Jhin {
-        margin-top: -250px;
-        margin-left: 990px;
-        width: 150px;
-        height: 260px;  
-    }
-    
-    .carousel-slide {
-        width: 600px;
-        height: 250px;
-        margin-left: 350px;
-        margin-top: 10px;
-    }
-
-    .carousel-container {
-        margin-left: 180px;
-    }
-    .image-caption {
-        font-size: 19px;
-    }
-        
-    .tags_mainpage {
-        display: flex;
-        width: 905px;
-        flex-wrap: wrap; /* Добавляем перенос элементов */
-        gap: 10px; /* Уменьшаем отступы между элементами */
-        padding: 10px; 
-        margin-left: 160px;
-    }
-
-    .tags_mainpage .image {
-        width: 60px; /* Уменьшаем размер изображений */
-        height: 60px;
-        border-radius: 50%;
-        margin-left: 0; /* Убираем отступ слева */
-    }
-
-    .tags_mainpage a {
-        flex: 0 0 auto; /* Предотвращаем растягивание элементов */
-        margin: 5px; /* Добавляем небольшой отступ между элементами */
-    }
-
-    .tags_mainpage b {
-        font-size: 12px; /* Уменьшаем размер текста */
-        margin-top: 5px; /* Уменьшаем отступ сверху */
-    }
-
-}
-
-@media (min-width: 1400px) { 
-    .beseller img {
-        width: 180px;
-        height: 90px;
-    }
-}
-  
-@media (min-width: 1920px) {
-    .ad-section {
-        top: 450px;
-    }
-    .left-section {
-        top: 420px;
-    }
-    .inner12 {
-        top: -60px;
-    }
-    .carousel-content {
-        width: 1000px;
-        height: 400px;
-    }
-    .Jhin {
-        width: 380px;
-        height: 600px;
-        margin-left: 1110px;
-        margin-top: -370px;
-    }
-    .beseller img {
-        width: 240px;
-        height: 120px; 
-    }
-    .beseller {
-        margin-top: -400px;
-        margin-left: 1060px;
-    }
-    .carousel-slide {
-        width: 1000px;
-        height: 400px;
-        margin-left: 50px;
-    }
-    .image-section {
-        width: 100%;
-    }
-    .doorlogo {
-        width: 220px;
-        height: 50px;
-    }
-    .market-title {
-        font-size: 52px;
-    }
-    .subtitle {
-        font-size: 28px;
-    }
-    .tags_mainpage {
-        margin-left: -200px;
-    }
-    .tags_mainpage .image {
-        width: 150px;
-        height: 150px;
-    }
-
-    .tags_mainpage img {
-        width: 150px;
-        height: 150px;
-    }
-    .tags_mainpage b {
-        font-size: 20px;
-    }
-}
-@media (min-width: 2300px) {
-    
-    .carousel-slide {
-        width: 1100px;
-        margin-left: -100px;
-    }
-    .carousel-content {
-        width: 1100px;
-    }
-    .left-section {
-        width: 280px;
-    }
-    .products-container {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px; /* Отступы между элементами */
-    }
-    
-    .product-item {
-        flex: 1 1 calc(12.5% - 10px);
-        max-width: calc(12.5% - 10px);
-    }
-    .product-list {
-        width: 2100px;
-        margin-left: -450px;
-    }
-    
-}
-/* 2K (2560x1440) */
-@media (min-width: 2560px) { 
-    .ad-section {
-        top: 430px;
-    }
-    .left-section {
-        top: 520px;
-        width: 300px;
-    }
-    .bold-text {
-        font-size: 27px;
-    }
-    .grey-text {
-        font-size: 22px;    
-    }
-    .country-flag {
-        width: 200px;
-    }
-    .delivery-item span  {
-        font-size: 23px;
-    }
-    .marketplace-logo {
-        max-width: 200px;
-    }
-
-
-
-    .ad-header {
-        font-size: 44px;
-    }
-
-  .ad-section {
-        top: 600px;
-        width: 350px; /* Увеличенная ширина */
-        right: calc((100% - 2560px) / 2 + 20px); /* Центрирование относительно контейнера */
-    }
-
-    /* Увеличиваем размеры рекламных блоков */
-    .top-ads,
-    .bottom-ads {
-        width: 350px;
-        height: 400px;
-    }
-
-    /* Увеличиваем размер шрифта для заголовка рекламы */
-    .ad-header {
-        padding: 15px;
-    }
-
-    /* Увеличиваем размер шрифта для плейсхолдера рекламы */
-    .ad-placeholder {
-        font-size: 20px;
-    }
-
-
-    .country-flag {
-        width: 150px;
-    }
-    .delivery-item span  {
-        font-size: 18px;
-    } 
-
-    .product-item {
-        flex: 1 1 calc(12.5% - 10px);
-        max-width: calc(12.5% - 10px);
-    }
-    .carousel-content {
-        width: 1200px;
-        height: 600px;
-    }
-    .Jhin {
-        width: 500px;
-        height: 850px;
-        margin-left: 1400px;
-        margin-top: -510px;
-    }
-    .tags_mainpage b {
-        font-size: 20px;
-    }
-    .beseller {
-        margin-top: -570px;
-        margin-left: 1300px;
-    }
-    .image-caption {
-        font-size: 33px;
-    }
-    .beseller img {
-        width: 340px;
-        height: 200px;
-    }
-    .carousel-slide {
-        width: 1200px;
-        height: 520px;
-        margin-left: 100px;
-    }
-    .image-section {
-        width: 100%;
-        height: 500px;  
-    }
-    .doorlogo {
-        width: 300px;
-        height: 70px;
-    }
-    .market-title {
-        font-size: 72px;
-    }
-    .subtitle {
-        font-size: 36px;
-    }
-    .tags_mainpage .image {
-        width: 150px;
-        height: 150px;
-    }
-
-    .tags_mainpage img {
-        width: 150px;
-        height: 150px;
-    }
-    .tags_mainpage b {
-        font-size: 28px;
-    }
-
-    .inner12 {
-      
-        margin-left: 400px;
-    }
-    .product-item {
-        background: white;
-        border-radius: 10px;
-        padding: 25px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        transition: transform 0.3s ease;
-        position: relative;
-    }
-    .product-item {
-        flex: 1 1 calc(25% - 40px);    /* Увеличиваем отступы между карточками */
-        max-width: calc(25% - 40px);
-        padding: 35px;                  /* Увеличиваем внутренние отступы */
-        border-radius: 15px;            /* Увеличиваем скругление углов */
-        margin-bottom: 40px;   
-    }
-
-    .product-item img {
-        border-radius: 12px;            /* Увеличиваем скругление углов изображения */
-    }
-
-    .product-item a b {                 /* Заголовок продукта */
-        font-size: 30px;                /* Увеличиваем размер шрифта заголовка */
-        margin: 15px 0;                 /* Добавляем отступы */
-        display: block;
-    }
-
-    .item-description {
-        font-size: 20px;                /* Увеличиваем размер шрифта описания */
-        line-height: 1.5;
-        height: 90px;                   /* Увеличиваем высоту блока описания */
-        margin: 15px 0;
-    }
-
-    .price-current {
-        font-size: 35px;                /* Увеличиваем размер шрифта цены */
-        margin: 15px 0;
-    }
-
-    .button_small {
-        padding: 20px 35px;             /* Увеличиваем размер кнопки */
-        font-size: 20px;                /* Увеличиваем размер иконки/текста кнопки */
-        border-radius: 8px;
-    }
-
-    .button_small i {
-        font-size: 24px;                /* Увеличиваем размер иконки */
-    }
-
-    .product-list {
-        gap: 40px;                      /* Увеличиваем расстояние между карточками */
-        padding: 20px;
-        margin-left: 0px;
-        }
-
-    #products h2 {
-        font-size: 42px;                /* Увеличиваем размер заголовка секции */
-        margin-bottom: 40px;
-    }
-
-    .btn-outline-primary i.fa-heart {
-        font-size: 32px;                /* Увеличиваем размер иконки избранного */
-    }
-
-    #products .inner {
-        max-width: 2200px;              /* Увеличиваем максимальную ширину контейнера */
-        padding: 0 40px;
-    }
-    .products-container {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px; /* Отступы между элементами */
-    }
-    
-
-    
-}
-
-@media (min-width: 2880px) {
-
-    .left-section {
-        width: 320px;
-        top: 650px;
-    }
-    .bold-text {
-        font-size: 27px;
-    }
-    .grey-text {
-        font-size: 22px;    
-    }
-    .country-flag {
-        width: 200px;
-    }
-    .delivery-item span  {
-        font-size: 23px;
-    }
-    .marketplace-logo {
-        max-width: 200px;
-    }
-
-
-
-    .ad-header {
-        font-size: 44px;
-    }
-
-  .ad-section {
-        top: 760px;
-        width: 400px; /* Увеличенная ширина */
-        right: calc((100% - 2880px) / 2 + 20px); /* Центрирование относительно контейнера */
-    }
-
-    /* Увеличиваем размеры рекламных блоков */
-    .top-ads,
-    .bottom-ads {
-        width: 350px;
-        height: 400px;
-    }
-
-    /* Увеличиваем размер шрифта для заголовка рекламы */
-    .ad-header {
-        padding: 15px;
-    }
-
-    /* Увеличиваем размер шрифта для плейсхолдера рекламы */
-    .ad-placeholder {
-        font-size: 20px;
-    }
-
-
-    
-    .Jhin {
-        width: 500px;
-        height: 850px;
-        margin-left: 1630px;
-        margin-top: -540px;
-    }
-    .beseller {
-        margin-top: -620px;
-        margin-left: 1580px;
-    }
-    .carousel-slide {
-        width: 1500px;
-        height: 600px;
-        margin-left: 100px;
-    }
-    .carousel-content {
-        width: 1500px;
-        height: 600px;
-    }
-    .market-title {
-        font-size: 92px;
-    }
-    .subtitle {
-        font-size: 40px;
-    }
-    
-    .tags_mainpage .image {
-        width: 250px;
-        height: 250px;
-    }
-
-    .tags_mainpage img {
-        width: 250px;
-        height: 250px;
-    }
-    .tags_mainpage b {
-        font-size: 32px;
-    }
-    .product-item {
-        background: white;
-        border-radius: 10px;
-        padding: 25px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        transition: transform 0.3s ease;
-        position: relative;
-    }
-    .product-item {
-        flex: 1 1 calc(25% - 40px);    /* Увеличиваем отступы между карточками */
-        max-width: calc(25% - 40px);
-        padding: 35px;                  /* Увеличиваем внутренние отступы */
-        border-radius: 15px;            /* Увеличиваем скругление углов */
-        margin-bottom: 40px;            /* Добавляем отступ снизу */
-    }
-
-    .product-item img {
-        border-radius: 12px;            /* Увеличиваем скругление углов изображения */
-    }
-
-    .product-item a b {                 /* Заголовок продукта */
-        font-size: 35px;                /* Увеличиваем размер шрифта заголовка */
-        margin: 15px 0;                 /* Добавляем отступы */
-        display: block;
-    }
-
-    .item-description {
-        font-size: 28px;                /* Увеличиваем размер шрифта описания */
-        line-height: 1.5;
-        height: 90px;                   /* Увеличиваем высоту блока описания */
-        margin: 15px 0;
-    }
-
-    .price-current {
-        font-size: 37px;                /* Увеличиваем размер шрифта цены */
-        margin: 15px 0;
-    }
-
-    .button_small {
-        padding: 30px 45px;             /* Увеличиваем размер кнопки */
-        font-size: 20px;                /* Увеличиваем размер иконки/текста кнопки */
-        border-radius: 8px;
-    }
-
-    .button_small i {
-        font-size: 24px;                /* Увеличиваем размер иконки */
-    }
-
-    .product-list {
-        gap: 40px;                      /* Увеличиваем расстояние между карточками */
-        padding: 20px;
-        width: 2800px;
-        margin-left: -180px;
-    }
-
-    #products h2 {
-        font-size: 52px;                /* Увеличиваем размер заголовка секции */
-        margin-bottom: 40px;
-    }
-
-    .btn-outline-primary i.fa-heart {
-        font-size: 35px;                /* Увеличиваем размер иконки избранного */
-    }
-
-    #products .inner {
-        max-width: 2500px;              /* Увеличиваем максимальную ширину контейнера */
-        padding: 0 40px;
-    }
-    .product-item {
-        flex: 1 1 calc(12.5% - 50px);
-        max-width: calc(12.5% - 10px);
-    }
-    .tags_mainpage .image {
-        width: 200px;
-        height: 200px;
-    }
-
-    .tags_mainpage img {
-        width: 200px;
-        height: 200px;
-    }
-    .tags_mainpage b {
-        font-size: 28px;
-    }
-}
-
-
-
-
-/* 4K (3840x2160) */
-@media (min-width: 3840px) {
-    .left-section {
-        width: 320px;
-        top: 570px;
-    }
-    .bold-text {
-        font-size: 27px;
-    }
-    .grey-text {
-        font-size: 22px;    
-    }
-    .country-flag {
-        width: 200px;
-    }
-    .delivery-item span  {
-        font-size: 23px;
-    }
-    .marketplace-logo {
-        max-width: 200px;
-    }
-
-
-
-    .ad-header {
-        font-size: 44px;
-    }
-
-  .ad-section {
-        top: 600px;
-        width: 350px; /* Увеличенная ширина */
-        right: calc((100% - 2880px) / 2 + 20px); /* Центрирование относительно контейнера */
-    }
-
-    /* Увеличиваем размеры рекламных блоков */
-    .top-ads,
-    .bottom-ads {
-        width: 350px;
-        height: 400px;
-    }
-
-    /* Увеличиваем размер шрифта для заголовка рекламы */
-    .ad-header {
-        padding: 15px;
-    }
-
-    /* Увеличиваем размер шрифта для плейсхолдера рекламы */
-    .ad-placeholder {
-        font-size: 20px;
-    }
-
-
-    
-    .Jhin {
-        width: 500px;
-        height: 850px;
-        margin-left: 1830px;
-        margin-top: -540px;
-    }
-    .beseller {
-        margin-top: -600px;
-        margin-left: 1750px;
-    }
-    .carousel-slide {
-        width: 1500px;
-        height: 600px;
-        margin-left: 100px;
-    }
-    .carousel-content {
-        width: 1500px;
-        height: 600px;
-    }
-    .market-title {
-        font-size: 92px;
-    }
-    .subtitle {
-        font-size: 40px;
-    }
-    
-    .tags_mainpage .image {
-        width: 250px;
-        height: 250px;
-    }
-
-    .tags_mainpage img {
-        width: 250px;
-        height: 250px;
-    }
-    .tags_mainpage b {
-        font-size: 32px;
-    }
-    .product-item {
-        background: white;
-        border-radius: 10px;
-        padding: 25px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        transition: transform 0.3s ease;
-        position: relative;
-    }
-    .product-item {
-        flex: 1 1 calc(25% - 40px);    /* Увеличиваем отступы между карточками */
-        max-width: calc(25% - 40px);
-        padding: 35px;                  /* Увеличиваем внутренние отступы */
-        border-radius: 15px;            /* Увеличиваем скругление углов */
-        margin-bottom: 40px;            /* Добавляем отступ снизу */
-    }
-
-    .product-item img {
-        border-radius: 12px;            /* Увеличиваем скругление углов изображения */
-    }
-
-    .product-item a b {                 /* Заголовок продукта */
-        font-size: 35px;                /* Увеличиваем размер шрифта заголовка */
-        margin: 15px 0;                 /* Добавляем отступы */
-        display: block;
-    }
-
-    .item-description {
-        font-size: 28px;                /* Увеличиваем размер шрифта описания */
-        line-height: 1.5;
-        height: 90px;                   /* Увеличиваем высоту блока описания */
-        margin: 15px 0;
-    }
-
-    .price-current {
-        font-size: 37px;                /* Увеличиваем размер шрифта цены */
-        margin: 15px 0;
-    }
-
-    .button_small {
-        padding: 30px 45px;             /* Увеличиваем размер кнопки */
-        font-size: 20px;                /* Увеличиваем размер иконки/текста кнопки */
-        border-radius: 8px;
-    }
-
-    .button_small i {
-        font-size: 24px;                /* Увеличиваем размер иконки */
-    }
-
-    .product-list {
-        gap: 40px;                      /* Увеличиваем расстояние между карточками */
-        padding: 20px;
-        width: 2800px;
-        margin-left: -180px;
-    }
-
-    #products h2 {
-        font-size: 52px;                /* Увеличиваем размер заголовка секции */
-        margin-bottom: 40px;
-    }
-
-    .btn-outline-primary i.fa-heart {
-        font-size: 35px;                /* Увеличиваем размер иконки избранного */
-    }
-
-    #products .inner {
-        max-width: 2500px;              /* Увеличиваем максимальную ширину контейнера */
-        padding: 0 40px;
-    }
-    .product-item {
-        flex: 1 1 calc(12.5% - 50px);
-        max-width: calc(12.5% - 10px);
-    }
-}

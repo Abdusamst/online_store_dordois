@@ -33,9 +33,9 @@
         <label>Наличие:</label>
         <div class="radio-group">
             <input type="radio" id="available" name="to_order" value="0" {% if not form.instance.to_order %}checked{% endif %}>
-            <label for="available">Доступно</label>
+            <label for="available">В НАЛИЧИИ</label>
             <input type="radio" id="to_order" name="to_order" value="1" {% if form.instance.to_order %}checked{% endif %}>
-            <label for="to_order">Под заказ</label>
+            <label for="to_order">ДОТСАВКА ИЗ ЗА РУБЕЖА</label>
         </div>
     </div>
     

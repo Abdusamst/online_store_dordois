@@ -14,54 +14,7 @@
 
 </head>
 <body>
-    <div class="main_page1">
-        <div class="inner12">
-            <div id="carouselExampleIndicators" class="carousel-slide" data-bs-ride="carousel">
-                <!-- Индикаторы -->
-                <div class="carousel-indicators">
-                    {% for poster in posters %}
-                    {% endfor %}
-                </div>
-                
-                <div class="carousel-inner">
-                    {% for poster in posters %}
-                        <div class="carousel-item {% if forloop.first %}active{% endif %}" data-bs-interval="5000">
-                            <div class="carousel-content">
-                                <img src="{{ poster.image.url }}" class="product-image" alt="Product">
-                            </div>
-                        </div>
-                    {% endfor %}
-                    </div>
-            </div>
-            
-            <div class="jhin-seller-container">
-                <img src="{% static 'images/ddd.png' %}" class="Jhin">
-                <div class="become-seller">
-                    <a href="{% url 'store:becomeseller' %}" class="beseller"><img src="{% static 'images/besseler.png' %}" alt=""></a>
-                </div>
-            </div>
-            <div class="seller-dashboard">
-
-            </div>
-            <!--Карусель категорий-->
-            <div class="carousel-container">
-                <div class="tags_mainpage">
-                {% for tag in page_obj_2 %}
-                <a href="{% url 'store:tag_details' tag.slug %}" class="carousel-item">
-                    <p><span class="image right">
-                    {% if tag.image %}
-                        <img src="{{ tag.image.url }}" alt=""/>
-                    {% else %}
-                        <img src="{% static 'images/pic14.jpg' %}" alt="" />
-                    {% endif %}
-                    </span></p>
-                    <b>{{ tag.name }}</b>
-                </a>
-                {% endfor %}
-                </div>
-            </div>
-            
-        </div>  
+    <div class="site-container">
         <div class="ad-section">
             <div class="ad-header">Реклама</div>
             
@@ -139,58 +92,110 @@
                 </div>
             </div>
         </div>
-
-    </div>
-
-<!-- Продукты -->
-<section id="products">
-    <div class="inner">
-        <h2 class="line-text"><hr>поупулярные продукты<h2>
-        <div class="product-list">
-            {% for item in items %}
-                <div class="product-item" id="item-{{ item.id }}">
-                    <p><span class="image right">
-                        {% if user.is_authenticated %}
-                                <button id="favorite-btn-{{ item.id }}" class="btn btn-sm btn-outline-primary" onclick="toggleFavorite({{ item.id }})">
-                                    {% if item.id in favorites %}
-                                    <i class="fa-solid fa-heart"></i>
-                                    {% else %}
-                                    <i class="fa-regular fa-heart"></i>
-                                    {% endif %}
-                                </button>   
-                            {% endif %}
-                        {% if item.image %}
-                            <img src="{{ item.image.url }}" alt=""  />
-                        {% else %}
-                            <img src="{% static 'images/pic14.jpg' %}" alt="" />
-                        {% endif %}
-                    {% if item.slug %}
-                        <a href="{% url 'store:item_details' item.slug %}"><b>{{ item.title }}</b></a>
-                    {% else %}
-                        <b>{{ item.title }}</b>  {# Без ссылки, если нет slug #}
-                    {% endif %}
-                    <p class="item-description" style="color: rgb(129, 129, 129);">{{ item.description }}</p>      
-                    <p class="price-current"><b style="color: black;">{{ item.price }}</b> сом</p>  
-                    {% if user.is_authenticated %}
-                    {% if item.slug %}
-                    <a href="{% url 'cart:add_to_cart' item.slug %}" class="button_small" style="margin-top:10px; color: white;">
-                        <i class="fa-solid fa-cart-shopping"></i>
-                    </a>
-                {% else %}
-                    <span class="button_small disabled" style="margin-top:10px; color: gray;">
-                        <i class="fa-solid fa-cart-shopping"></i>
-                    </span>
-                {% endif %}
-                
-                    {% endif %}
+        <div class="main_page1">
+            
+            <div class="inner12">
+                <div id="carouselExampleIndicators" class="carousel-slide" data-bs-ride="carousel">
+                    <!-- Индикаторы -->
+                    <div class="carousel-indicators">
+                        {% for poster in posters %}
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="carousel-inner">
+                        {% for poster in posters %}
+                            <div class="carousel-item {% if forloop.first %}active{% endif %}" data-bs-interval="5000">
+                                <div class="carousel-content">
+                                    <img src="{{ poster.image.url }}" class="product-image" alt="Product">
+                                </div>
+                            </div>
+                        {% endfor %}
+                        </div>
                 </div>
-                {% if not forloop.last %}{% endif %}
-            {% endfor %}
+                
+                <div class="jhin-seller-container">
+                    <img src="{% static 'images/ddd.png' %}" class="Jhin">
+                    <div class="become-seller">
+                        <a href="{% url 'store:becomeseller' %}" class="beseller"><img src="{% static 'images/besseler.png' %}" alt=""></a>
+                    </div>
+                </div>
+                <div class="seller-dashboard">
+    
+                </div>
+                
+                
+            </div>  
+            
+    
         </div>
+        <!--Карусель категорий-->
+        <div class="carousel-container">
+            <div class="tags_mainpage">
+            {% for tag in page_obj_2 %}
+            <a href="{% url 'store:tag_details' tag.slug %}" class="carousel-item">
+                <p><span class="image right">
+                {% if tag.image %}
+                    <img src="{{ tag.image.url }}" alt=""/>
+                {% else %}
+                    <img src="{% static 'images/pic14.jpg' %}" alt="" />
+                {% endif %}
+                </span></p>
+                <b>{{ tag.name }}</b>
+            </a>
+            {% endfor %}
+            </div> 
+        </div>
+    <!-- Продукты -->
+    <section id="products">
+        <div class="inner">
+            <h2 class="line-text"><hr>поупулярные продукты<h2>
+            <div class="product-list">
+                {% for item in items %}
+                    <div class="product-item" id="item-{{ item.id }}">
+                        <p><span class="image right">
+                            {% if user.is_authenticated %}
+                                    <button id="favorite-btn-{{ item.id }}" class="btn btn-sm btn-outline-primary" onclick="toggleFavorite({{ item.id }})">
+                                        {% if item.id in favorites %}
+                                        <i class="fa-solid fa-heart"></i>
+                                        {% else %}
+                                        <i class="fa-regular fa-heart"></i>
+                                        {% endif %}
+                                    </button>   
+                                {% endif %}
+                            {% if item.image %}
+                                <img src="{{ item.image.url }}" alt=""  />
+                            {% else %}
+                                <img src="{% static 'images/pic14.jpg' %}" alt="" />
+                            {% endif %}
+                        {% if item.slug %}
+                            <a href="{% url 'store:item_details' item.slug %}"><b>{{ item.title }}</b></a>
+                        {% else %}
+                            <b>{{ item.title }}</b>  {# Без ссылки, если нет slug #}
+                        {% endif %}
+                        <p class="item-description" style="color: rgb(129, 129, 129);">{{ item.description }}</p>      
+                        <p class="price-current"><b style="color: black;">{{ item.price }}</b> сом</p>  
+                        {% if user.is_authenticated %}
+                        {% if item.slug %}
+                        <a href="{% url 'cart:add_to_cart' item.slug %}" class="button_small" style="margin-top:10px; color: white;">
+                            <i class="fa-solid fa-cart-shopping"></i>
+                        </a>
+                    {% else %}
+                        <span class="button_small disabled" style="margin-top:10px; color: gray;">
+                            <i class="fa-solid fa-cart-shopping"></i>
+                        </span>
+                    {% endif %}
+                    
+                        {% endif %}
+                    </div>
+                    {% if not forloop.last %}{% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+            
+    
     </div>
-</section>
-        
-        
+   
         
         
         {% endblock %}
