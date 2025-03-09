@@ -158,6 +158,7 @@
                     <p>Нет отзывов для этого товара.</p>
                 {% endfor %}
             </div>
+            {% if user.is_authenticated %}
             <form method="post" action="{% url 'cart:add_to_cart' item.slug %}" class="cart-form">
                 {% csrf_token %}
                 <!-- Группируем атрибуты по их типу -->
@@ -183,6 +184,7 @@
                 {% endfor %}
                 
             </form>
+            {% endif %}
         </div>
         <div class="item-info">
             <div class="price-container-top">
@@ -191,8 +193,12 @@
                         <b>{{ item.price }}</b> СОМ
                     </span>
                 </p>
-                <!-- Кнопка "Добавить в корзину" теперь вне формы -->
-                <button type="button" class="button add-to-cart" onclick="submitCartForm()">Добавить в корзину</button>
+                <!-- Кнопка "Добавить в корзину" -->
+                {% if user.is_authenticated %}
+                    <button type="button" class="button add-to-cart" onclick="submitCartForm()">Добавить в корзину</button>
+                {% else %}
+                    <button type="button" class="button add-to-cart" onclick="redirectToRegistration()">Добавить в корзину</button>
+                {% endif %}
             </div>
             
             <div class="price-container-bottom">
@@ -200,11 +206,15 @@
                     <p class="item-wholesale-price" id="wholesale-price">
                         <b>{{ item.wholesale_price }}</b> СОМ ОПТОМ
                     </p>
-                    <form method="post" action="{% url 'cart:add_to_cart' item.slug %}" class="cart-form wholesale-form">
-                        {% csrf_token %}
-                        <input type="hidden" name="wholesale" value="true" id="wholesale-input">
-                        <button type="submit" class="button wholesale-button" onclick="enableWholesale()">Купить оптом</button>
-                    </form>
+                    {% if user.is_authenticated %}
+                        <form method="post" action="{% url 'cart:add_to_cart' item.slug %}" class="cart-form wholesale-form">
+                            {% csrf_token %}
+                            <input type="hidden" name="wholesale" value="true" id="wholesale-input">
+                            <button type="submit" class="button wholesale-button" onclick="enableWholesale()">Купить оптом</button>
+                        </form>
+                    {% else %}
+                        <button type="button" class="button wholesale-button" onclick="redirectToRegistration()">Купить оптом</button>
+                    {% endif %}
                 {% endif %}
             </div>
         </div>
@@ -286,6 +296,11 @@
 </div>
 
 <script>
+// Добавляем новую функцию для перенаправления на страницу регистрации
+function redirectToRegistration() {
+    window.location.href = "{% url 'users:login' %}";  // Используйте правильный URL для вашей страницы регистрации
+}
+
 function submitCartForm() {
     const form = document.querySelector('.cart-form');
     if (form) {
@@ -608,6 +623,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function enableWholesale() {
     document.getElementById('wholesale-input').disabled = false;
+}
+
+function highlightRequiredAttributes() {
+    // Функция для подсветки обязательных атрибутов
+    // Оставлена пустой, так как ее определение необходимо, но реализация отсутствует в исходном коде
 }
 </script>
 {% endblock %}

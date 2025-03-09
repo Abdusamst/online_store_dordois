@@ -10,18 +10,36 @@ body {
 
 .header-logo .left,
 .header-logo .right {
-    margin: 0; /* Убираем все марджины */
     display: flex;
     align-items: center;
+    margin: auto;
+    position: relative;
+
+    top: -13px;
+    padding: 0 20px;
+
 }
 
 .header-logo .left {
-    margin-right: auto; /* Прижимает элементы слева */
+    display: flex;
+    align-items: center;
+    margin: auto;
+    top: 10px; /* Поднимаем левую секцию выше */
+    padding: 0 20px;
+    position: relative;
+    right: 110px;
 }
 
 .header-logo .right {
-    margin-left: auto; /* Прижимает элементы справа */
+    display: flex;
+    align-items: center;
+    margin: auto;
+    top: -15px; /* Опускаем правую секцию ниже */
+    padding: 0 20px;
+    position: relative;
+    left: 100px;
 }
+
 
 .inner1 {
     width: 100%; /* Растягивание на всю ширину */
@@ -95,9 +113,9 @@ body {
 
 
 .header-logo {
-    background-color: rgb(32,87,167);
     display: flex;
     height: 150px;
+    justify-content: center;
     align-items: center; /* Выравнивает элементы по вертикали */
     width: 100%; /* Чтобы заняло всю ширину */
     padding: 0 20px; /* Добавлен небольшой padding по краям */
@@ -324,6 +342,6 @@ body {
 }
 
 .header-logo {
-    display: flex;
-    flex-direction: row;
+    width: 1500px;
+    margin: auto;
 }

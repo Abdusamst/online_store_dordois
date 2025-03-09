@@ -1,4 +1,586 @@
 /* Заголовок */
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #f5f5f5; /* Серый фон по бокам */
+  min-height: 100vh;
+  font-family: Arial, Helvetica, sans-serif;
+}
+.input-with-icon {
+  position: relative;
+  width: 100%;
+}
+.input-with-label {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  border: 1px solid #3366cc;
+  border-radius: 5px;
+  background-color: white;
+  overflow: hidden;
+}
+
+.fixed-label {
+  display: inline-block;
+  padding: 10px;
+  font-weight: bold;
+  white-space: nowrap;
+  color: #333;
+}
+
+.input-with-label input {
+  flex: 1;
+  border: none;
+  padding: 10px 5px;
+  font-size: 16px;
+  background: transparent;
+  outline: none;
+}
+
+.input-with-label input:focus {
+  border: none;
+  outline: none;
+}
+
+/* Добавляем небольшой разделитель между меткой и полем ввода */
+.fixed-label:after {
+  content: "";
+  display: inline-block;
+  margin-left: 5px;
+}
+
+.input-with-icon ::placeholder {
+  color: black;
+}
+
+.input-icon {
+  position: absolute;
+  right: 255px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: black;
+}
+.login-form-section {
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  gap: 200px;
+}
+
+.forms-container {
+  display: flex;
+  justify-content: center;
+  gap: 50px;
+  padding-top: 150px;
+  z-index: 20;
+  position: relative;
+}
+
+/* Блок формы входа */
+.login-block {
+  width: 380px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+/* Заголовок формы */
+.login-title {
+  font-size: 28px;
+  font-weight: bold;
+  text-align: center;
+  margin: 15px 0 0 0;
+  color: #000;
+}
+
+/* Тип пользователя */
+.user-type {
+  text-align: center;
+  font-size: 20px;
+  margin: 0 0 15px 0;
+  color: #000;
+}
+
+.buyer-text {
+  color: #ff00ff;
+  font-weight: bold;
+}
+
+/* Форма входа */
+.login-form {
+  padding: 0 15px 15px;
+}
+
+/* Поля формы */
+.login-form-group {
+  margin-bottom: 15px;
+}
+
+.login-form-field {
+  position: relative;
+}
+
+.login-label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.login-label img {
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+}
+
+.login-form-field input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #3366cc;
+  border-radius: 5px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+/* Кнопка входа */
+.login-submit-button {
+  display: block;
+  width: 60%;
+  margin: 0 auto;
+  background-color: white;
+  color: black;
+  border: none;
+  border-radius: 20px;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+/* Блок регистрации */
+.login-register-container {
+  text-align: center;
+  margin-top: 15px;
+}
+
+.register-button {
+  display: block;
+  font-size: 30px;
+  font-weight: bold;
+  text-decoration: none;
+  color: white;
+}
+
+.quick-reg {
+  margin: 5px 0 0 0;
+  font-size: 22px;
+  color: #9e9d9d;
+}
+
+.seller-reg {
+  margin: 5px 0 0 0;
+  font-size: 22px;
+  color: #ff0000;
+}
+
+.left-section {
+  position: absolute;
+  left: 0;
+  top: -50px;
+  width: 200px;
+  background: #fff;
+  border: 1px solid #ddd;
+  z-index: 10;
+}
+
+
+
+.marketplace-section {
+  font-family: Arial, Helvetica, sans-serif;
+  padding: 15px;
+  border: 3px solid black;
+}
+
+.section-header {
+  text-align: center;
+  font-size: 22px;
+}
+
+.bold-text {
+  font-weight: 900;
+  font-size: 15px;
+  display: block;
+}
+
+.grey-text {
+  font-weight: normal;
+  font-size: 18px;
+  color: grey;
+  display: block;
+}
+
+.marketplace-logos {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
+.marketplace-logo {
+  max-width: 150px;
+  height: auto;
+}
+
+/* Стили для секции доставки */
+.delivery-section {
+  padding: 15px;
+}
+
+.country-flag {
+  width: 90px;
+  height: auto;
+  object-fit: contain;
+}
+
+.delivery-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 5px;
+}
+
+.delivery-item span {
+  font-family: Arial, Helvetica, sans-serif;
+  display: flex;
+  flex-direction: column;
+  font-size: 15px;
+  font-weight: bold;
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+
+/* Стили для рекламной секции */
+.ad-header {
+  color: rgb(0, 0, 0);
+  padding: 10px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.top-ads,
+.bottom-ads {
+  width: 200px;
+  height: 250px;
+  margin: 10px 0;
+  position: relative;
+  background: #ff1414;
+  border: 1px solid #000000;
+}
+
+.top-ads .carousel-inner,
+.bottom-ads .carousel-inner {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+  height: 100%;
+}
+
+.top-ads .carousel-item,
+.bottom-ads .carousel-item {
+  flex: 0 0 100%;
+  width: 100%;
+  height: 100%;
+  align-items: stretch;
+  justify-content: center;
+}
+
+.ad-card {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  text-decoration: none;
+}
+
+.ad-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ad-placeholder-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  text-align: center;
+}
+
+.ad-placeholder {
+  color: #666;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.login_container {
+  max-width: 1500px; /* Фиксированная ширина контента */
+  margin: 0 auto; /* Центрирование */
+  background-color: #fff; /* Белый фон центральной части */
+  min-height: 100vh; /* На всю высоту экрана */
+  position: relative; /* Важно для правильного позиционирования внутренних элементов */
+  overflow: hidden; /* Чтобы содержимое не выходило за пределы контейнера */
+  margin-top: -100px;
+  overflow: visible;
+}
+
+
+/* Ad Section */
+.ad-section {
+  position: absolute;
+  right: 0;
+  top: -50px;
+  width: 200px;
+  background: #fff;
+  z-index: 10;
+}
+
+/* Login Title */
+.login-title {
+  font-size: 28px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+/* Login Form */
+.login-form {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #056BFA;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 20;
+}
+
+/* Form Styling (rest of your existing login form styles) */
+.login-form-group {
+  margin-bottom: 15px;
+}
+
+.login-form-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.login-label {
+  font-size: 14px;
+  margin-bottom: 5px;
+  color: #555;
+}
+
+.login-form-field input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: border-color 0.3s ease;
+}
+
+.login-form-field input:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.login-error-container {
+  margin-top: 5px;
+  background-color: #ffe6e6;
+  padding: 10px;
+  border: 1px solid #ffcccc;
+  border-radius: 4px;
+}
+
+.login-error-message {
+  color: #d9534f;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+
+.login-submit-button:hover {
+  background-color: #0056b3;
+}
+
+.login-register-container {
+  text-align: center;
+  margin-top: 15px;
+}
+
+.login-register-text {
+  font-size: 14px;
+  color: #555;
+}
+
+.login-register-link {
+  font-size: 14px;
+  color: #007bff;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.login-register-link:hover {
+  text-decoration: underline;
+}
+
+.login-forgot-password-link {
+  display: block;
+  margin-top: 10px;
+  text-align: center;
+  font-size: 14px;
+  color: #007bff;
+  text-decoration: none;
+}
+
+.login-forgot-password-link:hover {
+  text-decoration: underline;
+}
+
+/* Адаптивность */
+
+.marketplace-section {
+  font-family: Arial, Helvetica, sans-serif;
+  padding: 15px;
+  border: 3px solid black;
+}
+
+.section-header {
+  text-align: center;
+  font-size: 22px;
+}
+
+.bold-text {
+  font-weight: 900;
+  font-size: 15px;
+  display: block;
+}
+
+.grey-text {
+  font-weight: normal;
+  font-size: 18px;
+  color: grey;
+  display: block;
+}
+
+.marketplace-logos {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
+.marketplace-logo {
+  max-width: 150px;
+  height: auto;
+}
+
+/* Стили для секции доставки */
+.delivery-section {
+  padding: 15px;
+}
+
+.country-flag {
+  width: 90px;
+  height: auto;
+  object-fit: contain;
+}
+
+.delivery-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 5px;
+}
+
+.delivery-item span {
+  font-family: Arial, Helvetica, sans-serif;
+  display: flex;
+  flex-direction: column;
+  font-size: 15px;
+  font-weight: bold;
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+
+/* Стили для рекламной секции */
+
+
+.ad-header {
+  color: rgb(0, 0, 0);
+  padding: 10px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.top-ads,
+.bottom-ads {
+  width: 200px;
+  height: 250px;
+  margin: 10px 0;
+  position: relative;
+  background: #ff1414;
+  border: 1px solid #000000;
+}
+
+.top-ads .carousel-inner,
+.bottom-ads .carousel-inner {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+  height: 100%;
+}
+
+.top-ads .carousel-item,
+.bottom-ads .carousel-item {
+  flex: 0 0 100%;
+  width: 100%;
+  height: 100%;
+  align-items: stretch;
+  justify-content: center;
+}
+
+.ad-card {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  text-decoration: none;
+}
+
+.ad-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ad-placeholder-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  text-align: center;
+}
+
+.ad-placeholder {
+  color: #666;
+  text-decoration: none;
+  font-size: 14px;
+}
 .login-title {
     font-size: 28px;
     font-weight: bold;
@@ -8,15 +590,7 @@
   }
   
   /* Форма */
-  .login-form {
-    max-width: 400px;
-    margin: 0 auto;
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background-color: #f9f9f9;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
+
   
   /* Группа элементов формы */
   .login-form-group {
@@ -39,7 +613,7 @@
   /* Поле ввода */
   .login-form-field input {
     padding: 10px;
-    border: 1px solid #ccc;
+    border: none;
     border-radius: 4px;
     font-size: 14px;
     transition: border-color 0.3s ease;
@@ -66,20 +640,7 @@
     line-height: 1.5;
   }
   
-  /* Кнопка отправки */
-  .login-submit-button {
-    display: block;
-    width: 100%;
-    padding: 10px 15px;
-    font-size: 16px;
-    color: #fff;
-    background-color: #007bff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
+ 
   .login-submit-button:hover {
     background-color: #0056b3;
   }

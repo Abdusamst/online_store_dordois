@@ -1,5 +1,5 @@
 {% block header %}
-{% load static i18n %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE }}">
 <head>
@@ -9,7 +9,7 @@
 </head>
 <body>
     <header id="header">
-        <div class="header-logo">
+        <div class="header-logo" style="background-color: {% if user.is_superuser %}black{% elif user.is_seller %}red{% else %}rgb(32,87,167){% endif %};">
             <div class="left">
                 <a href="{% url 'store:home' %}" class="logo">
                     <span class="symbol"><img src="{% static 'images/logo_door1.png' %}" alt="DOOR" /></span>
@@ -29,8 +29,8 @@
                 {% endif %}
             </div>
             
-            
         </div>
+
 
         
 
