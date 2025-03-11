@@ -21,12 +21,30 @@ class FeedbackForm(forms.ModelForm):
 
 
 
+from django import forms
+from django.contrib.auth.forms import UserCreationForm
+from .models import CustomUser
+
 class CustomUserCreationForm(UserCreationForm):
-    phone_number = forms.CharField(max_length=15, required=False)
+    phone_number = forms.CharField(max_length=15, required=False, label='Номер телефона')
+    password1 = forms.CharField(
+        label='Пароль',
+        widget=forms.PasswordInput,
+        help_text='Ваш пароль должен содержать как минимум 8 символов.'
+    )
+    password2 = forms.CharField(
+        label='Подтверждение пароля',
+        widget=forms.PasswordInput,
+        help_text='Введите тот же пароль еще раз для подтверждения.'
+    )
 
     class Meta:
         model = CustomUser
         fields = ('username', 'phone_number', 'password1', 'password2')
+        labels = {
+            'username': 'Логин',
+            'phone_number': 'Номер телефона',
+        }
 
     def clean(self):
         cleaned_data = super().clean()
@@ -34,7 +52,6 @@ class CustomUserCreationForm(UserCreationForm):
 
         if not phone_number:
             raise forms.ValidationError('Необходимо указать телефонный номер.')
-
         return cleaned_data
 
 from django import forms

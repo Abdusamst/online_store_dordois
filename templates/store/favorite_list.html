@@ -7,6 +7,83 @@
 
 {% block content %}
 <div class="favorites-container">
+    <div class="ad-section">
+        <div class="ad-header">Реклама</div>
+        
+        <!-- Верхний рекламный блок -->
+        <div class="top-ads">
+            {% if top_ads %}
+                <div id="topAdsCarousel" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        {% for ad in top_ads %}
+                            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                                <a href="{{ ad.link }}" target="_blank" class="ad-card">
+                                    <img src="{{ ad.image.url }}" alt="Реклама">
+                                </a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% else %}
+                <div class="ad-placeholder-container">
+                    <a href="https://wa.me/996552840777" target="_blank" class="ad-placeholder">Здесь может быть ваша реклама</a>
+                </div>
+            {% endif %}
+        </div>
+        
+        <!-- Нижний рекламный блок -->
+        <div class="bottom-ads">
+            {% if bottom_ads %}
+                <div id="bottomAdsCarousel" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        {% for ad in bottom_ads %}
+                            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                                <a href="{{ ad.link }}" target="_blank" class="ad-card">
+                                    <img src="{{ ad.image.url }}" alt="Реклама">
+                                </a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% else %}
+                <div class="ad-placeholder-container">
+                    <a href="https://wa.me/996552840777" target="_blank" class="ad-placeholder">Здесь может быть ваша реклама</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    <div class="left-section">
+        <!-- Секция с маркетплейсами -->
+        <div class="marketplace-section">
+            <div class="section-header">
+                <span class="bold-text">Ваш товар увидят</span>
+                <span class="grey-text">на площадке</span>
+            </div>
+            <div class="marketplace-logos">
+                <img src="{% static 'images/ozon.png' %}" alt="OZON" class="marketplace-logo">
+                <img src="{% static 'images/wildberries.png' %}" alt="Wildberries" class="marketplace-logo">
+                <img src="{% static 'images/logo_door.png' %}" alt="DOOR" class="marketplace-logo">
+            </div>
+        </div>
+        
+    
+        <!-- Секция с доставкой -->
+        <div class="delivery-section">
+            <div class="delivery-item">
+                <span>ДОСТАВКА<br>ПО<br>КЫРГЫЗСТАНУ</span>
+                <img src="{% static 'images/krgyz.png' %}" alt="Кыргызстан" class="country-flag">
+            </div>
+            <div class="delivery-item">
+                <span>ДОСТАВКА<br>В<br>РОССИЮ</span>
+                <img src="{% static 'images/russian.png' %}" alt="Россия" class="country-flag">
+            </div>
+            <div class="delivery-item">
+                <span>ДОСТАВКА<br>В<br>КАЗАХСТАН</span>
+                <img src="{% static 'images/kazakhstan.png' %}" alt="Казахстан" class="country-flag">
+    
+            </div>
+        </div>
+    </div>
     <h2 class="favorites-title">Мои избранные товары</h2>
 
     {% if favorites %}
@@ -42,5 +119,78 @@
     {% else %}
         <p class="favorites-empty">У вас нет избранных товаров.</p>
     {% endif %}
+    <section id="products">
+        <div class="inner">
+            <h2 class="line-text"><hr>поупулярные продукты<h2>
+            <div class="product-list">
+                {% for item in items %}
+                    <div class="product-item" id="item-{{ item.id }}">
+                        <p><span class="image right">
+                            {% if user.is_authenticated %}
+                                    <button id="favorite-btn-{{ item.id }}" class="btn btn-sm btn-outline-primary" onclick="toggleFavorite({{ item.id }})">
+                                        {% if item.id in favorites %}
+                                        <i class="fa-solid fa-heart"></i>
+                                        {% else %}
+                                        <i class="fa-regular fa-heart"></i>
+                                        {% endif %}
+                                    </button>   
+                                {% endif %}
+                            {% if item.image %}
+                                <img src="{{ item.image.url }}" alt=""  />
+                            {% else %}
+                                <img src="{% static 'images/pic14.jpg' %}" alt="" />
+                            {% endif %}
+                        {% if item.slug %}
+                            <a href="{% url 'store:item_details' item.slug %}"><b>{{ item.title }}</b></a>
+                        {% else %}
+                            <b>{{ item.title }}</b>  {# Без ссылки, если нет slug #}
+                        {% endif %}
+                        <p class="item-description" style="color: rgb(129, 129, 129);">{{ item.description }}</p>      
+                        <p class="price-current"><b style="color: black;">{{ item.price }}</b> сом</p>  
+                        {% if user.is_authenticated %}
+                        {% if item.slug %}
+                        <a href="{% url 'cart:add_to_cart' item.slug %}" class="button_small" style="margin-top:10px; color: white;">
+                            <i class="fa-solid fa-cart-shopping"></i>
+                        </a>
+                    {% else %}
+                        <span class="button_small disabled" style="margin-top:10px; color: gray;">
+                            <i class="fa-solid fa-cart-shopping"></i>
+                        </span>
+                    {% endif %}
+                    
+                        {% endif %}
+                    </div>
+                    {% if not forloop.last %}{% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </section>
 </div>
 {% endblock %}
+<script>
+    function toggleFavorite(itemId) {
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;       
+    fetch(`/toggle_favorite/${itemId}/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrftoken,
+        },
+        body: JSON.stringify({}),
+    })
+    .then(response => response.json())
+    .then(data => {
+        const button = document.getElementById(`favorite-btn-${itemId}`);
+        const icon = button.firstElementChild;
+
+        if (data.action === 'added') {
+            icon.classList.remove('fa-regular');
+            icon.classList.add('fa-solid');
+        } else if (data.action === 'removed') {
+            icon.classList.remove('fa-solid');
+            icon.classList.add('fa-regular');
+        }
+    })
+    .catch(error => console.error('Ошибка:', error));
+}
+</script>

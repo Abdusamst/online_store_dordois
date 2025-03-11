@@ -72,7 +72,7 @@ body {
 .left-section {
     position: absolute;
     left: 0;
-    top: 225px;
+    top: 205px;
     width: 200px;
     background: #fff;
     border: 1px solid #ddd;
@@ -84,10 +84,9 @@ body {
 .ad-section {
     position: absolute;
     right: 0;
-    top: 235px;
+    top: 205px;
     width: 200px;
     background: #fff;
-    border-radius: 8px;
     z-index: 10;
     transform: none; /* Убираем transform */
 }
@@ -122,25 +121,6 @@ body {
 }
 
 /* Адаптивность */
-@media (max-width: 1200px) {
-    .left-section, .ad-section {
-        display: none; /* Скрываем боковые секции на маленьких экранах */
-    }
-    
-    .jhin-seller-container {
-        position: relative;
-        margin: 20px auto;
-        text-align: center;
-    }
-    
-    #products {
-        margin-top: 50px;
-    }
-}
-
-
-
-
 
 
 
@@ -515,7 +495,6 @@ i.fa-heart {
     transform: translateY(-50%);
     width: 200px;
     background: #fff;
-    border-radius: 8px;
     overflow: hidden;
 }
 

@@ -13,6 +13,7 @@
     {% block css %}
     {% endblock %}
 </head>
+{% csrf_token %}    
 <body class="is-preload">
     <div id="wrapper">
         {% include 'includes/header.html' %}
@@ -22,7 +23,6 @@
                 {% endblock %}
             </div>
         </div>
-        {% include 'includes/footer.html' %}
     </div>
     <script src="{% static 'assets/js/translator.js' %}"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

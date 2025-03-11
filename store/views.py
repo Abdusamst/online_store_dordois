@@ -276,10 +276,21 @@ def favorite_list(request):
     favorites = Favorite.objects.filter(user=request.user)
     page_obj_2 = ItemTag.objects.all()
     tags = ItemTag.objects.all().order_by('name')
+    items = Item.objects.filter(is_available=True, is_approved=True).annotate(
+        order_count=Count('orderitem'),
+        favorite_count=Count('favorite'),
+        avg_rating=Coalesce(Avg('reviews__rating'), 0.0, output_field=FloatField())
+    ).order_by('-order_count', '-favorite_count', '-avg_rating')
+    top_ads = Advertisement.objects.filter(position='top')  # Должны быть 4
+    bottom_ads = Advertisement.objects.filter(position='bottom')  # Должны быть 4
     context = {
         'tags': tags,
         'page_obj_2': tags,
-        'favorites': favorites
+        'favorites': favorites,
+        'items': items,
+        'top_ads': top_ads,   # Верхняя реклама
+        'bottom_ads': bottom_ads,  # Нижняя реклама
+
     }
     return render(request, 'store/favorite_list.html', context)
 

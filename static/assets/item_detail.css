@@ -9,16 +9,7 @@
 
 
 /* Left Section */
-.left-section {
-    position: absolute;
-    left: 1px;
-    top: 425px;
-    transform: translateY(-50%);
-    width: 200px;
-    background: #fff;
-    border: 1px solid #ddd;
-    overflow: hidden;
-}
+
 
 /* Секция маркетплейсов */
 .marketplace-section {
@@ -87,16 +78,7 @@
 }
 
 /* Ad Section */
-.ad-section {
-    position: absolute;
-    right: 15px;
-    top: 440px;
-    transform: translateY(-50%);
-    width: 200px;
-    background: #fff;
-    border-radius: 8px;
-    overflow: hidden;
-}
+
 
 .ad-header {
     color: rgb(0, 0, 0);
@@ -785,167 +767,17 @@
 }
 
 
-@media (max-width: 575px) {
-    .left-section {
-        top: 445px;
-        width: 120px;
-    }
-    .section-header {
-        font-size: 18px;
-    }
-    .marketplace-logo {
-        max-width: 100px;
-    }
-    .country-flag {
-        width: 60px;
-    }
-    .ad-section {
-        top: 350px;
-        width: 100px;
-    }
-    .top-ads,
-    .bottom-ads {
-        height: 150px;
-        background: #fff;
-        border: 1px solid #e0e0e0;
-    }
-    .ad-card img {
-        width: 50%;
-    }
-}
 
-@media (min-width: 576px) and (max-width: 767px) {
-    .left-section {
-        top: 325px;
-        width: 120px;
-    }
-    .section-header {
-        font-size: 18px;
-    }
-    .marketplace-logo {
-        max-width: 100px;
-    }
-    .country-flag {
-        width: 60px;
-    }
-    .ad-section {
-        top: 340px;
-        width: 100px;
-    }
-    .top-ads,
-    .bottom-ads {
-        height: 150px;
-        background: #fff;
-        border: 1px solid #e0e0e0;
-    }
-    .ad-card img {
-        width: 50%;
-    }
-}
-/* Адаптивные стили */
-@media (max-width: 768px) {
-    .item-card {
-        flex-direction: column;
-    }
-
-    .item-image-wrapper {
-        max-width: 100%;
-    }
-
-    .review {
-        flex: 1 1 calc(50% - 20px);
-    }
-
-    .review-image {
-        max-width: 100%;
-        height: auto;
-    }
-
-    .review-form-container {
-        margin: 10px;
-        padding: 15px;
-    }
-
-    .form-group textarea {
-        min-height: 100px;
-    }
-
-    .submit-button {
-        width: 100%;
-    }
-    .left-section {
-        top: 325px;
-        width: 120px;
-    }
-    .section-header {
-        font-size: 18px;
-    }
-    .marketplace-logo {
-        max-width: 100px;
-    }
-    .country-flag {
-        width: 60px;
-    }
-    .ad-section {
-        top: 260px;
-        width: 100px;
-    }
-    .top-ads,
-    .bottom-ads {
-        height: 150px;
-        background: #fff;
-        border: 1px solid #e0e0e0;
-    }
-    .ad-card img {
-        width: 50%;
-    }
-}
-
-@media (max-width: 480px) {
-    .review {
-        flex: 1 1 100%;
-    }
-
-    .review-image {
-        max-width: 100%;
-        height: auto;
-    }
-
-    .review-form-container {
-        margin: 5px;
-        padding: 10px;
-    }
-
-    .review-form-container h3 {
-        font-size: 1.2rem;
-    }
-
-    .form-group label {
-        font-size: 0.85rem;
-    }
-}
-
-@media (min-width: 1530px) and (max-width: 1700px) {
-    .left-section {
-        top: 405px;
-        width: 120px;
-    }
-    .ad-section {
-        top: 455px;
-        width: 120px;
-    }
-
-
-}
 /* Left Section */
 .left-section {
     position: absolute;
-    left: 1px;
-    transform: translateY(-50%);
+    left: 0;
+    top: -65px;
     width: 200px;
     background: #fff;
     border: 1px solid #ddd;
-    overflow: hidden;
+    z-index: 10;
+    transform: none; /* Убираем transform */
 }
 
 /* Стили для секции маркетплейсов */
@@ -1025,13 +857,14 @@
 /* Ad Section */
 .ad-section {
     position: absolute;
-    right: 15px;
-    transform: translateY(-50%);
+    right: 0;
+    top: -65px;
     width: 200px;
     background: #fff;
-    border-radius: 8px;
-    overflow: hidden;
+    z-index: 10;
+    transform: none; /* Убираем transform */
 }
+
 
 /* Заголовок рекламы */
 .ad-header {
@@ -1100,209 +933,21 @@
 
 /* Media Queries */
 
-/* Standard Mobile (400-575px) */
-@media (min-width: 769px) and (max-width: 991px) {
-    .left-section {
-        top: 400px;
-        width: 150px;
-    }
-    .section-header {
-        font-size: 18px;
-    }
-    .marketplace-logo {
-        max-width: 100px;
-    }
-    .country-flag {
-        width: 60px;
-    }
-    .ad-section {
-        top: 415px;
-        width: 150px;
-    }
-    .top-ads,
-    .bottom-ads {
-        height: 200px;
-        background: #fff;
-        border: 1px solid #e0e0e0;
-    }
-    .ad-card img {
-        width: 75%;
-    }
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5f5; /* Серый фон по бокам */
+    min-height: 100vh;
 }
 
-
-@media (min-width: 992px) and (max-width: 1199px) {
-    .left-section {
-        top: 415px;
-        width: 150px;
-    }
-    .section-header {
-        font-size: 18px;
-    }
-    .marketplace-logo {
-        max-width: 100px;
-    }
-    .country-flag {
-        width: 60px;
-    }
-    .ad-section {
-        top: 395px;
-        width: 150px;
-    }
-    .top-ads,
-    .bottom-ads {
-        height: 200px;
-        background: #fff;
-        border: 1px solid #e0e0e0;
-    }
-    .ad-card img {
-        width: 75%;
-    }
-}
-
-/* Desktop (1200-1399px) */
-@media (min-width: 1200px) and (max-width: 1399px) {
-    .left-section {
-        top: 425px;
-    }
-    .ad-section {
-        top: 450px;
-    }
-
-}
-@media (min-width: 1700px) and (max-width: 1919px) {
-    .left-section {
-        top: 420px;
-    }
-    .ad-section {
-        top: 450px;
-    }
-}
-/* Desktop (1920px) */
-@media (min-width: 1920px) {
-
-    .left-section {
-        top: 420px;
-    }
-    .ad-section {
-        top: 450px;
-    }
-}
-
-/* 2K (2560px) */
-@media (min-width: 2560px) {
-
-    .left-section {
-        top: 520px;
-        width: 300px;
-    }
-    .bold-text {
-        font-size: 27px;
-    }
-    .grey-text {
-        font-size: 22px;
-    }
-    .country-flag {
-        width: 150px;
-    }
-    .delivery-item span {
-        font-size: 18px;
-    }
-    .marketplace-logo {
-        max-width: 200px;
-    }
-    .ad-section {
-        top: 600px;
-        width: 350px;
-    }
-    .top-ads,
-    .bottom-ads {
-        width: 350px;
-        height: 400px;
-    }
-    .ad-header {
-        font-size: 44px;
-        padding: 15px;
-    }
-    .ad-placeholder {
-        font-size: 20px;
-    }
-}
-
-/* Higher resolutions (2880px) */
-@media (min-width: 2880px) {
-    .left-section {
-        width: 320px;
-        top: 650px;
-    }
-    .bold-text {
-        font-size: 27px;
-    }
-    .grey-text {
-        font-size: 22px;
-    }
-    .country-flag {
-        width: 200px;
-    }
-    .delivery-item span {
-        font-size: 23px;
-    }
-    .marketplace-logo {
-        max-width: 200px;
-    }
-    .ad-section {
-        top: 760px;
-        width: 400px;
-    }
-    .top-ads,
-    .bottom-ads {
-        width: 350px;
-        height: 400px;
-    }
-    .ad-header {
-        font-size: 44px;
-        padding: 15px;
-    }
-    .ad-placeholder {
-        font-size: 20px;
-    }
-}
-
-/* 4K (3840px) */
-@media (min-width: 3840px) {
-
-    .left-section {
-        width: 320px;
-    }
-    .bold-text {
-        font-size: 27px;
-    }
-    .grey-text {
-        font-size: 22px;
-    }
-    .country-flag {
-        width: 200px;
-    }
-    .delivery-item span {
-        font-size: 23px;
-    }
-    .marketplace-logo {
-        max-width: 200px;
-    }
-    .ad-section {
-        top: 800px;
-        width: 350px;
-    }
-    .top-ads,
-    .bottom-ads {
-        width: 350px;
-        height: 400px;
-    }
-    .ad-header {
-        font-size: 44px;
-        padding: 15px;
-    }
-    .ad-placeholder {
-        font-size: 20px;
-    }
+/* Центральный контейнер с фиксированной шириной */
+.container-site {
+    max-width: 1500px; /* Фиксированная ширина контента */
+    margin: 0 auto; /* Центрирование */
+    background-color: #fff; /* Белый фон центральной части */
+    min-height: 100vh; /* На всю высоту экрана */
+    position: relative; /* Важно для правильного позиционирования внутренних элементов */
+    overflow: hidden; /* Чтобы содержимое не выходило за пределы контейнера */
+    margin-top: -120px;
+    overflow: visible;
 }
