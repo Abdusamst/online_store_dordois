@@ -15,16 +15,9 @@
     <p><label>Изображения:</label></p>
     <div class="file-input-container">
         <p><label for="id_image">Главное изображение:</label> {{ form.image }}</p>
-        <p><label for="id_image1">Изображение 1:</label> {{ form.image1 }}</p>
-        <p><label for="id_image2">Изображение 2:</label> {{ form.image2 }}</p>
-        <p><label for="id_image3">Изображение 3:</label> {{ form.image3 }}</p>
-        <p><label for="id_image4">Изображение 4:</label> {{ form.image4 }}</p>
         <div class="image-preview-container">
             <div class="preview-placeholder">Предварительный просмотр изображений</div>
             <img id="imagePreview1" class="image-preview" src="#" alt="Preview 1">
-            <img id="imagePreview2" class="image-preview" src="#" alt="Preview 2">
-            <img id="imagePreview3" class="image-preview" src="#" alt="Preview 3">
-            <img id="imagePreview4" class="image-preview" src="#" alt="Preview 4">
         </div>
     </div>
     
@@ -77,11 +70,15 @@ function loadAttributes() {
                         <div class="attribute-options">
                             ${field.values.map(val => `
                                 <div class="attribute-option">
-                                    <input type="checkbox" 
-                                           name="attribute_${field.attribute_id}" 
-                                           value="${val.id}" 
-                                           id="checkbox_${val.id}">
+                                   <input type="checkbox" 
+                                    name="attribute_${field.attribute_id}" 
+                                    value="${val.id}" 
+                                    id="checkbox_${val.id}">
                                     <label for="checkbox_${val.id}">${val.value}</label>
+                                    <input type="file" 
+                                    name="image_${val.id}" 
+                                    accept="image/*" 
+                                    class="attribute-image-input">
                                     <input type="number" 
                                            name="quantity_${val.id}" 
                                            value="0" 
@@ -106,17 +103,19 @@ function loadAttributes() {
 
             // Обработка чекбоксов
             document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-                checkbox.addEventListener('change', function() {
-                    const valueId = this.value;
-                    const attrId = this.name.split('_')[1];
-                    const quantityInput = document.querySelector(`input[name="quantity_${valueId}"]`);
-                    const priceInput = document.querySelector(`input[name="price_modifier_${valueId}"]`);
-                    if (quantityInput && priceInput) {
-                        quantityInput.style.display = this.checked ? 'inline' : 'none';
-                        priceInput.style.display = this.checked ? 'inline' : 'none';
-                    }
-                });
+            checkbox.addEventListener('change', function() {
+                const valueId = this.value;
+                const imageInput = document.querySelector(`input[name="image_${valueId}"]`);
+                const quantityInput = document.querySelector(`input[name="quantity_${valueId}"]`);
+                const priceInput = document.querySelector(`input[name="price_modifier_${valueId}"]`);
+                
+                if (imageInput && quantityInput && priceInput) {
+                    imageInput.style.display = this.checked ? 'block' : 'none';
+                    quantityInput.style.display = this.checked ? 'block' : 'none';
+                    priceInput.style.display = this.checked ? 'block' : 'none';
+                }
             });
+        });
         } else {
             document.getElementById('dynamicAttributes').innerHTML = '<p>Нет атрибутов для выбранных категорий.</p>';
         }

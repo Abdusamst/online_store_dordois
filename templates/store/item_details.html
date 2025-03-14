@@ -169,15 +169,15 @@
                                 <label for="attribute_{{ attr.grouper.id }}">{{ attr.grouper.name }}:</label>
                                 <!-- Радио-кнопки для значений атрибута -->
                                 {% for iav in attr.list %}
-                                    <label class="custom-radio">
-                                        <input type="radio" 
-                                            name="attribute_{{ attr.grouper.id }}" 
-                                            value="{{ iav.attribute_value.id }}" 
-                                            id="attr_{{ attr.grouper.id }}_{{ iav.attribute_value.id }}" 
-                                            data-price-modifier="{{ iav.attribute_value.price_modifier }}">
+                                <label class="custom-radio">
+                                    <input type="radio" 
+                                           name="attribute_{{ attr.grouper.id }}" 
+                                           value="{{ iav.attribute_value.id }}" 
+                                           data-price-modifier="{{ iav.attribute_value.price_modifier }}"
+                                           data-image-url="{% if iav.attribute_value.image %}{{ iav.attribute_value.image.url }}{% endif %}">
                                         <span>{{ iav.attribute_value.value }}</span>
-                                    </label>
-                                {% endfor %}
+                                </label>
+                            {% endfor %}
         
                                 
                             </div>
@@ -299,6 +299,29 @@
 </div>
 
 <script>
+
+document.addEventListener('DOMContentLoaded', function() {
+    const mainImage = document.querySelector('.item-image');
+    console.log('Main image element:', mainImage);
+    
+    document.querySelectorAll('input[type="radio"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            const imageUrl = this.dataset.imageUrl;
+            console.log('Selected radio:', this, 'Image URL:', imageUrl);
+            if (imageUrl) {
+                mainImage.src = imageUrl;
+            } else {
+                console.log('No image URL found for this radio');
+            }
+        });
+    });
+    
+    const checkedRadio = document.querySelector('input[type="radio"]:checked');
+    console.log('Initially checked radio:', checkedRadio);
+    if (checkedRadio && checkedRadio.dataset.imageUrl) {
+        mainImage.src = checkedRadio.dataset.imageUrl;
+    }
+});
 // Добавляем новую функцию для перенаправления на страницу регистрации
 function redirectToRegistration() {
     window.location.href = "{% url 'users:login' %}";  // Используйте правильный URL для вашей страницы регистрации

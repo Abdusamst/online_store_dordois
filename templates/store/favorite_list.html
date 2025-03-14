@@ -127,13 +127,6 @@
                     <div class="product-item" id="item-{{ item.id }}">
                         <p><span class="image right">
                             {% if user.is_authenticated %}
-                                    <button id="favorite-btn-{{ item.id }}" class="btn btn-sm btn-outline-primary" onclick="toggleFavorite({{ item.id }})">
-                                        {% if item.id in favorites %}
-                                        <i class="fa-solid fa-heart"></i>
-                                        {% else %}
-                                        <i class="fa-regular fa-heart"></i>
-                                        {% endif %}
-                                    </button>   
                                 {% endif %}
                             {% if item.image %}
                                 <img src="{{ item.image.url }}" alt=""  />

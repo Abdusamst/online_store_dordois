@@ -283,6 +283,7 @@ def favorite_list(request):
     ).order_by('-order_count', '-favorite_count', '-avg_rating')
     top_ads = Advertisement.objects.filter(position='top')  # Должны быть 4
     bottom_ads = Advertisement.objects.filter(position='bottom')  # Должны быть 4
+    
     context = {
         'tags': tags,
         'page_obj_2': tags,
@@ -433,8 +434,12 @@ def add_item(request):
                                 attribute_value = AttributeValue.objects.get(id=value_id)
                                 quantity = form.cleaned_data.get(f'quantity_{value_id}', 0)
                                 price_modifier_input = form.cleaned_data.get(f'price_modifier_{value_id}', 0)
+                                image = form.cleaned_data.get(f'image_{value_id}')
                                 if price_modifier_input:
                                     attribute_value.price_modifier = price_modifier_input - item.price
+                                    attribute_value.save()
+                                elif image:
+                                    attribute_value.image = image
                                     attribute_value.save()
                                 ItemAttributeValue.objects.update_or_create(
                                     item=item,

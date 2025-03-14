@@ -23,10 +23,12 @@ class Attribute(models.Model):
 
 
 
+# store/models.py
 class AttributeValue(models.Model):
     attribute = models.ForeignKey(Attribute, on_delete=models.CASCADE, related_name='values', verbose_name='Атрибут')
     value = models.CharField(max_length=255, verbose_name='Значение')
     price_modifier = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name='Модификатор цены')
+    image = models.ImageField(upload_to='attributes/', null=True, blank=True, verbose_name='Изображение')
 
     def __str__(self):
         return f"{self.attribute.name}: {self.value}"

@@ -58,6 +58,10 @@ class ItemForm(forms.ModelForm):
                     required=False
                 )
             # Поля для нового значения
+            self.fields[f'image_{value.id}'] = forms.ImageField(
+                    label=f"Изображение для {value.value}",
+                    required=False
+                )
             self.fields[f'quantity_new_{attribute.id}'] = forms.IntegerField(
                 label=f"Количество нового значения для {attribute.name}",
                 min_value=0,
