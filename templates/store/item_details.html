@@ -207,11 +207,12 @@
                                 <b>{{ item.wholesale_price }}</b> СОМ ОПТОМ
                             </p>
                             {% if user.is_authenticated %}
-                                <form method="post" action="{% url 'cart:add_to_cart' item.slug %}" class="cart-form wholesale-form">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="wholesale" value="true" id="wholesale-input">
-                                    <button type="submit" class="button wholesale-button" onclick="enableWholesale()">Купить оптом</button>
-                                </form>
+                            <form method="post" action="{% url 'cart:add_to_cart' item.slug %}" class="cart-form wholesale-form">
+                                {% csrf_token %}
+                                <input type="hidden" name="wholesale" value="true" id="wholesale-input">
+                                <input type="hidden" name="quantity" value="10">
+                                <button type="submit" class="button wholesale-button">Купить оптом</button>
+                            </form>
                             {% else %}
                                 <button type="button" class="button wholesale-button" onclick="redirectToRegistration()">Купить оптом</button>
                             {% endif %}
@@ -648,7 +649,8 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function enableWholesale() {
-    document.getElementById('wholesale-input').disabled = false;
+    document.getElementById('wholesale-input').disabled = false;    
+    document.querySelector('.wholesale-form').submit();
 }
 
 function highlightRequiredAttributes() {

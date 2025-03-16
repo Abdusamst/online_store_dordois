@@ -48,6 +48,7 @@ class CartItem(models.Model):
         blank=True,  # Allows for items with no attributes
         related_name='cart_items'
     )
+    is_wholesale = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = 'Товар в корзине'
@@ -55,18 +56,23 @@ class CartItem(models.Model):
 
     @property
     def total_price(self):
-        # Получаем сумму модификаторов цены от всех атрибутов
+        # Calculate price modifier from attributes
         price_modifier = sum(
             attr.attribute_value.price_modifier or 0 
             for attr in self.attribute_values.all() 
             if attr.attribute_value  # Only include if attribute_value exists
         )
         
-        # Базовая цена товара с учетом модификаторов атрибутов для КАЖДОЙ единицы товара
-        adjusted_unit_price = self.item.price + price_modifier
+        # Determine base price based on wholesale flag and quantity
+        if self.is_wholesale and self.item.wholesale_price and self.quantity >= 10:
+            # For wholesale: base wholesale price + attribute modifiers
+            unit_price = self.item.wholesale_price + price_modifier
+        else:
+            # For retail: base retail price + attribute modifiers
+            unit_price = self.item.price + price_modifier
         
-        # Умножаем на количество
-        return adjusted_unit_price * self.quantity
+        # Multiply by quantity
+        return unit_price * self.quantity
 
     def __str__(self):
         return f"{self.quantity} x {self.item.title}"

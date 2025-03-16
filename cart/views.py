@@ -61,6 +61,8 @@ def add_to_cart(request, item_slug):
     item = get_object_or_404(Item, slug=item_slug)
     cart, _ = Cart.objects.get_or_create(user=request.user)
 
+    quantity = int(request.POST.get('quantity', 1))
+    is_wholesale = request.POST.get('wholesale') == 'true'
     # Собираем выбранные атрибуты из POST-запроса
     selected_attributes = {}
     for key, value in request.POST.items():
@@ -81,16 +83,22 @@ def add_to_cart(request, item_slug):
     if matching_cart_item:
         # Если товар с такими атрибутами уже есть, увеличиваем количество
         matching_cart_item.quantity += 1
+        matching_cart_item.is_wholesale = is_wholesale
         matching_cart_item.save()
     else:
         # Создаем новый CartItem с выбранными атрибутами
-        cart_item = CartItem.objects.create(cart=cart, item=item, quantity=1)
-        for attr_id, value_id in selected_attributes.items():
-            attr_value = get_object_or_404(ItemAttributeValue, 
-                                         item=item, 
-                                         attribute_value__id=value_id)
-            cart_item.attribute_values.add(attr_value)
-        cart_item.save()
+        cart_item = CartItem.objects.create(
+        cart=cart, 
+        item=item, 
+        quantity=quantity,
+        is_wholesale=is_wholesale  # Add this field to CartItem model
+    )
+    for attr_id, value_id in selected_attributes.items():
+        attr_value = get_object_or_404(ItemAttributeValue, 
+                                        item=item, 
+                                        attribute_value__id=value_id)
+        cart_item.attribute_values.add(attr_value)
+    cart_item.save()
 
     return redirect('cart:cart')
 

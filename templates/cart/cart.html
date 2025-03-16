@@ -121,7 +121,7 @@
             <td class="cart-item-total-price" data-cart-item-id="{{ cart_item.id }}">{{ cart_item.total_price }}</td>
             <td style="border: none; background-color: #ffffff;" align="center">
               <a href="{% url 'cart:delete_cart_item' cart_item.id %}">
-                <img src="{% static " images/garbage.svg" %}" width="25" height="25">
+                <img src="{% static 'images/garbage.svg' %}" width="25" height="25">
               </a>
             </td>
           </tr>
@@ -195,8 +195,8 @@
 {% endblock %}
 
 {% block js %}
-<script src="{% static " assets/js/cart.js" %}"></script>
+<script src="{% static 'assets/js/cart.js' %}"></script>
+<script src="{% static 'assets/js/translator.js' %}"></script>
 <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-<script src="{% static " assets/js/translator.js" %}"></script> <!-- Укажи правильный путь -->
 {% endblock %}
 
