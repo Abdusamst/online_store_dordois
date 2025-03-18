@@ -211,6 +211,7 @@
                                 {% csrf_token %}
                                 <input type="hidden" name="wholesale" value="true" id="wholesale-input">
                                 <input type="hidden" name="quantity" value="10">
+                                <!-- We'll add dynamic attribute fields here via JavaScript -->
                                 <button type="submit" class="button wholesale-button">Купить оптом</button>
                             </form>
                             {% else %}
@@ -657,5 +658,55 @@ function highlightRequiredAttributes() {
     // Функция для подсветки обязательных атрибутов
     // Оставлена пустой, так как ее определение необходимо, но реализация отсутствует в исходном коде
 }
+
+function syncAttributesToWholesaleForm() {
+    // Get all selected attributes from the main form
+    const mainForm = document.querySelector('.cart-form:not(.wholesale-form)');
+    const wholesaleForm = document.querySelector('.cart-form.wholesale-form');
+    
+    if (!mainForm || !wholesaleForm) {
+        console.error('Forms not found');
+        return;
+    }
+    
+    // Remove any existing hidden attribute inputs from wholesale form
+    const existingInputs = wholesaleForm.querySelectorAll('input[name^="attribute_"]');
+    existingInputs.forEach(input => input.remove());
+    
+    // Get all selected attributes from main form
+    const selectedRadios = mainForm.querySelectorAll('input[type="radio"]:checked');
+    
+    // Clone and add them to the wholesale form
+    selectedRadios.forEach(radio => {
+        const clone = document.createElement('input');
+        clone.type = 'hidden';
+        clone.name = radio.name;
+        clone.value = radio.value;
+        wholesaleForm.appendChild(clone);
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const wholesaleButton = document.querySelector('.wholesale-button');
+    if (wholesaleButton) {
+        // For type="submit" button, we need to modify the form submit event
+        const wholesaleForm = document.querySelector('.cart-form.wholesale-form');
+        if (wholesaleForm) {
+            wholesaleForm.addEventListener('submit', function(event) {
+                syncAttributesToWholesaleForm();
+            });
+        }
+    }
+});
+
+// Also trigger this when attributes change, to keep them in sync
+document.addEventListener('DOMContentLoaded', function() {
+    const attrRadios = document.querySelectorAll('.attribute-row input[type="radio"]');
+    attrRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            syncAttributesToWholesaleForm();
+        });
+    });
+});
 </script>
 {% endblock %}

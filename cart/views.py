@@ -8,7 +8,9 @@ from .models import Cart, CartItem
 from store.utils import generate_whatsapp_message
 from store.models import ItemTag
 from django.contrib import messages
-
+from store.models import Item
+from django.db.models import Count, FloatField, Avg
+from store.models import Advertisement
 @login_required
 def cart(request):
     """
@@ -19,13 +21,8 @@ def cart(request):
         cart = Cart.objects.create(user=request.user)
 
     cart_items = CartItem.objects.filter(cart=cart).prefetch_related('attribute_values')
-
-    if request.method == 'POST':
-        whatsapp_url = generate_whatsapp_message(cart_items)
-        return redirect(whatsapp_url)
     page_obj_2 = ItemTag.objects.all()
     tags = ItemTag.objects.all().order_by('name')
-
     for tag in tags:
         tag.description = _(tag.description)
 
@@ -63,6 +60,9 @@ def add_to_cart(request, item_slug):
 
     quantity = int(request.POST.get('quantity', 1))
     is_wholesale = request.POST.get('wholesale') == 'true'
+
+    if is_wholesale and quantity < 10:
+        quantity = 10
     # Собираем выбранные атрибуты из POST-запроса
     selected_attributes = {}
     for key, value in request.POST.items():
@@ -81,23 +81,32 @@ def add_to_cart(request, item_slug):
             break
 
     if matching_cart_item:
-        # Если товар с такими атрибутами уже есть, увеличиваем количество
-        matching_cart_item.quantity += 1
-        matching_cart_item.is_wholesale = is_wholesale
+        # Update existing cart item
+        if is_wholesale:
+            # For wholesale, set quantity to at least 10
+            matching_cart_item.quantity = max(matching_cart_item.quantity + quantity, 10)
+            matching_cart_item.is_wholesale = True
+        else:
+            # For regular items, just add to quantity
+            matching_cart_item.quantity += quantity
+        
         matching_cart_item.save()
     else:
-        # Создаем новый CartItem с выбранными атрибутами
+        # Create new cart item
         cart_item = CartItem.objects.create(
-        cart=cart, 
-        item=item, 
-        quantity=quantity,
-        is_wholesale=is_wholesale  # Add this field to CartItem model
-    )
+            cart=cart, 
+            item=item, 
+            quantity=quantity,
+            is_wholesale=is_wholesale
+        )
     for attr_id, value_id in selected_attributes.items():
-        attr_value = get_object_or_404(ItemAttributeValue, 
-                                        item=item, 
-                                        attribute_value__id=value_id)
-        cart_item.attribute_values.add(attr_value)
+            try:
+                attr_value = get_object_or_404(ItemAttributeValue, 
+                                              item=item, 
+                                              attribute_value__id=value_id)
+                cart_item.attribute_values.add(attr_value)
+            except:
+                continue
     cart_item.save()
 
     return redirect('cart:cart')
