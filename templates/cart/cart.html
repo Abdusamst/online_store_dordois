@@ -141,7 +141,7 @@
     <a href="{% url 'store:home' %}" style="float: left;" class="button_continue">Продолжать покупки</a>
     <form method="POST" action="{% url 'checkout:create_order_whatsapp' %}">
       {% csrf_token %}
-      <button type="submit" class="button_whatsapp">Оформить заказ через WhatsApp</button>
+      <button type="submit" class="button_whatsapp">Оформить заказ</button>
     </form>
   </div>
   
